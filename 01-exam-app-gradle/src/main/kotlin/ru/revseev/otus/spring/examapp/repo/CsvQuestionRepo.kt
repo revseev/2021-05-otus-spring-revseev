@@ -24,17 +24,16 @@ class CsvQuestionRepo(var source: String) : QuestionRepo {
     }
 
     private fun parseQuestion(line: String): Question? {
-        return if (line.isNotBlank()) {
-            val splitted = line.split(";").filter { it.isNotBlank() }
+        val splitted = line.split(";").filter { it.isNotBlank() }
 
-            val size = splitted.size
-            if (size > 0) {
-                val questionText: String = splitted[0]
-                val answers = if (size > 1) {
-                    splitted.subList(1, size)
-                } else listOf()
-                return Question(questionText, answers)
-            } else null
-        } else null
+        val size = splitted.size
+        if (size > 0) {
+            val questionText: String = splitted[0]
+            val answers = if (size > 1) {
+                splitted.subList(1, size)
+            } else listOf()
+            return Question(questionText, answers)
+        }
+        return null
     }
 }
