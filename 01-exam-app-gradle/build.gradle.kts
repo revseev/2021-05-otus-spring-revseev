@@ -47,9 +47,6 @@ val uberJar = tasks.register<Jar>("uberJar") {
     from({
         configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
     })
-    // то же будет сделано тут: https://github.com/wadejensen/kotlin-fat-jar-example
-//    from(configurations.runtime.map({ if (it.isDirectory) it else zipTree(it) }))
-//    with(tasks["jar"] as CopySpec)
 }
 
 tasks {
