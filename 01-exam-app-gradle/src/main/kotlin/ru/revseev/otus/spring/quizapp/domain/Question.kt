@@ -1,16 +1,25 @@
 package ru.revseev.otus.spring.quizapp.domain
 
-class Question(
-        val questionText: String,
-        val answerOptions: MutableList<String> = mutableListOf()
-) {
+import mu.KotlinLogging
 
-    constructor(questionText: String, answerOptions: Iterable<String>) : this(questionText) {
-        this.answerOptions.addAll(answerOptions)
+class Question(val questionText: String) {
+
+    var answerOptions: List<String> = listOf()
+        get() = field.shuffled() // return shuffled answers every time
+
+    private var correctAnswer: String? = null
+
+    constructor(questionText: String, answerOptions: List<String>) : this(questionText) {
+        if (answerOptions.isNotEmpty()) {
+            this.answerOptions = answerOptions
+            correctAnswer = answerOptions[0] // correctAnswer should be the first provided in source
+        }
     }
 
-    fun view(): String {
-        val answersFormatted = answerOptions.mapIndexed { i, it -> "[${i + 1}] $it" }.joinToString(separator = "\r\n")
-        return "$questionText\r\n$answersFormatted"
+    fun testAnswer(answer: String): Boolean {
+        log.debug { "Testing $answer against $correctAnswer" }
+        return answer.equals(correctAnswer, true)
     }
 }
+
+private val log = KotlinLogging.logger {}

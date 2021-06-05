@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*
 import org.mockito.kotlin.*
 import ru.revseev.otus.spring.quizapp.domain.Question
 import ru.revseev.otus.spring.quizapp.parser.QuestionParser
+import ru.revseev.otus.spring.quizapp.repo.impl.CsvQuestionRepo
 import strikt.api.expectThat
 import strikt.assertions.isGreaterThan
 import strikt.assertions.isNotNull

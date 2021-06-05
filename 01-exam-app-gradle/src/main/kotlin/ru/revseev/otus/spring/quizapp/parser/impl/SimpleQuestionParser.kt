@@ -1,7 +1,10 @@
-package ru.revseev.otus.spring.quizapp.parser
+package ru.revseev.otus.spring.quizapp.parser.impl
 
+import org.springframework.stereotype.Service
 import ru.revseev.otus.spring.quizapp.domain.Question
+import ru.revseev.otus.spring.quizapp.parser.QuestionParser
 
+@Service
 class SimpleQuestionParser : QuestionParser {
 
     override fun parse(line: String): Question? {
