@@ -7,8 +7,9 @@ import java.io.PrintStream
 import java.util.*
 
 @Service
-class ConsoleIoProvider(inputStream: InputStream = System.`in`,
-                        outputStream: OutputStream = System.out
+class ConsoleIoProvider(
+        inputStream: InputStream = System.`in`,
+        outputStream: OutputStream = System.out
 ) : IoProvider {
 
     private val scanner: Scanner = Scanner(inputStream)
@@ -18,7 +19,7 @@ class ConsoleIoProvider(inputStream: InputStream = System.`in`,
         printStream.println(output)
     }
 
-    override fun readInput(): String? {
-        return scanner.nextLine()
+    override fun readInput(): String {
+        return scanner.nextLine() ?: throw IllegalArgumentException("User input couldn't be null")
     }
 }
