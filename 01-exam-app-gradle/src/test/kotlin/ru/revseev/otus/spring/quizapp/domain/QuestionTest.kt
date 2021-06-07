@@ -33,12 +33,4 @@ class QuestionTest {
         expectThat(question.testAnswer("A")).isTrue()
         expectThat(question.testAnswer("B")).isFalse()
     }
-
-    @Test
-    fun `should say if a given answer is correct`() {
-        val question = Question("First letter in English alphabet?", listOf("A", "B", "C"))
-
-        expectThat(question.testAnswer("A")).isTrue()
-        expectThat(question.testAnswer("B")).isFalse()
-    }
 }

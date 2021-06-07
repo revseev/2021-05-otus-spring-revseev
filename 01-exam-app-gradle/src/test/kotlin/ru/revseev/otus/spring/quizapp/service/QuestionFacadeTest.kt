@@ -10,7 +10,7 @@ internal class QuestionFacadeTest {
     @Test
     fun `should identify user, run questions and write output as a result`() {
         val identificationServiceMock = mock<IdentificationService> {
-            on {identifyUser()}.doReturn(User("test", "test"))
+            on { identifyUser() }.doReturn(User("test", "test"))
         }
         val questionServiceMock = mock<QuestionService> {
             on { viewAllQuestions() }.doReturn(Result(1, 1))
