@@ -23,8 +23,8 @@ class SimpleIdentificationService(val ioProvider: IoProvider) : IdentificationSe
         logger.debug { "Parsing user input: $input" }
 
         val trimmedInput = input.trim()
-                .split(COMMA_WITH_OR_WITHOUT_SPACES)
-                .filter { it.isNotBlank() }
+            .split(COMMA_WITH_OR_WITHOUT_SPACES)
+            .filter { it.isNotBlank() }
         logger.debug { "Trimmed to: $trimmedInput" }
 
         if (trimmedInput.size > 1) {

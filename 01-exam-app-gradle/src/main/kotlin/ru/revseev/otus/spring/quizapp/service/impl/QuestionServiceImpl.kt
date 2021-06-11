@@ -2,7 +2,7 @@ package ru.revseev.otus.spring.quizapp.service.impl
 
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import ru.revseev.otus.spring.quizapp.domain.Result
+import ru.revseev.otus.spring.quizapp.domain.QuizResult
 import ru.revseev.otus.spring.quizapp.repo.QuestionRepo
 import ru.revseev.otus.spring.quizapp.service.IoProvider
 import ru.revseev.otus.spring.quizapp.service.QuestionService
@@ -11,7 +11,7 @@ import kotlin.system.exitProcess
 @Service
 class QuestionServiceImpl(val questionRepo: QuestionRepo, val ioProvider: IoProvider) : QuestionService {
 
-    override fun viewAllQuestions(): Result {
+    override fun viewAllQuestions(): QuizResult {
         val questions = questionRepo.getAllQuestions().shuffled()
 
         var correctCount = 0
@@ -19,8 +19,8 @@ class QuestionServiceImpl(val questionRepo: QuestionRepo, val ioProvider: IoProv
             val shuffled = question.answerOptions
             val questionText = question.questionText
             val answersFormatted = shuffled
-                    .mapIndexed { i, it -> "[${i + 1}] $it" }
-                    .joinToString(separator = "\r\n")
+                .mapIndexed { i, it -> "[${i + 1}] $it" }
+                .joinToString(separator = "\r\n")
 
             val questionFormatted = "$questionText\r\n$answersFormatted"
             val answer = interact(questionFormatted, shuffled)
@@ -29,7 +29,7 @@ class QuestionServiceImpl(val questionRepo: QuestionRepo, val ioProvider: IoProv
             log.debug { "Question: '$questionText', answered correctly: $isCorrect" }
             if (isCorrect) correctCount++
         }
-        return Result(correctCount, questions.size)
+        return QuizResult(correctCount, questions.size)
     }
 
     private fun interact(questionText: String, answerList: List<String>): String {

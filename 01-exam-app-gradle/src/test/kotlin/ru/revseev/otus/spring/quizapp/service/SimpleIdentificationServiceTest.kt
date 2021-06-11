@@ -1,22 +1,25 @@
 package ru.revseev.otus.spring.quizapp.service
 
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
+import io.mockk.junit5.MockKExtension
+import io.mockk.verify
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.times
-import org.mockito.kotlin.verify
+import org.junit.jupiter.api.extension.ExtendWith
 import ru.revseev.otus.spring.quizapp.domain.User
 import ru.revseev.otus.spring.quizapp.service.impl.SimpleIdentificationService
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 
+@ExtendWith(MockKExtension::class)
 class SimpleIdentificationServiceTest {
+
+    @MockK
+    lateinit var mockIo: IoProvider
 
     @Test
     fun `given valid input should parse first and second name delimited by comma`() {
-        val mockIo = mock<IoProvider> {
-            on { readInput() }.thenReturn("Mark, Brown")
-        }
+        every { mockIo.readInput() } returns ("Mark, Brown")
 
         val user = SimpleIdentificationService(mockIo).identifyUser()
 
@@ -29,12 +32,12 @@ class SimpleIdentificationServiceTest {
 
     @Test
     fun `given empty input should ask again`() {
-        val mockIo = mock<IoProvider> {
-            on { readInput() }.thenReturn("", "J b", "-,,", "Mark, Brown")
-        }
+        every { mockIo.readInput() }.returnsMany("", "J b", "-,,", "Mark, Brown")
 
         SimpleIdentificationService(mockIo).identifyUser()
 
-        verify(mockIo, times(4)).writeOutput(any())
+        verify(exactly = 4) {
+            mockIo.writeOutput(any())
+        }
     }
 }

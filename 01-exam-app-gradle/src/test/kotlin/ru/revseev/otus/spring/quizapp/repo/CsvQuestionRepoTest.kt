@@ -1,7 +1,10 @@
 package ru.revseev.otus.spring.quizapp.repo
 
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.*
-import org.mockito.kotlin.*
 import ru.revseev.otus.spring.quizapp.domain.Question
 import ru.revseev.otus.spring.quizapp.parser.QuestionParser
 import ru.revseev.otus.spring.quizapp.repo.impl.CsvQuestionRepo
@@ -26,13 +29,14 @@ class CsvQuestionRepoTest {
         source = this.javaClass.classLoader.getResource(sourceFileName)?.path?.let(Paths::get)
         expectThat(source).isNotNull()
         linesInSourceFile = Files.readAllLines(source).size
+
+        MockKAnnotations.init(this)
     }
 
     @BeforeEach
     fun setup() {
-        parser = mock {
-            on { parse(anyVararg()) } doReturn (Question("Stub"))
-        }
+        parser = mockk()
+        every { parser.parse(any()) } returns Question("Stub")
     }
 
     @DisplayName("парсит каждую строку")
@@ -41,7 +45,9 @@ class CsvQuestionRepoTest {
         val questionRepo = CsvQuestionRepo(sourceFileName, parser)
         questionRepo.getAllQuestions()
 
-        verify(parser, times(linesInSourceFile)).parse(any())
+        verify(exactly = linesInSourceFile) {
+            parser.parse(any())
+        }
     }
 
     @DisplayName("из валидного файла получает как минимум 1 вопрос")
