@@ -1,10 +1,9 @@
 package ru.revseev.otus.spring.quizapp.parser
 
 import org.junit.jupiter.api.Test
+import ru.revseev.otus.spring.quizapp.parser.impl.SimpleQuestionParser
 import strikt.api.expect
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNull
-import strikt.assertions.isNullOrBlank
+import strikt.assertions.*
 
 class QuestionParserTest {
 
@@ -12,18 +11,18 @@ class QuestionParserTest {
 
     @Test
     fun shouldParseValidString() {
-        val qLine = "How are you?;Fine;Not great;Ok"
-        val question = questionParser.parse(qLine)
+        val question = questionParser.parse("How are you?;Fine;Not great;Ok")!!
+
         expect {
-            that(question?.questionText).isEqualTo("How are you?")
-            that(question?.answerOptions).isEqualTo(mutableListOf("Fine", "Not great", "Ok"))
+            that(question.questionText).isEqualTo("How are you?")
+            that(question.answerOptions).containsExactlyInAnyOrder(listOf("Fine", "Not great", "Ok"))
         }
     }
 
     @Test
     fun shouldReturnNullIfEmptyString() {
-        val qLine = ""
-        val question = questionParser.parse(qLine)
+        val question = questionParser.parse("")
+
         expect {
             that(question).isNull()
         }
@@ -31,8 +30,8 @@ class QuestionParserTest {
 
     @Test
     fun shouldReturnNullIfNoTextBetweenSeparators() {
-        val qLine = ";;;"
-        val question = questionParser.parse(qLine)
+        val question = questionParser.parse(";;;")
+
         expect {
             that(question).isNull()
         }
@@ -40,11 +39,11 @@ class QuestionParserTest {
 
     @Test
     fun shouldReturnOpenQuestionIfNoAnswersGiven() {
-        val qLine = "What the f*?;;;"
-        val question = questionParser.parse(qLine)
+        val question = questionParser.parse("What the f*?;;;")!!
+
         expect {
-            that(question?.questionText).not { isNullOrBlank() }
-            that(question?.answerOptions).isEqualTo(mutableListOf())
+            that(question.questionText).not { isNullOrBlank() }
+            that(question.answerOptions).isEmpty()
         }
     }
 }
