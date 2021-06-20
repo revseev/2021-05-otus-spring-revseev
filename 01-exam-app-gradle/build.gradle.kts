@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "ru.revseev"
-version = "1.0-SNAPSHOT"
+version = "1.01-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 repositories {
     mavenCentral()
@@ -39,5 +39,11 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = "11"
         freeCompilerArgs = listOf("-Xjsr305=strict")
+    }
+}
+
+tasks.processResources {
+    filesMatching("*.yml") {
+        expand(project.properties)
     }
 }

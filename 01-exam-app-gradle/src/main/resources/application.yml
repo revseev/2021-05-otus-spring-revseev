@@ -1,4 +1,6 @@
 app:
+  title: QuizApp
+  ver: ${project.version}
   source-file.name: questions.csv
 
 logging:
