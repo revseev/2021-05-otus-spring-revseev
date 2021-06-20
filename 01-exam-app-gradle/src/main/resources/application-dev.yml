@@ -3,4 +3,4 @@ app:
 
 logging:
   level:
-    root: WARN
+    ru: DEBUG
