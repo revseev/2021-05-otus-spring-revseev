@@ -10,7 +10,7 @@ class QuestionParserTest {
     private val questionParser = SimpleQuestionParser()
 
     @Test
-    fun shouldParseValidString() {
+    fun `should parse valid string`() {
         val question = questionParser.parse("How are you?;Fine;Not great;Ok")!!
 
         expect {
@@ -20,7 +20,7 @@ class QuestionParserTest {
     }
 
     @Test
-    fun shouldReturnNullIfEmptyString() {
+    fun `should return null if empty string`() {
         val question = questionParser.parse("")
 
         expect {
@@ -29,7 +29,7 @@ class QuestionParserTest {
     }
 
     @Test
-    fun shouldReturnNullIfNoTextBetweenSeparators() {
+    fun `should return null if no text between separators`() {
         val question = questionParser.parse(";;;")
 
         expect {
@@ -38,7 +38,7 @@ class QuestionParserTest {
     }
 
     @Test
-    fun shouldReturnOpenQuestionIfNoAnswersGiven() {
+    fun `should return open question if no answers given`() {
         val question = questionParser.parse("What the f*?;;;")!!
 
         expect {

@@ -9,8 +9,8 @@ import java.util.*
 
 @Service
 class ConsoleIoProvider(
-        inputStream: InputStream = System.`in`,
-        outputStream: OutputStream = System.out
+    inputStream: InputStream = System.`in`,
+    outputStream: OutputStream = System.out
 ) : IoProvider {
 
     private val scanner: Scanner = Scanner(inputStream)

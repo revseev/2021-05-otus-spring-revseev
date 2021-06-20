@@ -1,0 +1,37 @@
+app:
+  source-filename:
+    default: questions.csv
+    languages:
+      en: questions.csv
+      ru: questions_ru.csv
+  use-internalization: true
+
+spring:
+  messages:
+    fallback-to-system-locale: false
+  profiles:
+    default: prod
+
+logging:
+  level:
+    root: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+logging:
+  level:
+    root: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    ru: DEBUG

@@ -1,6 +1,6 @@
 package ru.revseev.otus.spring.quizapp.service
 
-interface QuestionFacade {
+interface LocaleService {
 
-    fun runQuiz()
+    fun setLocale()
 }
