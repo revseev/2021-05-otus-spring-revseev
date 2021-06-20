@@ -40,7 +40,7 @@ class SimpleIdentificationService(val ioProvider: IoProvider) : IdentificationSe
         val greeting = """
                 |Hello and Welcome to a simple Quiz Application! 
                 |Before we start, please, type in your name and last name, comma separated. 
-                |(e.i.: John, Doe) """.trimMargin()
+                |(e.i.: John, Doe)""".trimMargin()
         ioProvider.writeOutput(greeting)
     }
 }

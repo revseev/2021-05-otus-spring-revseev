@@ -1,0 +1,6 @@
+app:
+  source-file.name: questions.csv
+
+logging:
+  level:
+    ru: WARN

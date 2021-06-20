@@ -12,7 +12,7 @@ class ConsoleQuizResultViewer(private val ioProvider: IoProvider) : QuizResultVi
         val quizTaker = userQuizResult.quizTaker
         val result = userQuizResult.result
         val resultMessage = "${quizTaker.name} ${quizTaker.lastName} has answered " +
-                "${result.answeredCorrectly}answeredCorrectly/${result.totalQuestions} questions correctly!"
+                "${result.answeredCorrectly}/${result.totalQuestions} questions correctly!"
         ioProvider.writeOutput(resultMessage)
     }
 }
