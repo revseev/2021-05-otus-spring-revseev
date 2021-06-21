@@ -42,8 +42,9 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.processResources {
-    filesMatching("*.yml") {
-        expand(project.properties)
+tasks.bootJar {
+    manifest {
+        attributes["Implementation-Title"] = rootProject.name
+        attributes["Implementation-Version"] = archiveVersion
     }
 }
