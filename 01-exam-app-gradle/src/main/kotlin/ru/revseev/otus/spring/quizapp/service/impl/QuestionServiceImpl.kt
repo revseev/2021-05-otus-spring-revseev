@@ -43,13 +43,13 @@ class QuestionServiceImpl(val questionRepo: QuestionRepo, val ioProvider: IoProv
         return try {
             answerList[input.toInt() - 1]
         } catch (e: Exception) {
-            ioProvider.writeOutput("Please, pick an answer and type it's index")
+            ioProvider.writeOutput("Please, pick an answer and type it's index")//todo message source
             return interact(questionText, answerList)
         }
     }
 
     private fun goodbye() {
-        ioProvider.writeOutput("Goodbye!")
+        ioProvider.writeOutput("Goodbye!")//todo message source
         exitProcess(0)
     }
 }

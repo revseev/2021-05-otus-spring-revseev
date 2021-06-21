@@ -13,6 +13,7 @@ class ConsoleQuizResultViewer(private val ioProvider: IoProvider) : QuizResultVi
         val result = userQuizResult.result
         val resultMessage = "${quizTaker.name} ${quizTaker.lastName} has answered " +
                 "${result.answeredCorrectly}/${result.totalQuestions} questions correctly!"
+        //todo message source
         ioProvider.writeOutput(resultMessage)
     }
 }

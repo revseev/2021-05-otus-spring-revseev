@@ -32,7 +32,7 @@ class SimpleIdentificationService(val ioProvider: IoProvider) : IdentificationSe
             logger.info { "User identified as: $user" }
             return user
         }
-        ioProvider.writeOutput("Please, type in your Name and Last Name, comma separated.\n\r(eg. John, Doe)")
+        ioProvider.writeOutput("Please, type in your Name and Last Name, comma separated.\n\r(eg. John, Doe)")//todo message source
         return identify()
     }
 
@@ -40,7 +40,7 @@ class SimpleIdentificationService(val ioProvider: IoProvider) : IdentificationSe
         val greeting = """
                 |Hello and Welcome to a simple Quiz Application! 
                 |Before we start, please, type in your name and last name, comma separated. 
-                |(e.i.: John, Doe)""".trimMargin()
+                |(e.i.: John, Doe)""".trimMargin()//todo message source
         ioProvider.writeOutput(greeting)
     }
 }

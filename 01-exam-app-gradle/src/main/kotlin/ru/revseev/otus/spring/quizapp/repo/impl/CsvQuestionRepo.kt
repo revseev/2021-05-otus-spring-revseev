@@ -20,7 +20,7 @@ class CsvQuestionRepo(
         return this.javaClass.classLoader.getResourceAsStream(csvSource)
             ?.bufferedReader(StandardCharsets.UTF_8)
             ?.readLines()
-            ?: throw FileNotFoundException("Source file '$csvSource' is not found!")
+            ?: throw FileNotFoundException("Source file '$csvSource' is not found!") //todo message source
     }
 
     override fun getAllQuestions(): Iterable<Question> {
