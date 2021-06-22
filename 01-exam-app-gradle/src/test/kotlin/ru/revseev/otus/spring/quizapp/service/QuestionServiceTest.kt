@@ -26,7 +26,7 @@ class QuestionServiceTest {
 
     @DisplayName("получает список вопросов из репозитория")
     @Test
-    fun shouldGetAllQuestionsFromRepo() {
+    fun `should get all questions from repo`() {
         every { questionRepo.getAllQuestions() } returns listOf()
 
         QuestionServiceImpl(questionRepo, ioProvider).viewAllQuestions()

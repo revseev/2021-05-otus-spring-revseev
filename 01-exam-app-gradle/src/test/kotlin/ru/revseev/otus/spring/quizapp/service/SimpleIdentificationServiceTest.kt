@@ -31,7 +31,7 @@ class SimpleIdentificationServiceTest {
     }
 
     @Test
-    fun `given empty input should ask again`() {
+    fun `given invalid input should ask again`() {
         every { mockIo.readInput() }.returnsMany("", "J b", "-,,", "Mark, Brown")
 
         SimpleIdentificationService(mockIo).identifyUser()

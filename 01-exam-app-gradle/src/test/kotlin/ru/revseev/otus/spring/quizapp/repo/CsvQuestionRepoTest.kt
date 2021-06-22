@@ -41,7 +41,7 @@ class CsvQuestionRepoTest {
 
     @DisplayName("парсит каждую строку")
     @Test
-    fun shouldParseAllLinesFromFileExactly() {
+    fun `should parse all lines from file exactly`() {
         val questionRepo = CsvQuestionRepo(sourceFileName, parser)
         questionRepo.getAllQuestions()
 
@@ -52,7 +52,7 @@ class CsvQuestionRepoTest {
 
     @DisplayName("из валидного файла получает как минимум 1 вопрос")
     @Test
-    fun shouldHaveReadSomeQuestionsFromFile() {
+    fun `should have read some questions from file`() {
         val questionRepo = CsvQuestionRepo(sourceFileName, parser)
         val allQuestions = questionRepo.getAllQuestions()
         expectThat(allQuestions.count()).isGreaterThan(0)
