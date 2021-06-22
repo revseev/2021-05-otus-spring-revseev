@@ -3,6 +3,10 @@ app:
   ver: ${project.version}
   source-file.name: questions.csv
 
+#spring:
+#  messages:
+#    fallback-to-system-locale: false
+
 logging:
   level:
-    ru: DEBUG
+  ru: DEBUG
