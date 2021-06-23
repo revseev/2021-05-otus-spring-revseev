@@ -9,14 +9,17 @@ import org.junit.jupiter.api.extension.ExtendWith
 import ru.revseev.otus.spring.quizapp.domain.QuizResult
 import ru.revseev.otus.spring.quizapp.domain.User
 import ru.revseev.otus.spring.quizapp.domain.UserQuizResult
+import ru.revseev.otus.spring.quizapp.service.impl.DefaultQuestionFacade
 
 @ExtendWith(MockKExtension::class)
-internal class QuestionFacadeTest {
+internal class DefaultQuestionFacadeTest {
 
     @MockK
     lateinit var identificationService: IdentificationService
+
     @MockK
     lateinit var questionService: QuestionService
+
     @MockK
     lateinit var quizResultViewer: QuizResultViewer
 
@@ -27,7 +30,7 @@ internal class QuestionFacadeTest {
         val quizResult = QuizResult(1, 1)
         every { questionService.viewAllQuestions() } returns quizResult
 
-        val facade = QuestionFacade(questionService, identificationService, quizResultViewer)
+        val facade = DefaultQuestionFacade(questionService, identificationService, quizResultViewer)
 
         facade.runQuiz()
 

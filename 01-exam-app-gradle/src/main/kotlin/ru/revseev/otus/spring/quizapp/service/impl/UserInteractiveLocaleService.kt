@@ -1,5 +1,6 @@
 package ru.revseev.otus.spring.quizapp.service.impl
 
+import mu.KotlinLogging
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
 import ru.revseev.otus.spring.quizapp.service.IoProvider
@@ -14,13 +15,29 @@ class UserInteractiveLocaleService(
 ) : LocaleService {
 
     override fun setLocale() {
-        ioProvider.writeOutput(messageProvider.getMessage("language.askUserForLanguage"))
-
-        val input = ioProvider.readInput()
-
-        TODO("determine user input - if ok - change locale, if not - ask again")
-
+        val chosenLang = askUserForLanguage()
+        if (chosenLang != null) {
+            val chosenLocale = Locale(chosenLang)
+            log.debug { "User chosen locale: $chosenLocale" }
+            LocaleContextHolder.setLocale(chosenLocale)
+        } else {
+            log.debug { "Continue with default locale ${LocaleContextHolder.getLocale()}" }
+        }
     }
 
-    private fun changeLocale() = LocaleContextHolder.setLocale(Locale.ENGLISH)
+    private fun askUserForLanguage(): String? {
+        ioProvider.writeOutput(messageProvider.getMessage("language.askUserForLanguage", System.lineSeparator()))
+
+        val input = ioProvider.readInput().trim()
+        log.debug { "User input language: $input" }
+
+        return when (input) {
+            "1" -> "en"
+            "2" -> "ru"
+            "" -> null
+            else -> askUserForLanguage()
+        }
+    }
 }
+
+private val log = KotlinLogging.logger {}

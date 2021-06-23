@@ -9,7 +9,10 @@ import ru.revseev.otus.spring.quizapp.service.QuestionService
 import kotlin.system.exitProcess
 
 @Service
-class QuestionServiceImpl(val questionRepo: QuestionRepo, val ioProvider: IoProvider) : QuestionService {
+class QuestionServiceImpl(
+    private val questionRepo: QuestionRepo,
+    private val ioProvider: IoProvider
+) : QuestionService {
 
     override fun viewAllQuestions(): QuizResult {
         val questions = questionRepo.getAllQuestions().shuffled()
@@ -18,11 +21,13 @@ class QuestionServiceImpl(val questionRepo: QuestionRepo, val ioProvider: IoProv
         for (question in questions) {
             val shuffled = question.answerOptions
             val questionText = question.questionText
+            val separator = System.lineSeparator()
+
             val answersFormatted = shuffled
                 .mapIndexed { i, it -> "[${i + 1}] $it" }
-                .joinToString(separator = "\r\n")
+                .joinToString(separator = separator)
 
-            val questionFormatted = "$questionText\r\n$answersFormatted"
+            val questionFormatted = "$questionText$separator$answersFormatted"
             val answer = interact(questionFormatted, shuffled)
 
             val isCorrect = question.testAnswer(answer)
