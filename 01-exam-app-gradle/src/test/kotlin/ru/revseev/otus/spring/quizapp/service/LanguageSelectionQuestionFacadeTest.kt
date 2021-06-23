@@ -2,10 +2,8 @@ package ru.revseev.otus.spring.quizapp.service
 
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.extension.ExtendWith
 import ru.revseev.otus.spring.quizapp.service.impl.LanguageSelectionQuestionFacade
 

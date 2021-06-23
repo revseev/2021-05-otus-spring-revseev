@@ -21,7 +21,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
     implementation("net.jcip:jcip-annotations:1.0")
-//    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

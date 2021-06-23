@@ -1,8 +1,10 @@
 app:
   source-filename:
     default: questions.csv
-    ru: questions_ru.csv
-  internalization: true
+    languages:
+      en: questions.csv
+      ru: questions_ru.csv
+  use-internalization: true
 
 spring:
   messages:

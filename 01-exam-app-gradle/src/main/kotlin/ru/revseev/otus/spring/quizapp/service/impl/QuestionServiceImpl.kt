@@ -1,6 +1,7 @@
 package ru.revseev.otus.spring.quizapp.service.impl
 
 import mu.KotlinLogging
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import ru.revseev.otus.spring.quizapp.domain.QuizResult
 import ru.revseev.otus.spring.quizapp.repo.QuestionRepo
@@ -11,6 +12,7 @@ import kotlin.system.exitProcess
 
 @Service
 class QuestionServiceImpl(
+    @Lazy
     private val questionRepo: QuestionRepo,
     private val ioProvider: IoProvider,
     private val messageProvider: MessageProvider
