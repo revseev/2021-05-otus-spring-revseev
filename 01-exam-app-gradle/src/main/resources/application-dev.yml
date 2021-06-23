@@ -1,11 +1,12 @@
 app:
-  title: QuizApp
-  ver: ${project.version}
-  source-file.name: questions.csv
+  source-filename:
+    default: questions.csv
+    ru: questions_ru.csv
+  internalization: true
 
-#spring:
-#  messages:
-#    fallback-to-system-locale: false
+spring:
+  messages:
+    fallback-to-system-locale: false
 
 logging:
   level:

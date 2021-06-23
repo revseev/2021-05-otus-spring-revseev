@@ -5,13 +5,15 @@ import org.springframework.stereotype.Service
 import ru.revseev.otus.spring.quizapp.domain.QuizResult
 import ru.revseev.otus.spring.quizapp.repo.QuestionRepo
 import ru.revseev.otus.spring.quizapp.service.IoProvider
+import ru.revseev.otus.spring.quizapp.service.MessageProvider
 import ru.revseev.otus.spring.quizapp.service.QuestionService
 import kotlin.system.exitProcess
 
 @Service
 class QuestionServiceImpl(
     private val questionRepo: QuestionRepo,
-    private val ioProvider: IoProvider
+    private val ioProvider: IoProvider,
+    private val messageProvider: MessageProvider
 ) : QuestionService {
 
     override fun viewAllQuestions(): QuizResult {
@@ -48,13 +50,13 @@ class QuestionServiceImpl(
         return try {
             answerList[input.toInt() - 1]
         } catch (e: Exception) {
-            ioProvider.writeOutput("Please, pick an answer and type it's index")//todo message source
+            ioProvider.writeOutput(messageProvider.getMessage("dialog.requireAnswer"))
             return interact(questionText, answerList)
         }
     }
 
     private fun goodbye() {
-        ioProvider.writeOutput("Goodbye!")//todo message source
+        ioProvider.writeOutput(messageProvider.getMessage("dialog.goodbye"))
         exitProcess(0)
     }
 }

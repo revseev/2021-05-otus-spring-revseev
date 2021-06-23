@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.5.10"
     kotlin("plugin.spring") version "1.5.10"
+    kotlin("kapt") version "1.5.10"
 }
 
 group = "ru.revseev"
@@ -19,6 +20,9 @@ dependencies {
     runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
+    implementation("net.jcip:jcip-annotations:1.0")
+//    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")

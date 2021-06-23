@@ -17,9 +17,12 @@ internal class ConsoleQuizResultViewerTest {
     @MockK
     lateinit var userQuizResult: UserQuizResult
 
+    @MockK
+    lateinit var messageProvider: MessageProvider
+
     @Test
     fun `should provide some output to IoProvider`() {
-        ConsoleQuizResultViewer(ioProvider).viewResult(userQuizResult)
+        ConsoleQuizResultViewer(ioProvider, messageProvider).viewResult(userQuizResult)
 
         verify(exactly = 1) {
             ioProvider.writeOutput(any())

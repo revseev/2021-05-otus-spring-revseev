@@ -19,8 +19,13 @@ class QuestionServiceTest {
 
     @MockK
     lateinit var questionRepo: QuestionRepo
+
     @MockK
     lateinit var ioProvider: IoProvider
+
+    @MockK
+    lateinit var messageProvider: MessageProvider
+
     @SpyK
     var question = Question("First letter in English alphabet?", listOf("A", "B", "C"))
 
@@ -29,7 +34,7 @@ class QuestionServiceTest {
     fun `should get all questions from repo`() {
         every { questionRepo.getAllQuestions() } returns listOf()
 
-        QuestionServiceImpl(questionRepo, ioProvider).viewAllQuestions()
+        QuestionServiceImpl(questionRepo, ioProvider, messageProvider).viewAllQuestions()
 
         verify { questionRepo.getAllQuestions() }
     }
@@ -39,7 +44,7 @@ class QuestionServiceTest {
         every { questionRepo.getAllQuestions() } returns listOf(question)
         every { ioProvider.readInput() } returns "1"
 
-        QuestionServiceImpl(questionRepo, ioProvider).viewAllQuestions()
+        QuestionServiceImpl(questionRepo, ioProvider, messageProvider).viewAllQuestions()
 
         verify(exactly = 1) {
             question.testAnswer(any())
@@ -52,7 +57,7 @@ class QuestionServiceTest {
         every { questionRepo.getAllQuestions() } returns listOf(question)
         every { ioProvider.readInput() } returns "1"
 
-        val failed = QuestionServiceImpl(questionRepo, ioProvider).viewAllQuestions()
+        val failed = QuestionServiceImpl(questionRepo, ioProvider, messageProvider).viewAllQuestions()
 
         expect {
             that(failed.answeredCorrectly).isEqualTo(0)
@@ -66,7 +71,7 @@ class QuestionServiceTest {
         every { questionRepo.getAllQuestions() } returns listOf(question)
         every { ioProvider.readInput() } returns "1"
 
-        val correct = QuestionServiceImpl(questionRepo, ioProvider).viewAllQuestions()
+        val correct = QuestionServiceImpl(questionRepo, ioProvider, messageProvider).viewAllQuestions()
 
         expect {
             that(correct.answeredCorrectly).isEqualTo(1)

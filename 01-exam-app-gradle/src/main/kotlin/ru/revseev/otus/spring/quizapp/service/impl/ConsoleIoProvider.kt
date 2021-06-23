@@ -21,6 +21,6 @@ class ConsoleIoProvider(
     }
 
     override fun readInput(): String {
-        return scanner.nextLine() ?: throw IllegalArgumentException("User input couldn't be null") //todo message source
+        return scanner.nextLine() ?: throw IllegalArgumentException("User input couldn't be null")
     }
 }

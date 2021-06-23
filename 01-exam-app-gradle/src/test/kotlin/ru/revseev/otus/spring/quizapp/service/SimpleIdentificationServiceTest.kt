@@ -17,11 +17,14 @@ class SimpleIdentificationServiceTest {
     @MockK
     lateinit var mockIo: IoProvider
 
+    @MockK
+    lateinit var messageProvider: MessageProvider
+
     @Test
     fun `given valid input should parse first and second name delimited by comma`() {
         every { mockIo.readInput() } returns ("Mark, Brown")
 
-        val user = SimpleIdentificationService(mockIo).identifyUser()
+        val user = SimpleIdentificationService(mockIo, messageProvider).identifyUser()
 
         expectThat(user).with(User::name) {
             isEqualTo("Mark")
@@ -34,7 +37,7 @@ class SimpleIdentificationServiceTest {
     fun `given invalid input should ask again`() {
         every { mockIo.readInput() }.returnsMany("", "J b", "-,,", "Mark, Brown")
 
-        SimpleIdentificationService(mockIo).identifyUser()
+        SimpleIdentificationService(mockIo, messageProvider).identifyUser()
 
         verify(exactly = 4) {
             mockIo.writeOutput(any())
