@@ -9,7 +9,29 @@ app:
 spring:
   messages:
     fallback-to-system-locale: false
+  profiles:
+    default: prod
+
+logging:
+  level:
+    root: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
 
 logging:
   level:
     root: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    ru: DEBUG
