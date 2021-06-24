@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
 import ru.revseev.otus.spring.quizapp.config.SourceFileProperties
 import ru.revseev.otus.spring.quizapp.service.QuestionFacade
 
@@ -12,6 +13,7 @@ import ru.revseev.otus.spring.quizapp.service.QuestionFacade
 @EnableConfigurationProperties(SourceFileProperties::class)
 class QuizApp {
 
+    @Profile("!test")
     @Bean
     fun startQuiz(questionFacade: QuestionFacade): ApplicationRunner {
         return ApplicationRunner {

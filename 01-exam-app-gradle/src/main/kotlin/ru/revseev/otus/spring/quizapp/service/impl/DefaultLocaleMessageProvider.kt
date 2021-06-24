@@ -6,7 +6,9 @@ import java.util.*
 
 class DefaultLocaleMessageProvider(private val ms: MessageSource) : MessageProvider {
 
-    private val defaultLocale = Locale("en")
+    companion object {
+        val DEFAULT_LOCALE = Locale("en")
+    }
 
-    override fun getMessage(key: String, vararg args: Any) = ms.getMessage(key, args, defaultLocale)
+    override fun getMessage(key: String, vararg args: Any) = ms.getMessage(key, args, DEFAULT_LOCALE)
 }
