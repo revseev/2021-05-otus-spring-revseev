@@ -4,7 +4,9 @@ import org.junit.jupiter.api.Test
 import ru.revseev.otus.spring.quizapp.service.impl.ConsoleIoProvider
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 internal class ConsoleIoProviderTest {
 

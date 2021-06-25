@@ -53,5 +53,4 @@ class LocaleAwareBeanConfig {
         localeService: LocaleService,
         baseQuestionFacade: QuestionFacade,
     ): QuestionFacade = LanguageSelectionQuestionFacade(localeService, baseQuestionFacade)
-    
 }
