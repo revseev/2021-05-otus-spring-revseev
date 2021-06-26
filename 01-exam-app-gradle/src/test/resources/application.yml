@@ -1,0 +1,18 @@
+app:
+  source-filename:
+    default: questions.csv
+    languages:
+      en: questions.csv
+      ru: questions_ru.csv
+  use-internalization: true
+
+spring:
+  messages:
+    fallback-to-system-locale: false
+  shell:
+    interactive:
+      enabled: false
+
+logging:
+  level:
+    ru: DEBUG

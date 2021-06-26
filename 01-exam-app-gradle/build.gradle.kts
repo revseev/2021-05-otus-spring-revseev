@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ru.revseev"
-version = "1.1"
+version = "1.2"
 java.sourceCompatibility = JavaVersion.VERSION_11
 repositories {
     mavenCentral()
@@ -19,6 +19,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.shell:spring-shell-starter:2.0.1.RELEASE")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
     implementation("net.jcip:jcip-annotations:1.0")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
@@ -32,6 +33,7 @@ dependencies {
     }
     testImplementation("io.strikt:strikt-core:0.31.0")
     testImplementation("io.mockk:mockk:1.11.0")
+    testImplementation("com.ninja-squad:springmockk:3.0.1")
 }
 
 tasks.test {
