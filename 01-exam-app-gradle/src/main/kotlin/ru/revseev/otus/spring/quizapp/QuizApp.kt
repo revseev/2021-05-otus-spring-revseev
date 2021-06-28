@@ -1,18 +1,27 @@
 package ru.revseev.otus.spring.quizapp
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
-import org.springframework.context.annotation.ComponentScan
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
+import org.springframework.boot.ApplicationRunner
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Profile
+import ru.revseev.otus.spring.quizapp.config.SourceFileProperties
 import ru.revseev.otus.spring.quizapp.service.QuestionFacade
 
-@Configuration
-@ComponentScan
-@PropertySource("classpath:application.properties")
-class QuizApp
+@SpringBootApplication
+@EnableConfigurationProperties(SourceFileProperties::class)
+class QuizApp {
 
-fun main() {
-    val context = AnnotationConfigApplicationContext(QuizApp::class.java)
-    val facade = context.getBean(QuestionFacade::class.java)
-    facade.runQuiz()
+    @Profile("!test")
+    @Bean
+    fun startQuiz(questionFacade: QuestionFacade): ApplicationRunner {
+        return ApplicationRunner {
+            questionFacade.runQuiz()
+        }
+    }
+}
+
+fun main(args: Array<String>) {
+    runApplication<QuizApp>(*args)
 }

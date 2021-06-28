@@ -1,8 +1,8 @@
 package ru.revseev.otus.spring.quizapp.service
 
-import ru.revseev.otus.spring.quizapp.domain.Result
+import ru.revseev.otus.spring.quizapp.domain.QuizResult
 
 interface QuestionService {
 
-    fun viewAllQuestions(): Result
+    fun viewAllQuestions(): QuizResult
 }

@@ -10,7 +10,7 @@ class QuestionTest {
 
     @DisplayName("дожен вернуть текст вопроса")
     @Test
-    fun shouldGiveQuestionText() {
+    fun `should give question text`() {
         val questionText = "How are you?"
         val question = Question(questionText)
 
@@ -19,7 +19,7 @@ class QuestionTest {
 
     @DisplayName("должен содержать предоставленные варианты ответа")
     @Test
-    fun shouldContainProvidedOptions() {
+    fun `should contain provided options`() {
         val options = listOf("24", "42", "I'm not sure")
         val question = Question("Answer to the Ultimate Question of Life, the Universe, and Everything?", options)
 
