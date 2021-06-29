@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS book_genre;
+DROP TABLE IF EXISTS book_genres;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS authors;
@@ -23,7 +23,7 @@ CREATE TABLE books
     FOREIGN KEY (author_id) REFERENCES authors (id)
 );
 
-CREATE TABLE book_genre
+CREATE TABLE book_genres
 (
     id       LONG NOT NULL PRIMARY KEY AUTO_INCREMENT,
     book_id  LONG NOT NULL,

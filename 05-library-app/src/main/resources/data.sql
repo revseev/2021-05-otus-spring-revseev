@@ -30,7 +30,7 @@ VALUES ('Do Androids Dream of Electric Sheep?',
        ('The Hobbit',
         SELECT id FROM authors WHERE name = 'J. R. R. Tolkien')
 ;
-INSERT INTO book_genre (book_id, genre_id)
+INSERT INTO book_genres (book_id, genre_id)
 VALUES (SELECT id FROM books WHERE title = 'The Hobbit',
         SELECT id FROM genres WHERE name = 'Adventure'),
        (SELECT id FROM books WHERE title = 'The Hobbit',

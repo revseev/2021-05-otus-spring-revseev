@@ -1,3 +1,3 @@
 package ru.revseev.library.domain
 
-data class Book(val id: Long? = null, val title: String, val author: Author, val genres: ArrayList<Genre>)
+data class Book(val id: Long? = null, val title: String, val author: Author, val genres: List<Genre>)
