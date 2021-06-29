@@ -9,10 +9,10 @@ interface GenreDao {
 
     fun getById(id: Long): Genre
 
-    fun add(genre: Genre): Genre
+    fun add(genre: Genre): Boolean
 
-    fun update(genre: Genre): Genre
+    fun update(genre: Genre): Boolean
 
-    fun deleteById(id: Long)
+    fun deleteById(id: Long): Boolean
 
 }

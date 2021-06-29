@@ -1,4 +1,4 @@
-INSERT INTO genre (NAME)
+INSERT INTO genres (NAME)
 values ('Action'),
        ('Adventure'),
        ('Biography'),
@@ -13,7 +13,7 @@ values ('Action'),
        ('Science Fiction'),
        ('Thriller')
 ;
-INSERT INTO author (NAME)
+INSERT INTO authors (NAME)
 values ('Philip K. Dick'),
        ('Antoine de Saint-Exupéry'),
        ('J. R. R. Tolkien'),
@@ -22,27 +22,27 @@ values ('Philip K. Dick'),
        ('Umberto Eco'),
        ('H. P. Lovecraft')
 ;
-INSERT INTO book(name, author_id)
+INSERT INTO books(name, author_id)
 VALUES ('Do Androids Dream of Electric Sheep?',
-        SELECT id FROM author WHERE name = 'Philip K. Dick'),
+        SELECT id FROM authors WHERE name = 'Philip K. Dick'),
        ('The Little Prince',
-        SELECT id FROM author WHERE name = 'Antoine de Saint-Exupéry'),
+        SELECT id FROM authors WHERE name = 'Antoine de Saint-Exupéry'),
        ('The Hobbit',
-        SELECT id FROM author WHERE name = 'J. R. R. Tolkien')
+        SELECT id FROM authors WHERE name = 'J. R. R. Tolkien')
 ;
 INSERT INTO book_genre (book_id, genre_id)
-VALUES (SELECT id FROM book WHERE name = 'The Hobbit',
-        SELECT id FROM genre WHERE name = 'Adventure'),
-       (SELECT id FROM book WHERE name = 'The Hobbit',
-        SELECT id FROM genre WHERE name = 'Fiction'),
-       (SELECT id FROM book WHERE name = 'The Hobbit',
-        SELECT id FROM genre WHERE name = 'Fantasy'),
-       (SELECT id FROM book WHERE name = 'The Little Prince',
-        SELECT id FROM genre WHERE name = 'Fantasy'),
-       (SELECT id FROM book WHERE name = 'The Little Prince',
-        SELECT id FROM genre WHERE name = 'Novel'),
-       (SELECT id FROM book WHERE name = 'Do Androids Dream of Electric Sheep?',
-        SELECT id FROM genre WHERE name = 'Science Fiction'),
-       (SELECT id FROM book WHERE name = 'Do Androids Dream of Electric Sheep?',
-        SELECT id FROM genre WHERE name = 'Novel')
+VALUES (SELECT id FROM books WHERE name = 'The Hobbit',
+        SELECT id FROM genres WHERE name = 'Adventure'),
+       (SELECT id FROM books WHERE name = 'The Hobbit',
+        SELECT id FROM genres WHERE name = 'Fiction'),
+       (SELECT id FROM books WHERE name = 'The Hobbit',
+        SELECT id FROM genres WHERE name = 'Fantasy'),
+       (SELECT id FROM books WHERE name = 'The Little Prince',
+        SELECT id FROM genres WHERE name = 'Fantasy'),
+       (SELECT id FROM books WHERE name = 'The Little Prince',
+        SELECT id FROM genres WHERE name = 'Novel'),
+       (SELECT id FROM books WHERE name = 'Do Androids Dream of Electric Sheep?',
+        SELECT id FROM genres WHERE name = 'Science Fiction'),
+       (SELECT id FROM books WHERE name = 'Do Androids Dream of Electric Sheep?',
+        SELECT id FROM genres WHERE name = 'Novel')
 ;

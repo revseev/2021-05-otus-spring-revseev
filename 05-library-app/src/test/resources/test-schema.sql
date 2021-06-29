@@ -1,26 +1,26 @@
 DROP TABLE IF EXISTS book_genre;
-DROP TABLE IF EXISTS genre;
-DROP TABLE IF EXISTS book;
-DROP TABLE IF EXISTS author;
+DROP TABLE IF EXISTS genres;
+DROP TABLE IF EXISTS books;
+DROP TABLE IF EXISTS authors;
 
-CREATE TABLE genre
+CREATE TABLE genres
 (
     id   LONG         NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE author
+CREATE TABLE authors
 (
     id   LONG         NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE book
+CREATE TABLE books
 (
     id        LONG         NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name      VARCHAR(255) NOT NULL,
     author_id LONG         NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES author (id)
+    FOREIGN KEY (author_id) REFERENCES authors (id)
 );
 
 CREATE TABLE book_genre
@@ -28,6 +28,6 @@ CREATE TABLE book_genre
     id       LONG NOT NULL PRIMARY KEY AUTO_INCREMENT,
     book_id  LONG NOT NULL,
     genre_id LONG NOT NULL,
-    FOREIGN KEY (book_id) REFERENCES book (id),
-    FOREIGN KEY (genre_id) REFERENCES genre (id)
+    FOREIGN KEY (book_id) REFERENCES books (id),
+    FOREIGN KEY (genre_id) REFERENCES genres (id)
 );

@@ -7,12 +7,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.context.annotation.Import
 import ru.revseev.library.dao.GenreDao
 import ru.revseev.library.domain.Genre
-import ru.revseev.library.exception.DataNotFoundException
-import strikt.api.expectCatching
+import ru.revseev.library.exception.DaoException
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.containsExactlyInAnyOrder
 import strikt.assertions.isEqualTo
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 
 @JdbcTest
 @Import(GenreDaoImpl::class)
@@ -20,9 +21,8 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
 
 
     @Test
-    fun `getAll() should return all expected genres`() {
-        val expected = listOf(Genre(1, "Genre1"), Genre(2, "Genre2"))
-
+    fun `getAll() should return all expected Genres`() {
+        val expected = listOf(Genre(1, "Genre1"), Genre(2, "Genre2"), Genre(3, "Genre3"))
         val actual = dao.getAll()
 
         expectThat(actual).containsExactlyInAnyOrder(expected)
@@ -32,32 +32,78 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
     inner class GetById {
 
         @Test
-        fun `should return genre when getting by existing id`() {
+        fun `should return Genre when getting by existing id`() {
             val expected = Genre(1, "Genre1")
-
             val actual = dao.getById(1)
 
             expectThat(actual).isEqualTo(expected)
         }
 
         @Test
-        fun `should throw exception when genre not exist`() {
-            val nonExistentId = 3L
+        fun `should throw exception when Genre not exist`() {
+            val nonExistentId = 4L
 
-            expectThrows<DataNotFoundException> { dao.getById(nonExistentId) }
+            expectThrows<DaoException> { dao.getById(nonExistentId) }
         }
     }
 
-    @Test
-    fun add() {
+    @Nested
+    inner class Add {
+
+        @Test
+        fun `should add new Genre`() {
+            val new = Genre(name = "Genre4")
+            val isInserted = dao.add(new)
+
+            expectThat(isInserted).isTrue()
+        }
+
+        @Test
+        fun `should not add existing Genre`() {
+            val new = Genre(name = "Genre1")
+            val isInserted = dao.add(new)
+
+            expectThat(isInserted).isFalse()
+        }
     }
 
-    @Test
-    fun update() {
+    @Nested
+    inner class Update {
+
+        @Test
+        fun `should update existing Genre`() {
+            val existing = Genre(1, "Genre0")
+            val isUpdated = dao.update(existing)
+
+            expectThat(isUpdated).isTrue()
+        }
+
+        @Test
+        fun `should not update non-existing Genre`() {
+            val nonExisting = Genre(0, "Genre0")
+            val isUpdated = dao.update(nonExisting)
+
+            expectThat(isUpdated).isFalse()
+        }
     }
 
-    @Test
-    fun deleteById() {
-    }
+    @Nested
+    inner class DeleteById {
 
+        @Test
+        fun `should delete existing Genre`() {
+            val existingId = 3L
+            val isDeleted = dao.deleteById(existingId)
+
+            expectThat(isDeleted).isTrue()
+        }
+
+        @Test
+        fun `should delete non-existing Genre`() {
+            val nonExisingId = 0L
+            val isDeleted = dao.deleteById(nonExisingId)
+
+            expectThat(isDeleted).isFalse()
+        }
+    }
 }

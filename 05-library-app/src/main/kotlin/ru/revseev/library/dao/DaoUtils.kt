@@ -1,13 +1,11 @@
 package ru.revseev.library.dao
 
-import org.springframework.dao.EmptyResultDataAccessException
-import ru.revseev.library.exception.DataNotFoundException
+import ru.revseev.library.exception.DaoException
 
-inline fun <reified T> getNonNullable(errorMessage: String, action: () -> T?): T {
-    val t: T? = try {
-        action.invoke()
-    } catch (ex: EmptyResultDataAccessException) {
-        throw DataNotFoundException(errorMessage, ex)
+inline fun <reified T> wrapExceptions(errorMessage: String, action: () -> T?): T {
+    return try {
+        action.invoke()!!
+    } catch (ex: Exception) {
+        throw DaoException(errorMessage, ex)
     }
-    return t ?: throw DataNotFoundException(errorMessage)
 }
