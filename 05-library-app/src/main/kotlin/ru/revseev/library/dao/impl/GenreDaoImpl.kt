@@ -1,16 +1,30 @@
 package ru.revseev.library.dao.impl
 
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.stereotype.Repository
 import ru.revseev.library.dao.GenreDao
 import ru.revseev.library.domain.Genre
+import ru.revseev.library.exception.DataNotFoundException
 
-class GenreDaoImpl : GenreDao {
+@Repository
+class GenreDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : GenreDao {
 
     override fun getAll(): List<Genre> {
-        TODO("Not yet implemented")
+        val sql = "SELECT id, name FROM genre"
+
+        return jdbc.query(sql) { rs, _ ->
+            Genre(rs.getLong("id"), rs.getString("name"))
+        }
     }
 
     override fun getById(id: Long): Genre {
-        TODO("Not yet implemented")
+        val sql = "SELECT id, name FROM genre WHERE id =:id"
+
+        return getNonNullableData("Genre with id = $id was not found") {
+            jdbc.queryForObject(sql, MapSqlParameterSource("id", id), Genre::class.java)
+        }
     }
 
     override fun add(genre: Genre): Genre {
@@ -24,4 +38,13 @@ class GenreDaoImpl : GenreDao {
     override fun deleteById(id: Long) {
         TODO("Not yet implemented")
     }
+}
+
+inline fun <reified T> getNonNullableData(errorMessage: String, action: () -> T?): T {
+    val t: T? = try {
+        action.invoke()
+    } catch (ex: EmptyResultDataAccessException) {
+        throw DataNotFoundException(errorMessage, ex)
+    }
+    return t ?: throw DataNotFoundException(errorMessage)
 }
