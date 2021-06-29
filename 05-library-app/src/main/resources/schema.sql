@@ -18,7 +18,7 @@ CREATE TABLE authors
 CREATE TABLE books
 (
     id        LONG         NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name      VARCHAR(255) NOT NULL,
+    title      VARCHAR(255) NOT NULL,
     author_id LONG         NOT NULL,
     FOREIGN KEY (author_id) REFERENCES authors (id)
 );

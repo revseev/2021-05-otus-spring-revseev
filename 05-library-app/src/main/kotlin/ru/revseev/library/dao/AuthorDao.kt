@@ -9,10 +9,10 @@ interface AuthorDao {
 
     fun getById(id: Long): Author
 
-    fun add(author: Author): Author
+    fun add(author: Author): Boolean
 
-    fun update(author: Author): Author
+    fun update(author: Author): Boolean
 
-    fun deleteById(id: Long)
+    fun deleteById(id: Long): Boolean
 
 }

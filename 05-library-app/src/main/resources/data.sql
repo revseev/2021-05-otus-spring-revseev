@@ -22,7 +22,7 @@ values ('Philip K. Dick'),
        ('Umberto Eco'),
        ('H. P. Lovecraft')
 ;
-INSERT INTO books(name, author_id)
+INSERT INTO books(title, author_id)
 VALUES ('Do Androids Dream of Electric Sheep?',
         SELECT id FROM authors WHERE name = 'Philip K. Dick'),
        ('The Little Prince',
@@ -31,18 +31,18 @@ VALUES ('Do Androids Dream of Electric Sheep?',
         SELECT id FROM authors WHERE name = 'J. R. R. Tolkien')
 ;
 INSERT INTO book_genre (book_id, genre_id)
-VALUES (SELECT id FROM books WHERE name = 'The Hobbit',
+VALUES (SELECT id FROM books WHERE title = 'The Hobbit',
         SELECT id FROM genres WHERE name = 'Adventure'),
-       (SELECT id FROM books WHERE name = 'The Hobbit',
+       (SELECT id FROM books WHERE title = 'The Hobbit',
         SELECT id FROM genres WHERE name = 'Fiction'),
-       (SELECT id FROM books WHERE name = 'The Hobbit',
+       (SELECT id FROM books WHERE title = 'The Hobbit',
         SELECT id FROM genres WHERE name = 'Fantasy'),
-       (SELECT id FROM books WHERE name = 'The Little Prince',
+       (SELECT id FROM books WHERE title = 'The Little Prince',
         SELECT id FROM genres WHERE name = 'Fantasy'),
-       (SELECT id FROM books WHERE name = 'The Little Prince',
+       (SELECT id FROM books WHERE title = 'The Little Prince',
         SELECT id FROM genres WHERE name = 'Novel'),
-       (SELECT id FROM books WHERE name = 'Do Androids Dream of Electric Sheep?',
+       (SELECT id FROM books WHERE title = 'Do Androids Dream of Electric Sheep?',
         SELECT id FROM genres WHERE name = 'Science Fiction'),
-       (SELECT id FROM books WHERE name = 'Do Androids Dream of Electric Sheep?',
+       (SELECT id FROM books WHERE title = 'Do Androids Dream of Electric Sheep?',
         SELECT id FROM genres WHERE name = 'Novel')
 ;

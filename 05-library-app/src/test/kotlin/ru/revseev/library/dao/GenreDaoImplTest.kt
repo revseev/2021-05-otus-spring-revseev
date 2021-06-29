@@ -1,11 +1,11 @@
-package ru.revseev.library.dao.impl
+package ru.revseev.library.dao
 
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.context.annotation.Import
-import ru.revseev.library.dao.GenreDao
+import ru.revseev.library.dao.impl.GenreDaoImpl
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.exception.DaoException
 import strikt.api.expectThat
@@ -18,7 +18,6 @@ import strikt.assertions.isTrue
 @JdbcTest
 @Import(GenreDaoImpl::class)
 internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
-
 
     @Test
     fun `getAll() should return all expected Genres`() {
