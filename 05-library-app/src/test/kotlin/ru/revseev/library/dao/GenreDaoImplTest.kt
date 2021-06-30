@@ -10,10 +10,7 @@ import ru.revseev.library.domain.Genre
 import ru.revseev.library.exception.DaoException
 import strikt.api.expectThat
 import strikt.api.expectThrows
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.isEqualTo
-import strikt.assertions.isFalse
-import strikt.assertions.isTrue
+import strikt.assertions.*
 
 @JdbcTest
 @Import(GenreDaoImpl::class)
@@ -50,19 +47,20 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
     inner class Add {
 
         @Test
-        fun `should add new Genre`() {
-            val new = Genre(name = "Genre4")
-            val isInserted = dao.add(new)
+        fun `should add new Genre, return new id`() {
+            val new = Genre(name = "Genre3")
+            val newId = dao.add(new)
 
-            expectThat(isInserted).isTrue()
+            expectThat(newId).isGreaterThan(2L)
         }
 
         @Test
-        fun `should not add existing Genre`() {
-            val new = Genre(name = "Genre1")
-            val isInserted = dao.add(new)
+        fun `should not add existing Genre, return existing id`() {
+            val existingId = 1L
+            val existingGenre = Genre(existingId, "Genre1")
+            val newId = dao.add(existingGenre)
 
-            expectThat(isInserted).isFalse()
+            expectThat(newId).isEqualTo(existingId)
         }
     }
 

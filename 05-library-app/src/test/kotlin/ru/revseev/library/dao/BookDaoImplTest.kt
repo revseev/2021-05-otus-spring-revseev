@@ -5,16 +5,22 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.context.annotation.Import
+import ru.revseev.library.dao.impl.AuthorDaoImpl
 import ru.revseev.library.dao.impl.BookDaoImpl
+import ru.revseev.library.dao.impl.GenreDaoImpl
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Genre
+import ru.revseev.library.exception.DaoException
 import strikt.api.expectThat
+import strikt.api.expectThrows
 import strikt.assertions.containsExactlyInAnyOrder
 import strikt.assertions.isEqualTo
+import strikt.assertions.isGreaterThan
+import strikt.assertions.isTrue
 
 @JdbcTest
-@Import(BookDaoImpl::class)
+@Import(BookDaoImpl::class, AuthorDaoImpl::class, GenreDaoImpl::class)
 internal class BookDaoImplTest(@Autowired val dao: BookDao) {
 
     private val genre1 = Genre(1, "Genre1")
@@ -45,44 +51,45 @@ internal class BookDaoImplTest(@Autowired val dao: BookDao) {
             expectThat(actual).isEqualTo(expected)
         }
 
-        /* @Test
-         fun `should throw exception when Book not exist`() {
-             val nonExistentId = 4L
+        @Test
+        fun `should throw exception when Book not exist`() {
+            val nonExistentId = 3L
 
-             expectThrows<DaoException> { dao.getById(nonExistentId) }
-         }*/
+            expectThrows<DaoException> { dao.getById(nonExistentId) }
+        }
     }
 
     @Nested
     inner class Add {
 
-        /* @Test
-         fun `should add new Book`() {
-             val new = Book(name = "Book4")
-             val isInserted = dao.add(new)
+        @Test
+        fun `should add new Book, return new id`() {
+            val newAuthor = Author(name = "Author3")
+            val newBook = Book(title = "Book3", author = newAuthor, genres = mutableListOf(genre1))
+            val newId = dao.add(newBook)
 
-             expectThat(isInserted).isTrue()
-         }*/
+            expectThat(newId).isGreaterThan(2L)
+        }
 
-        /*  @Test
-          fun `should not add existing Book`() {
-              val new = Book(name = "Book1")
-              val isInserted = dao.add(new)
+          @Test
+          fun `should not add existing Book, return existing id`() {
+              val existing = book1
+              val newId = dao.add(existing)
 
-              expectThat(isInserted).isFalse()
-          }*/
+              expectThat(newId).isEqualTo(book1.id)
+          }
     }
 
     @Nested
     inner class Update {
-/*
+
         @Test
         fun `should update existing Book`() {
-            val existing = Book(1, "Book0")
+            val existing = Book(1, "Book0",)
             val isUpdated = dao.update(existing)
 
             expectThat(isUpdated).isTrue()
-        }*/
+        }
 
         /* @Test
          fun `should not update non-existing Book`() {

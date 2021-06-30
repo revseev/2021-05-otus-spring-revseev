@@ -4,6 +4,7 @@ import org.springframework.dao.DuplicateKeyException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Repository
 import ru.revseev.library.dao.GenreDao
 import ru.revseev.library.dao.wrapExceptions
@@ -31,16 +32,17 @@ class GenreDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : GenreDao {
         }
     }
 
-    override fun add(genre: Genre): Boolean {
+    override fun add(genre: Genre): Long {
+        if (genre.id != null) {
+            return genre.id
+        }
         val params = MapSqlParameterSource("name", genre.name)
+        val keyHolder = GeneratedKeyHolder()
         val sql = "INSERT INTO genres(name) VALUES (:name)"
 
         return wrapExceptions("Error adding Genre: {id = ${genre.id}, name = ${genre.name}}") {
-            try {
-                jdbc.update(sql, params) > 0
-            } catch (alreadyExists: DuplicateKeyException) {
-                false
-            }
+            jdbc.update(sql, params, keyHolder)
+            keyHolder.key as Long
         }
     }
 

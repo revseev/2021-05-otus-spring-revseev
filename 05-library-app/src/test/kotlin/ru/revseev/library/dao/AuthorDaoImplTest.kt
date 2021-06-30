@@ -10,14 +10,11 @@ import ru.revseev.library.domain.Author
 import ru.revseev.library.exception.DaoException
 import strikt.api.expectThat
 import strikt.api.expectThrows
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.isEqualTo
-import strikt.assertions.isFalse
-import strikt.assertions.isTrue
+import strikt.assertions.*
 
 @JdbcTest
 @Import(AuthorDaoImpl::class)
-internal class AuthorDaoImplTest (@Autowired val dao: AuthorDao){
+internal class AuthorDaoImplTest(@Autowired val dao: AuthorDao) {
 
     @Test
     fun `getAll() should return all expected Authors`() {
@@ -50,19 +47,20 @@ internal class AuthorDaoImplTest (@Autowired val dao: AuthorDao){
     inner class Add {
 
         @Test
-        fun `should add new Author`() {
+        fun `should add new Author, return new id`() {
             val new = Author(name = "Author4")
-            val isInserted = dao.add(new)
+            val newId = dao.add(new)
 
-            expectThat(isInserted).isTrue()
+            expectThat(newId).isGreaterThan(2L)
         }
 
         @Test
-        fun `should not add existing Author`() {
-            val new = Author(name = "Author1")
-            val isInserted = dao.add(new)
+        fun `should not add existing Author, return existing id`() {
+            val existingId = 1L
+            val existingAuthor = Author(existingId, "Author1")
+            val actualId = dao.add(existingAuthor)
 
-            expectThat(isInserted).isFalse()
+            expectThat(actualId).isEqualTo(existingId)
         }
     }
 

@@ -3,17 +3,20 @@ package ru.revseev.library.dao.impl
 import org.springframework.jdbc.core.ResultSetExtractor
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Repository
-import ru.revseev.library.dao.BookDao
-import ru.revseev.library.dao.nullableSingleResult
-import ru.revseev.library.dao.wrapExceptions
+import ru.revseev.library.dao.*
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Genre
 import java.sql.ResultSet
 
 @Repository
-class BookDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : BookDao {
+class BookDaoImpl(
+    private val jdbc: NamedParameterJdbcTemplate,
+    private val authorDao: AuthorDao,
+    private val genreDao: GenreDao
+) : BookDao {
 
     override fun getAll(): List<Book> {
         val sql = """
@@ -55,8 +58,26 @@ class BookDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : BookDao {
         }
     }
 
-    override fun add(book: Book): Boolean {
-        TODO("Not yet implemented")
+    override fun add(book: Book): Long {
+        val bookId = book.id
+        if (bookId != null) {
+            return bookId
+        }
+        val title = book.title
+        val authorId = authorDao.add(book.author)
+        val genreIds: List<Long> = book.genres.map { genreDao.add(it) }
+
+        val params = MapSqlParameterSource("title", title)
+            .addValue("author_id", authorId)
+        val keyHolder = GeneratedKeyHolder()
+        val bookSql = "INSERT INTO books(title, author_id) VALUES (:title, :author_id)"
+
+        return wrapExceptions("Error adding Book: {id = $bookId, title = $title, authorId = $authorId") {
+            jdbc.update(bookSql, params, keyHolder)
+            val newBookId = keyHolder.key as Long
+            addBookGenresRelation(newBookId, genreIds)
+            return newBookId
+        }
     }
 
     override fun update(book: Book): Boolean {
@@ -89,6 +110,16 @@ class BookDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : BookDao {
                 book.genres.add(genre)
             }
             return@ResultSetExtractor bookMap.values.toList()
+        }
+    }
+
+    private fun addBookGenresRelation(bookId: Long, genreIds: Collection<Long>) {
+        val sql = "INSERT INTO book_genres (book_id, genre_id) VALUES (:bookId, :genreId)"
+        val params = mutableMapOf("bookId" to bookId)
+
+        for (genreId in genreIds) {
+            params["genreId"] = genreId
+            jdbc.update(sql, params)
         }
     }
 }

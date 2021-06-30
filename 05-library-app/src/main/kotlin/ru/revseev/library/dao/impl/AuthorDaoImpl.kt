@@ -4,6 +4,7 @@ import org.springframework.dao.DuplicateKeyException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.support.GeneratedKeyHolder
 import org.springframework.stereotype.Repository
 import ru.revseev.library.dao.AuthorDao
 import ru.revseev.library.dao.wrapExceptions
@@ -31,16 +32,17 @@ class AuthorDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : AuthorDao {
         }
     }
 
-    override fun add(author: Author): Boolean {
+    override fun add(author: Author): Long {
+        if (author.id != null) {
+            return author.id
+        }
         val params = MapSqlParameterSource("name", author.name)
+        val keyHolder = GeneratedKeyHolder()
         val sql = "INSERT INTO authors(name) VALUES (:name)"
 
         return wrapExceptions("Error adding Author: {id = ${author.id}, name = ${author.name}}") {
-            try {
-                jdbc.update(sql, params) > 0
-            } catch (alreadyExists: DuplicateKeyException) {
-                false
-            }
+            jdbc.update(sql, params, keyHolder)
+            keyHolder.key as Long
         }
     }
 
