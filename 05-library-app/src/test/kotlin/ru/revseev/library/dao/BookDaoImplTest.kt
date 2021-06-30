@@ -12,12 +12,10 @@ import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.exception.DaoException
+import strikt.api.expect
 import strikt.api.expectThat
 import strikt.api.expectThrows
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.isEqualTo
-import strikt.assertions.isGreaterThan
-import strikt.assertions.isTrue
+import strikt.assertions.*
 
 @JdbcTest
 @Import(BookDaoImpl::class, AuthorDaoImpl::class, GenreDaoImpl::class)
@@ -71,33 +69,36 @@ internal class BookDaoImplTest(@Autowired val dao: BookDao) {
             expectThat(newId).isGreaterThan(2L)
         }
 
-          @Test
-          fun `should not add existing Book, return existing id`() {
-              val existing = book1
-              val newId = dao.add(existing)
+        @Test
+        fun `should not add existing Book, return existing id`() {
+            val existing = book1
+            val newId = dao.add(existing)
 
-              expectThat(newId).isEqualTo(book1.id)
-          }
+            expectThat(newId).isEqualTo(book1.id)
+        }
     }
 
     @Nested
     inner class Update {
 
         @Test
-        fun `should update existing Book`() {
-            val existing = Book(1, "Book0",)
+        fun `should update existing Book when changes it's mutable state`() {
+            val existing = Book(1, "Book1", author1, mutableListOf(genre1))
             val isUpdated = dao.update(existing)
 
-            expectThat(isUpdated).isTrue()
+            expect {
+                that(isUpdated).isTrue()
+                that(dao.getById(1)).isEqualTo(existing)
+            }
         }
 
-        /* @Test
-         fun `should not update non-existing Book`() {
-             val nonExisting = Book(0, "Book0")
-             val isUpdated = dao.update(nonExisting)
+        @Test
+        fun `should not update non-existing Book`() {
+            val nonExisting = Book(null, "Book0", author1, mutableListOf(genre2))
+            val isUpdated = dao.update(nonExisting)
 
-             expectThat(isUpdated).isFalse()
-         }*/
+            expectThat(isUpdated).isFalse()
+        }
     }
 
     @Nested

@@ -72,7 +72,7 @@ class BookDaoImpl(
         val keyHolder = GeneratedKeyHolder()
         val bookSql = "INSERT INTO books(title, author_id) VALUES (:title, :author_id)"
 
-        return wrapExceptions("Error adding Book: {id = $bookId, title = $title, authorId = $authorId") {
+        return wrapExceptions("Error adding Book: {id = $bookId, title = $title, authorId = $authorId}") {
             jdbc.update(bookSql, params, keyHolder)
             val newBookId = keyHolder.key as Long
             addBookGenresRelation(newBookId, genreIds)
@@ -80,8 +80,18 @@ class BookDaoImpl(
         }
     }
 
+    /** The only mutable state of a Book is it's Genres */
     override fun update(book: Book): Boolean {
-        TODO("Not yet implemented")
+        val bookId = book.id ?: return false
+
+        val genreIds: List<Long> = book.genres.map { genreDao.add(it) }
+
+        val deleteSql = "DELETE FROM book_genres where book_id = :bookId"
+        return wrapExceptions("Error updating Book: {id = $bookId, title = ${book.title}, authorId = ${book.author.id}}") {
+            jdbc.update(deleteSql, MapSqlParameterSource("bookId", bookId))
+            addBookGenresRelation(bookId, genreIds)
+            true
+        }
     }
 
     override fun deleteById(id: Long): Boolean {
@@ -113,13 +123,15 @@ class BookDaoImpl(
         }
     }
 
-    private fun addBookGenresRelation(bookId: Long, genreIds: Collection<Long>) {
+    private fun addBookGenresRelation(bookId: Long, genreIds: Collection<Long>): Int {
         val sql = "INSERT INTO book_genres (book_id, genre_id) VALUES (:bookId, :genreId)"
         val params = mutableMapOf("bookId" to bookId)
 
+        var changed = 0
         for (genreId in genreIds) {
             params["genreId"] = genreId
-            jdbc.update(sql, params)
+            changed += jdbc.update(sql, params)
         }
+        return changed
     }
 }
