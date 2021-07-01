@@ -95,7 +95,15 @@ class BookDaoImpl(
     }
 
     override fun deleteById(id: Long): Boolean {
-        TODO("Not yet implemented")
+        val sql = """
+            DELETE FROM book_genres WHERE book_id = :id;
+            DELETE FROM books WHERE id = :id
+            """.trimIndent()
+
+        return wrapExceptions("Error deleting Book by id = $id") {
+            jdbc.update(sql, MapSqlParameterSource("id", id)) > 0
+        }
+
     }
 
     private fun bookListExtractor(): ResultSetExtractor<List<Book>> {
