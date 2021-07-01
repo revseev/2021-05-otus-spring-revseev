@@ -6,7 +6,7 @@ import strikt.api.expectCatching
 import strikt.assertions.isSuccess
 
 @SpringBootTest
-class LibraryAppApplicationTests {
+class LibraryAppContextTest {
 
 	@Test
 	fun `should load context without errors`() {

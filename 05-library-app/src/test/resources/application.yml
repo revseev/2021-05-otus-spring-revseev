@@ -13,6 +13,9 @@ spring:
   output:
     ansi:
       enabled: always
+  shell:
+    interactive:
+      enabled: false
 
 logging:
     level:

@@ -33,7 +33,7 @@ class BookDaoImpl(
         """.trimIndent()
 
         return wrapExceptions("Error getting all Books") {
-            jdbc.query(sql, bookListExtractor())
+            jdbc.query(sql, BookListExtractor)
         }
     }
 
@@ -54,7 +54,7 @@ class BookDaoImpl(
         """.trimIndent()
 
         return wrapExceptions("Error getting Book with id = $id") {
-            jdbc.query(sql, params, bookListExtractor()).nullableSingleResult()
+            jdbc.query(sql, params, BookListExtractor).nullableSingleResult()
         }
     }
 
@@ -106,8 +106,8 @@ class BookDaoImpl(
 
     }
 
-    private fun bookListExtractor(): ResultSetExtractor<List<Book>> {
-        return ResultSetExtractor { rs: ResultSet ->
+    private object BookListExtractor : ResultSetExtractor<List<Book>> {
+        override fun extractData(rs: ResultSet): List<Book> {
             val bookMap = mutableMapOf<Long, Book>()
             val genreMap = mutableMapOf<Long, Genre>()
 
@@ -127,19 +127,17 @@ class BookDaoImpl(
                 }
                 book.genres.add(genre)
             }
-            return@ResultSetExtractor bookMap.values.toList()
+            return bookMap.values.toList()
         }
     }
 
-    private fun addBookGenresRelation(bookId: Long, genreIds: Collection<Long>): Int {
+    private fun addBookGenresRelation(bookId: Long, genreIds: Collection<Long>) {
         val sql = "INSERT INTO book_genres (book_id, genre_id) VALUES (:bookId, :genreId)"
         val params = mutableMapOf("bookId" to bookId)
 
-        var changed = 0
         for (genreId in genreIds) {
             params["genreId"] = genreId
-            changed += jdbc.update(sql, params)
+            jdbc.update(sql, params)
         }
-        return changed
     }
 }
