@@ -1,4 +1,3 @@
-
 spring:
   datasource:
     url: jdbc:h2:mem:test
@@ -18,5 +17,5 @@ spring:
       enabled: false
 
 logging:
-    level:
-      ru: DEBUG
+  level:
+    ru: DEBUG

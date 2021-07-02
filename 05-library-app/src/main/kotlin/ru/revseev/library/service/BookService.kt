@@ -13,5 +13,4 @@ interface BookService {
     fun update(book: Book): Boolean
 
     fun deleteById(id: Long): Boolean
-
 }

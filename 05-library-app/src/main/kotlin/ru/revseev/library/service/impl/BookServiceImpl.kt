@@ -8,25 +8,13 @@ import ru.revseev.library.service.BookService
 @Service
 class BookServiceImpl(private val bookDao: BookDao) : BookService {
 
-    override fun getAll(): List<Book> {
-        return bookDao.getAll()
-    }
+    override fun getAll(): List<Book> = bookDao.getAll()
 
-    override fun getById(id: Long): Book {
-        return bookDao.getById(id)
-    }
+    override fun getById(id: Long): Book = bookDao.getById(id)
 
-    override fun add(book: Book): Long {
-        return bookDao.add(book)
+    override fun add(book: Book): Long = bookDao.add(book)
 
-    }
+    override fun update(book: Book): Boolean = bookDao.update(book)
 
-    override fun update(book: Book): Boolean {
-        return bookDao.update(book)
-
-    }
-
-    override fun deleteById(id: Long): Boolean {
-        return bookDao.deleteById(id)
-    }
+    override fun deleteById(id: Long): Boolean = bookDao.deleteById(id)
 }

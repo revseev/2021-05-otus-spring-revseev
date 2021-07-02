@@ -8,8 +8,8 @@ import strikt.assertions.isSuccess
 @SpringBootTest
 class LibraryAppContextTest {
 
-	@Test
-	fun `should load context without errors`() {
-		expectCatching { }.isSuccess()
-	}
+    @Test
+    fun `should load context without errors`() {
+        expectCatching { }.isSuccess()
+    }
 }

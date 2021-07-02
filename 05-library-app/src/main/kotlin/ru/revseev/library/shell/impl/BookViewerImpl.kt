@@ -1,7 +1,8 @@
-package ru.revseev.library.shell
+package ru.revseev.library.shell.impl
 
 import org.springframework.stereotype.Service
 import ru.revseev.library.domain.Book
+import ru.revseev.library.shell.BookViewer
 
 @Service
 class BookViewerImpl : BookViewer {

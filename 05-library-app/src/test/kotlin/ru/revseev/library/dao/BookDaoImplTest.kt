@@ -112,13 +112,13 @@ internal class BookDaoImplTest(@Autowired val dao: BookDao) {
             expectThat(isDeleted).isTrue()
         }
 
-         @Test
-         fun `should delete non-existing Book`() {
-             val nonExistingId = 0L
-             val isDeleted = dao.deleteById(nonExistingId)
+        @Test
+        fun `should delete non-existing Book`() {
+            val nonExistingId = 0L
+            val isDeleted = dao.deleteById(nonExistingId)
 
-             expectThat(isDeleted).isFalse()
-         }
+            expectThat(isDeleted).isFalse()
+        }
     }
 }
 
