@@ -1,6 +1,5 @@
 package ru.revseev.library.dao.impl
 
-import org.springframework.dao.DuplicateKeyException
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate

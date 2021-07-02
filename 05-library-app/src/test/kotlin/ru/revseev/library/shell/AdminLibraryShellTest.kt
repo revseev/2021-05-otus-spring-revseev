@@ -30,8 +30,9 @@ internal class AdminLibraryShellTest {
 
     @Test
     fun `should view books via BookViewer`() {
-        shell.evaluate { "books" }
         val books = bookService.getAll()
+        shell.evaluate { "books" }
+
         verify(exactly = 1) { bookViewer.viewList(books) }
     }
 }
