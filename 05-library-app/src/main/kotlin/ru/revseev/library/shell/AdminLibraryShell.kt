@@ -3,13 +3,18 @@ package ru.revseev.library.shell
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
 import org.springframework.shell.standard.ShellOption
+import ru.revseev.library.dao.GenreDao
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.service.BookService
 
 @ShellComponent
-class AdminLibraryShell(private val bookService: BookService, private val bookViewer: BookViewer) {
+class AdminLibraryShell(
+    private val bookService: BookService,
+    private val genreDao: GenreDao, // todo make service
+    private val bookViewer: BookViewer
+) {
 
     @ShellMethod(value = "List all books.", key = ["books", "book list"])
     fun listAllBooks(): String = bookService.getAll().let {
@@ -41,7 +46,7 @@ class AdminLibraryShell(private val bookService: BookService, private val bookVi
     )
     fun updateBook(@ShellOption id: Long, @ShellOption genres: String): String {
         val updated = bookService.getById(id).copy(genres = genres.parseGenres())
-        val isUpdated = bookService.update(updated) // todo при апдейте не добавляются новые жанры
+        val isUpdated = bookService.update(updated)
 
         return if (isUpdated) {
             "Updated successfully"
@@ -50,6 +55,11 @@ class AdminLibraryShell(private val bookService: BookService, private val bookVi
         }
     }
 
+    //todo Book getById
+    @ShellMethod(value = "Gen all genres", key = ["genres"])
+    fun listGenres(): String {
+        return genreDao.getAll().toString()
+    }
 
     @ShellMethod(
         value = "Delete a book by id.",
