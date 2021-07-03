@@ -14,5 +14,4 @@ interface AuthorDao {
     fun update(author: Author): Boolean
 
     fun deleteById(id: Long): Boolean
-
 }

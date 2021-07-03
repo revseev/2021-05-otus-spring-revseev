@@ -18,10 +18,10 @@ class AdminLibraryShell(
 ) {
 
     @ShellMethod(value = "List all books.", key = ["books", "book list"])
-    fun getAllBooks(): String = bookService.getAll().let { bookViewer.viewList(it) }
+    fun getAllBooks(): String = bookService.getAll().view()
 
     @ShellMethod(value = "Get a book by id.", key = ["book", "book get"])
-    fun getBookById(@ShellOption id: Long): String = bookService.getById(id).let { bookViewer.view(it) }
+    fun getBookById(@ShellOption id: Long): String = bookService.getById(id).view()
 
     @ShellMethod(
         value = """Add a book. Type a 'title' 'author'. Optionally follow
@@ -38,7 +38,7 @@ class AdminLibraryShell(
         val newId = bookService.add(newBook)
         val book = newBook.copy(id = newId)
         return """|A book has been added with id = $newId:
-                  |${bookViewer.view(book)}""".trimMargin()
+                  |${book.view()}""".trimMargin()
     }
 
 
@@ -70,7 +70,7 @@ class AdminLibraryShell(
     }
 
     @ShellMethod(value = "Get all genres", key = ["genres"])
-    fun listGenres(): String = genreViewer.viewList(genreService.getAll())
+    fun listGenres(): String = genreService.getAll().view()
 
     private fun String.parseGenres() = this.split(",")
         .asSequence()
@@ -79,4 +79,11 @@ class AdminLibraryShell(
         .distinct()
         .map { Genre(name = it) }
         .toMutableList()
+
+    private fun Book.view(): String = bookViewer.view(this)
+
+    private fun Collection<Book>.view(): String = bookViewer.viewList(this)
+
+    @JvmName("viewGenres")
+    private fun Collection<Genre>.view(): String = genreViewer.viewList(this)
 }

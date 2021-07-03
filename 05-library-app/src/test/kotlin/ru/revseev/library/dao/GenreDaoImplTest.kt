@@ -44,6 +44,25 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
     }
 
     @Nested
+    inner class GetByName {
+
+        @Test
+        fun `should return Genre when getting by existing name`() {
+            val expected = Genre(1, "Genre1")
+            val actual = dao.getByName("Genre1")
+
+            expectThat(actual).isEqualTo(expected)
+        }
+
+        @Test
+        fun `should return null if nothing is found`() {
+            val actual = dao.getByName("not existent")
+
+            expectThat(actual).isNull()
+        }
+    }
+
+    @Nested
     inner class Add {
 
         @Test
