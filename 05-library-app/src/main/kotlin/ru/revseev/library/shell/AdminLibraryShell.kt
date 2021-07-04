@@ -14,7 +14,8 @@ class AdminLibraryShell(
     private val bookService: BookService,
     private val genreService: GenreService,
     private val bookViewer: BookViewer,
-    private val genreViewer: GenreViewer
+    private val genreViewer: GenreViewer,
+    private val genreParser: GenreParser
 ) {
 
     @ShellMethod(value = "List all books.", key = ["books", "book list"])
@@ -72,18 +73,12 @@ class AdminLibraryShell(
     @ShellMethod(value = "Get all genres", key = ["genres"])
     fun listGenres(): String = genreService.getAll().view()
 
-    private fun String.parseGenres() = this.split(",")
-        .asSequence()
-        .map { it.trim() }
-        .filter { it.isNotBlank() }
-        .distinct()
-        .map { Genre(name = it) }
-        .toMutableList()
-
     private fun Book.view(): String = bookViewer.view(this)
 
     private fun Collection<Book>.view(): String = bookViewer.viewList(this)
 
     @JvmName("viewGenres")
     private fun Collection<Genre>.view(): String = genreViewer.viewList(this)
+
+    private fun String.parseGenres(): MutableList<Genre> = genreParser.parseGenres(this)
 }
