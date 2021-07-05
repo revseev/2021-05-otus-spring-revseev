@@ -7,7 +7,6 @@ import strikt.api.expectCatching
 import strikt.assertions.isSuccess
 
 @SpringBootTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 class LibraryAppContextTest {
 
     @Test

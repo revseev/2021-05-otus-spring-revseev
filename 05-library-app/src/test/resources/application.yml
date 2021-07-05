@@ -11,6 +11,8 @@ spring:
       data-locations: test-data.sql
   jpa:
     generate-ddl: off
+    hibernate:
+      ddl-auto: none
   output:
     ansi:
       enabled: always
