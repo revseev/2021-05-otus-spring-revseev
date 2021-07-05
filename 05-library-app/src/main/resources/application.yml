@@ -1,12 +1,19 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:library
+    url: jdbc:h2:file:~/.h2/library;AUTO_SERVER=TRUE # todo change to mem
     username: admin
     password: pass
     driver-class-name: org.h2.Driver
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+
+    show-sql: true
   sql:
     init:
-      mode: always
+      mode: embedded
       schema-locations: schema.sql
       data-locations: data.sql
   h2:

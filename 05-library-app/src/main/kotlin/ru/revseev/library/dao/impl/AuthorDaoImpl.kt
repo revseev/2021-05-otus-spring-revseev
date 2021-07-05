@@ -33,7 +33,7 @@ class AuthorDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : AuthorDao {
 
     override fun add(author: Author): Long {
         if (author.id != null) {
-            return author.id
+            return author.id!!
         }
         val params = MapSqlParameterSource("name", author.name)
         val keyHolder = GeneratedKeyHolder()

@@ -57,7 +57,7 @@ internal class BookServiceImplTest {
 
     @Test
     fun `add() should pass the book to dao`() {
-        val newBook = book1.copy(id = null)
+        val newBook = Book(title =  "Book1", author = author1, genres = mutableListOf(genre1))
         bookService.add(newBook)
 
         verify { dao.add(newBook) }

@@ -11,11 +11,13 @@ import org.springframework.shell.Input
 import org.springframework.shell.Shell
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
-import ru.revseev.library.domain.Genre
 import ru.revseev.library.service.BookService
 import ru.revseev.library.service.GenreService
+import ru.revseev.library.shell.dto.GenreDto
+import ru.revseev.library.shell.dto.toGenres
 
 
+@Suppress("UnusedEquals") // cannot use equals on entities without ids
 @SpringBootTest
 internal class AdminLibraryShellTest {
 
@@ -62,13 +64,18 @@ internal class AdminLibraryShellTest {
         shell.evaluate { "ba title author" }
 
         val expected = Book(title = "title", author = Author(name = "author"))
-        verify { bookService.add(expected) }
+        verify {
+            bookService.add(withArg {
+                expected.title == it.title
+                expected.author.name = it.author.name
+            })
+        }
     }
 
     @Test
     fun `when given a book with genres, they are parsed using GenreParser`() {
         val genresString = "genre1, genre2"
-        val expectedGenres = mutableListOf(Genre(name = "genre1"), Genre(name = "genre2"))
+        val expectedGenres = mutableListOf(GenreDto("genre1"), GenreDto("genre2"))
         every { genreParser.parseGenres(genresString) } returns expectedGenres
 
         shell.evaluate(TestInputWithSpaces(mutableListOf("ba", "new book title", "some author", genresString)))
@@ -76,11 +83,15 @@ internal class AdminLibraryShellTest {
         val expected = Book(
             title = "new book title",
             author = Author(name = "some author"),
-            genres = expectedGenres
+            genres = expectedGenres.toGenres()
         )
         verify {
             genreParser.parseGenres(genresString)
-            bookService.add(expected)
+            bookService.add(withArg {
+                expected.title == it.title
+                expected.author.name == it.author.name
+                expected.genres.forEachIndexed { i, expGenre -> expGenre.name == it.genres[i].name }
+            })
         }
     }
 }

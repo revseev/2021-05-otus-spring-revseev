@@ -46,7 +46,7 @@ class GenreDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : GenreDao {
 
     override fun add(genre: Genre): Long {
         if (genre.id != null) {
-            return genre.id
+            return genre.id!!
         }
         return getByName(genre.name)?.id ?: addNew(genre)
     }

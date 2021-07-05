@@ -15,7 +15,7 @@ import java.sql.ResultSet
 class BookDaoImpl(
     private val jdbc: NamedParameterJdbcTemplate,
     private val authorDao: AuthorDao,
-    private val genreDao: GenreDao
+    private val genreDao: GenreDao,
 ) : BookDao {
 
     override fun getAll(): List<Book> {

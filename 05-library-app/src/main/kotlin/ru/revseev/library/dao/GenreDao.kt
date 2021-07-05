@@ -16,5 +16,4 @@ interface GenreDao {
     fun update(genre: Genre): Boolean
 
     fun deleteById(id: Long): Boolean
-
 }

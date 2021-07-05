@@ -8,6 +8,8 @@ import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.service.BookService
 import ru.revseev.library.service.GenreService
+import ru.revseev.library.shell.dto.GenreDto
+import ru.revseev.library.shell.dto.toGenres
 
 @ShellComponent
 class AdminLibraryShell(
@@ -15,7 +17,7 @@ class AdminLibraryShell(
     private val genreService: GenreService,
     private val bookViewer: BookViewer,
     private val genreViewer: GenreViewer,
-    private val genreParser: GenreParser
+    private val genreParser: GenreParser,
 ) {
 
     @ShellMethod(value = "List all books.", key = ["books", "book list"])
@@ -32,14 +34,14 @@ class AdminLibraryShell(
     fun addBook(
         @ShellOption title: String,
         @ShellOption author: String,
-        @ShellOption(defaultValue = "") genres: String
+        @ShellOption(defaultValue = "") genres: String,
     ): String {
-        val genreList = genres.parseGenres()
+        val genreList = genres.parseGenres().toGenres()
         val newBook = Book(title = title, author = Author(name = author), genres = genreList)
         val newId = bookService.add(newBook)
-        val book = newBook.copy(id = newId)
+        newBook.id = newId
         return """|A book has been added with id = $newId:
-                  |${book.view()}""".trimMargin()
+                  |${newBook.view()}""".trimMargin()
     }
 
 
@@ -49,8 +51,9 @@ class AdminLibraryShell(
         key = ["bu", "book update"]
     )
     fun updateBook(@ShellOption id: Long, @ShellOption genres: String): String {
-        val updated = bookService.getById(id).copy(genres = genres.parseGenres())
-        val isUpdated = bookService.update(updated)
+        val book = bookService.getById(id)
+        book.genres = genres.parseGenres().toGenres()
+        val isUpdated = bookService.update(book)
 
         return if (isUpdated) {
             "Updated successfully"
@@ -80,5 +83,5 @@ class AdminLibraryShell(
     @JvmName("viewGenres")
     private fun Collection<Genre>.view(): String = genreViewer.viewList(this)
 
-    private fun String.parseGenres(): MutableList<Genre> = genreParser.parseGenres(this)
+    private fun String.parseGenres(): MutableList<GenreDto> = genreParser.parseGenres(this)
 }
