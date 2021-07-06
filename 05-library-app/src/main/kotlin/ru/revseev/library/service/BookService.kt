@@ -8,9 +8,9 @@ interface BookService {
 
     fun getById(id: Long): Book
 
-    fun add(book: Book): Long
+    fun add(book: Book): Book
 
-    fun update(book: Book): Boolean
+    fun update(book: Book): Book
 
     fun deleteById(id: Long): Boolean
 }

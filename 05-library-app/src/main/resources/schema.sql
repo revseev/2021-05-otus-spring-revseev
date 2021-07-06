@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS book_genres;
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS genres;
 DROP TABLE IF EXISTS authors;
@@ -30,4 +31,12 @@ CREATE TABLE book_genres
     genre_id LONG NOT NULL,
     FOREIGN KEY (book_id) REFERENCES books (id),
     FOREIGN KEY (genre_id) REFERENCES genres (id)
+);
+
+CREATE TABLE comments
+(
+    id      LONG          NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    book_id LONG          NOT NULL,
+    body    VARCHAR(4096) NOT NULL,
+    FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE
 );

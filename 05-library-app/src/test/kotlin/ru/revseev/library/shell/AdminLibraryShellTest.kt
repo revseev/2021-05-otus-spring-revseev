@@ -26,13 +26,16 @@ internal class AdminLibraryShellTest {
 
     @SpykBean
     lateinit var bookService: BookService
+
     @SpykBean
     lateinit var genreService: GenreService
 
     @MockkBean
     lateinit var bookViewer: BookViewer
+
     @MockkBean
     lateinit var genreViewer: GenreViewer
+
     @MockkBean
     lateinit var genreParser: GenreParser
 
@@ -63,11 +66,11 @@ internal class AdminLibraryShellTest {
     fun `when add a book without genres, a book with empty genre list is created`() {
         shell.evaluate { "ba title author" }
 
-        val expected = Book(title = "title", author = Author(name = "author"))
+        val expected = Book("title", Author("author"))
         verify {
             bookService.add(withArg {
                 expected.title == it.title
-                expected.author.name = it.author.name
+                expected.author.name == it.author.name
             })
         }
     }
@@ -80,11 +83,8 @@ internal class AdminLibraryShellTest {
 
         shell.evaluate(TestInputWithSpaces(mutableListOf("ba", "new book title", "some author", genresString)))
 
-        val expected = Book(
-            title = "new book title",
-            author = Author(name = "some author"),
-            genres = expectedGenres.toGenres()
-        )
+        val expected = Book("new book title", Author(name = "some author"), expectedGenres.toGenres())
+
         verify {
             genreParser.parseGenres(genresString)
             bookService.add(withArg {

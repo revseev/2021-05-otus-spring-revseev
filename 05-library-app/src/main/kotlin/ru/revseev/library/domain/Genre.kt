@@ -6,11 +6,10 @@ import javax.persistence.*
 @Entity
 @Table(name = "genres")
 class Genre(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
     @Column(name = "name", nullable = false, unique = true)
-    var name: String,
-) {
+    val name: String,
+) : LongIdentifiable() {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -20,5 +19,10 @@ class Genre(
     }
 
     override fun hashCode(): Int = 1887069089
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , name = $name )"
+    }
 }
 

@@ -4,19 +4,16 @@ import org.hibernate.Hibernate
 import javax.persistence.*
 
 @Entity
+@Table(name = "comments")
 class Comment(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    var id: Long? = null,
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "book_id", nullable = false, updatable = false)
-    var book: Book,
+    val book: Book,
 
     @Column(name = "body", nullable = false, length = 4096)
-    var body: String,
-) {
+    var body: String = "",
+) : LongIdentifiable() {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -26,4 +23,9 @@ class Comment(
     }
 
     override fun hashCode(): Int = 860659860
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , book = $book , body = $body )"
+    }
 }

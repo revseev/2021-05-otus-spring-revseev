@@ -46,3 +46,9 @@ VALUES (SELECT id FROM books WHERE title = 'The Hobbit',
        (SELECT id FROM books WHERE title = 'Do Androids Dream of Electric Sheep?',
         SELECT id FROM genres WHERE name = 'Novel')
 ;
+INSERT INTO comments (book_id, body)
+VALUES
+((SELECT id FROM books WHERE title = 'The Hobbit'), 'Greatest Adventure ever!'),
+((SELECT id FROM books WHERE title = 'The Hobbit'), 'Loved it!'),
+((SELECT id FROM books WHERE title = 'Do Androids Dream of Electric Sheep?'), 'I decided to read it after Blade Runner movie.')
+;

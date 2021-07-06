@@ -13,6 +13,8 @@ import ru.revseev.library.dao.BookDao
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Genre
+import ru.revseev.library.repo.BookRepo
+import ru.revseev.library.repo.existingId1
 import ru.revseev.library.service.impl.BookServiceImpl
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
@@ -21,60 +23,60 @@ import strikt.assertions.isEqualTo
 internal class BookServiceImplTest {
 
     @MockK
-    private val dao: BookDao = mockk()
+    private val bookRepo: BookRepo = mockk()
     private lateinit var bookService: BookService
 
-    private val genre1 = Genre(1L, "Genre1")
-    private val author1 = Author(1L, "Author1")
-    private val book1 = Book(1L, "Book1", author1, mutableListOf(genre1))
+    private val genre1 = Genre("Genre1").apply { id = existingId1 }
+    private val author1 = Author("Author1").apply { id = existingId1 }
+    private val book1 = Book("Book1", author1, mutableListOf(genre1)).apply { id = existingId1 }
 
     @BeforeEach
     fun resetMocks() {
         clearAllMocks()
-        bookService = BookServiceImpl(dao)
+        bookService = BookServiceImpl(bookRepo)
     }
 
     @Test
     fun `getAll() should return exactly what dao return`() {
         val expected = listOf(book1)
-        every { dao.getAll() } returns expected
+        every { bookRepo.findAll() } returns expected
 
         val actual = bookService.getAll()
-        verify(exactly = 1) { dao.getAll() }
+        verify(exactly = 1) { bookRepo.findAll() }
         expectThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun `getById() should return exactly what dao return`() {
-        val id = 1L
+        val id = existingId1
         val expected = book1
-        every { dao.getById(id) } returns expected
+        every { bookRepo.findById(id) } returns expected
 
         val actual = bookService.getById(id)
-        verify(exactly = 1) { dao.getById(id) }
+        verify(exactly = 1) { bookRepo.findById(id) }
         expectThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun `add() should pass the book to dao`() {
-        val newBook = Book(title =  "Book1", author = author1, genres = mutableListOf(genre1))
+        val newBook = Book("Book1", author1, mutableListOf(genre1))
         bookService.add(newBook)
 
-        verify { dao.add(newBook) }
+        verify { bookRepo.save(newBook) }
     }
 
     @Test
     fun `update() should pass the book to dao`() {
         bookService.update(book1)
 
-        verify { dao.update(book1) }
+        verify { bookRepo.save(book1) }
     }
 
     @Test
     fun `deleteById() should pass the id to dao`() {
-        val id = 1L
+        val id = existingId1
         bookService.deleteById(id)
 
-        verify { dao.deleteById(id) }
+        verify { bookRepo.deleteById(id) }
     }
 }

@@ -37,11 +37,10 @@ class AdminLibraryShell(
         @ShellOption(defaultValue = "") genres: String,
     ): String {
         val genreList = genres.parseGenres().toGenres()
-        val newBook = Book(title = title, author = Author(name = author), genres = genreList)
-        val newId = bookService.add(newBook)
-        newBook.id = newId
-        return """|A book has been added with id = $newId:
-                  |${newBook.view()}""".trimMargin()
+        val newBook = Book(title, Author(author), genreList)
+        val added = bookService.add(newBook)
+        return """|A book has been added:
+                  |${added.view()}""".trimMargin()
     }
 
 
@@ -50,16 +49,16 @@ class AdminLibraryShell(
         as a single quoted string separated by commas (i.e. 'novel,science fiction,action')""",
         key = ["bu", "book update"]
     )
-    fun updateBook(@ShellOption id: Long, @ShellOption genres: String): String {
+    fun updateBook(@ShellOption id: Long, @ShellOption genresString: String): String {
         val book = bookService.getById(id)
-        book.genres = genres.parseGenres().toGenres()
-        val isUpdated = bookService.update(book)
+            .apply {
+                genres = genresString.parseGenres().toGenres()
+            }
 
-        return if (isUpdated) {
-            "Updated successfully"
-        } else {
-            "Was not successful"
-        }
+        val updated = bookService.update(book)
+        return """|Updated successfully:
+                  |${updated.view()}
+        """.trimMargin()
     }
 
     @ShellMethod(value = "Delete a book by id.", key = ["bd", "book delete"])

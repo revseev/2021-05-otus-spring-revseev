@@ -1,16 +1,17 @@
 package ru.revseev.library.domain
 
 import org.hibernate.Hibernate
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Table
 
 @Entity
 @Table(name = "authors")
 class Author(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
-    @Column(name = "name", nullable = false, unique = true)
-    var name: String,
-) {
+    @Column(name = "name", nullable = false)
+    val name: String,
+) : LongIdentifiable() {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
@@ -20,5 +21,10 @@ class Author(
     }
 
     override fun hashCode(): Int = 556590234
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , name = $name )"
+    }
 }
 
