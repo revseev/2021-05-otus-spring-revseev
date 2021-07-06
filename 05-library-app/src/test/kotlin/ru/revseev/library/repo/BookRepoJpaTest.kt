@@ -7,23 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.context.annotation.Import
+import ru.revseev.library.*
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
-import ru.revseev.library.domain.Genre
 import ru.revseev.library.repo.impl.BookRepoJpa
 import strikt.api.expectThat
 import strikt.assertions.*
-
-const val existingId1 = 1L
-const val existingId2 = 2L
-const val nonExistingId = 0L
-
-val genre1 = Genre("Genre1").apply { id = existingId1 }
-val genre2 = Genre("Genre2").apply { id = existingId2 }
-val author1 = Author("Author1").apply { id = existingId1 }
-val author2 = Author("Author2").apply { id = existingId2 }
-val book1 = Book("Book1", author1, mutableListOf(genre1, genre2)).apply { id = existingId1 }
-val book2 = Book("Book2", author2, mutableListOf(genre2)).apply { id = existingId2 }
 
 @DataJpaTest
 @Import(BookRepoJpa::class)
