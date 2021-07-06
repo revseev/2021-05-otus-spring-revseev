@@ -10,11 +10,17 @@ import javax.persistence.PersistenceContext
 class BookRepoJpa(@PersistenceContext private val em: EntityManager) : BookRepo {
 
     override fun findAll(): List<Book> {
-        return em.createQuery("SELECT b FROM Book b", Book::class.java).resultList
+        return em.createQuery(
+            "SELECT DISTINCT b FROM Book b join fetch b.genres join fetch b.author",
+            Book::class.java
+        ).resultList
     }
 
     override fun findById(id: Long): Book? {
-        return em.find(Book::class.java, id)
+        return em.createQuery(
+            "SELECT DISTINCT b FROM Book b join fetch b.genres join fetch b.author where b.id = :id",
+            Book::class.java
+        ).setParameter("id", id).singleResult
     }
 
     override fun save(book: Book): Book {
