@@ -12,7 +12,7 @@ import ru.revseev.library.domain.Genre
 import java.sql.ResultSet
 
 @Repository
-class BookDaoImpl(
+class BookDaoJdbc(
     private val jdbc: NamedParameterJdbcTemplate,
     private val authorDao: AuthorDao,
     private val genreDao: GenreDao,

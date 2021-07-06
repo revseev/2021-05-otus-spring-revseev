@@ -10,7 +10,7 @@ import ru.revseev.library.dao.wrapExceptions
 import ru.revseev.library.domain.Author
 
 @Repository
-class AuthorDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : AuthorDao {
+class AuthorDaoJdbc(private val jdbc: NamedParameterJdbcTemplate) : AuthorDao {
 
     override fun getAll(): List<Author> {
         val sql = "SELECT id, name FROM authors"

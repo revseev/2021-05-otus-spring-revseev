@@ -5,20 +5,20 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.context.annotation.Import
-import ru.revseev.library.dao.impl.GenreDaoImpl
-import ru.revseev.library.domain.Genre
+import ru.revseev.library.dao.impl.AuthorDaoJdbc
+import ru.revseev.library.domain.Author
 import ru.revseev.library.exception.DaoException
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.*
 
 @JdbcTest
-@Import(GenreDaoImpl::class)
-internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
+@Import(AuthorDaoJdbc::class)
+internal class AuthorDaoJdbcTest(@Autowired val dao: AuthorDao) {
 
     @Test
-    fun `getAll() should return all expected Genres`() {
-        val expected = listOf(Genre(1, "Genre1"), Genre(2, "Genre2"), Genre(3, "Genre3"))
+    fun `getAll() should return all expected Authors`() {
+        val expected = listOf(Author(1, "Author1"), Author(2, "Author2"), Author(3, "Author3"))
         val actual = dao.getAll()
 
         expectThat(actual).containsExactlyInAnyOrder(expected)
@@ -28,15 +28,15 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
     inner class GetById {
 
         @Test
-        fun `should return Genre when getting by existing id`() {
-            val expected = Genre(1, "Genre1")
+        fun `should return Author when getting by existing id`() {
+            val expected = Author(1, "Author1")
             val actual = dao.getById(1)
 
             expectThat(actual).isEqualTo(expected)
         }
 
         @Test
-        fun `should throw exception when Genre not exist`() {
+        fun `should throw exception when Author not exist`() {
             val nonExistentId = 4L
 
             expectThrows<DaoException> { dao.getById(nonExistentId) }
@@ -44,42 +44,23 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
     }
 
     @Nested
-    inner class GetByName {
-
-        @Test
-        fun `should return Genre when getting by existing name`() {
-            val expected = Genre(1, "Genre1")
-            val actual = dao.getByName("Genre1")
-
-            expectThat(actual).isEqualTo(expected)
-        }
-
-        @Test
-        fun `should return null if nothing is found`() {
-            val actual = dao.getByName("not existent")
-
-            expectThat(actual).isNull()
-        }
-    }
-
-    @Nested
     inner class Add {
 
         @Test
-        fun `should add new Genre, return new id`() {
-            val new = Genre(name = "Genre3")
+        fun `should add new Author, return new id`() {
+            val new = Author(name = "Author4")
             val newId = dao.add(new)
 
             expectThat(newId).isGreaterThan(2L)
         }
 
         @Test
-        fun `should not add existing Genre, return existing id`() {
+        fun `should not add existing Author, return existing id`() {
             val existingId = 1L
-            val existingGenre = Genre(existingId, "Genre1")
-            val newId = dao.add(existingGenre)
+            val existingAuthor = Author(existingId, "Author1")
+            val actualId = dao.add(existingAuthor)
 
-            expectThat(newId).isEqualTo(existingId)
+            expectThat(actualId).isEqualTo(existingId)
         }
     }
 
@@ -87,16 +68,16 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
     inner class Update {
 
         @Test
-        fun `should update existing Genre`() {
-            val existing = Genre(1, "Genre0")
+        fun `should update existing Author`() {
+            val existing = Author(1, "Author0")
             val isUpdated = dao.update(existing)
 
             expectThat(isUpdated).isTrue()
         }
 
         @Test
-        fun `should not update non-existing Genre`() {
-            val nonExisting = Genre(0, "Genre0")
+        fun `should not update non-existing Author`() {
+            val nonExisting = Author(0, "Author0")
             val isUpdated = dao.update(nonExisting)
 
             expectThat(isUpdated).isFalse()
@@ -107,7 +88,7 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
     inner class DeleteById {
 
         @Test
-        fun `should delete existing Genre`() {
+        fun `should delete existing Author`() {
             val existingId = 3L
             val isDeleted = dao.deleteById(existingId)
 
@@ -115,7 +96,7 @@ internal class GenreDaoImplTest(@Autowired val dao: GenreDao) {
         }
 
         @Test
-        fun `should delete non-existing Genre`() {
+        fun `should delete non-existing Author`() {
             val nonExisingId = 0L
             val isDeleted = dao.deleteById(nonExisingId)
 

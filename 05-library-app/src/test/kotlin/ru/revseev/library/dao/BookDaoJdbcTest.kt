@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
 import org.springframework.context.annotation.Import
-import ru.revseev.library.dao.impl.AuthorDaoImpl
-import ru.revseev.library.dao.impl.BookDaoImpl
-import ru.revseev.library.dao.impl.GenreDaoImpl
+import ru.revseev.library.dao.impl.AuthorDaoJdbc
+import ru.revseev.library.dao.impl.BookDaoJdbc
+import ru.revseev.library.dao.impl.GenreDaoJdbc
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Genre
@@ -18,8 +18,8 @@ import strikt.api.expectThrows
 import strikt.assertions.*
 
 @JdbcTest
-@Import(BookDaoImpl::class, AuthorDaoImpl::class, GenreDaoImpl::class)
-internal class BookDaoImplTest(@Autowired val dao: BookDao) {
+@Import(BookDaoJdbc::class, AuthorDaoJdbc::class, GenreDaoJdbc::class)
+internal class BookDaoJdbcTest(@Autowired val dao: BookDao) {
 
     private val genre1 = Genre(1, "Genre1")
     private val genre2 = Genre(2, "Genre2")

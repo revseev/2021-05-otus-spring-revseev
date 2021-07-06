@@ -12,7 +12,7 @@ import ru.revseev.library.dao.wrapExceptionsNullable
 import ru.revseev.library.domain.Genre
 
 @Repository
-class GenreDaoImpl(private val jdbc: NamedParameterJdbcTemplate) : GenreDao {
+class GenreDaoJdbc(private val jdbc: NamedParameterJdbcTemplate) : GenreDao {
 
     override fun getAll(): List<Genre> {
         val sql = "SELECT id, name FROM genres"
