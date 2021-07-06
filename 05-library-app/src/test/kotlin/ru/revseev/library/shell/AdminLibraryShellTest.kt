@@ -2,13 +2,17 @@ package ru.revseev.library.shell
 
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.verify
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.shell.Input
 import org.springframework.shell.Shell
+import org.springframework.transaction.annotation.Transactional
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.service.BookService
@@ -38,6 +42,11 @@ internal class AdminLibraryShellTest {
 
     @MockkBean
     lateinit var genreParser: GenreParser
+
+    @BeforeEach
+    fun init() {
+        clearAllMocks()
+    }
 
     @Test
     fun `given shell command 'books' should getAllBooks via BookService`() {
