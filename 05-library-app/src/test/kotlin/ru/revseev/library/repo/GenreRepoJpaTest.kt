@@ -4,18 +4,18 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.context.annotation.Import
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.existingId1
 import ru.revseev.library.genre1
 import ru.revseev.library.genre2
+import ru.revseev.library.genre3
 import ru.revseev.library.repo.impl.GenreRepoJpa
 import strikt.api.expect
 import strikt.api.expectThat
 import strikt.assertions.*
 
-
-val genre3 = Genre("Genre3").apply { id = 3L }
 
 @DataJpaTest
 @Import(GenreRepoJpa::class)
@@ -23,6 +23,8 @@ internal class GenreRepoJpaTest {
 
     @Autowired
     lateinit var genreRepo: GenreRepoJpa
+    @Autowired
+    lateinit var em: TestEntityManager
 
     @Test
     fun `findAll() should find all Genres`() {
@@ -74,4 +76,50 @@ internal class GenreRepoJpaTest {
             }
         }
     }
+
+    @Nested
+    inner class SaveAll {
+
+        private val existing = Genre("Genre1")
+        private val new = Genre("new")
+        private val modified = Genre("Modified").apply { id = 2L }
+        private val genresToSave = listOf(existing, new, modified)
+
+        @Test
+        fun `should save genres if it is new`() {
+            val persistedGenres = genreRepo.saveAll(genresToSave)
+
+            expect {
+                that(persistedGenres).hasSize(3)
+                val actual = persistedGenres.find { it.name == "new" }
+                that(actual).isNotNull().get { id }.isNotNull().and { isGreaterThan(3L) }
+            }
+        }
+
+        @Test
+        fun `should save existing genre if it's name exist`() {
+            val persistedGenres = genreRepo.saveAll(genresToSave)
+
+            expect {
+                that(persistedGenres).hasSize(3)
+                that(persistedGenres).contains(modified)
+                that(getFromDb(2L)).isEqualTo(modified)
+            }
+        }
+
+        @Test
+        fun `should update name of a genre if it's name exist`() {
+            val persistedGenres = genreRepo.saveAll(genresToSave)
+
+            expect {
+                that(persistedGenres).hasSize(3)
+                that(persistedGenres).contains(genre1)
+                that(getFromDb(1L)).isEqualTo(genre1)
+            }
+        }
+
+    }
+
+    private fun getFromDb(id: Long): Genre = em.find(Genre::class.java, id)
+         ?: throw IllegalStateException("Genre with $id was expected to exist in persistence layer")
 }

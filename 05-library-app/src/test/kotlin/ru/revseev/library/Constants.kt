@@ -10,6 +10,7 @@ const val nonExistingId = 0L
 
 val genre1 = Genre("Genre1").apply { id = existingId1 }
 val genre2 = Genre("Genre2").apply { id = existingId2 }
+val genre3 = Genre("Genre3").apply { id = 3L }
 val author1 = Author("Author1").apply { id = existingId1 }
 val author2 = Author("Author2").apply { id = existingId2 }
 val book1 = Book("Book1", author1, mutableListOf(genre1, genre2)).apply { id = existingId1 }

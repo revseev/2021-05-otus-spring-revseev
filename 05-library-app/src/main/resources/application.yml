@@ -1,6 +1,9 @@
 spring:
+  profiles:
+    default: default
+
   datasource:
-    url: jdbc:h2:file:~/.h2/library;AUTO_SERVER=TRUE # todo change to mem
+    url: jdbc:h2:mem:library
     username: admin
     password: pass
     driver-class-name: org.h2.Driver
@@ -9,7 +12,7 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
   sql:
     init:
       mode: always
@@ -18,11 +21,30 @@ spring:
   h2:
     console:
       path: /h2-console
-      enabled: true
+      enabled: false
   output:
     ansi:
       enabled: always
 
 logging:
   level:
+    root: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:file:~/.h2/library;AUTO_SERVER=TRUE
+  jpa:
+    show-sql: true
+
+logging:
+  level:
     ru: DEBUG
+
+h2:
+  console:
+    enabled: true

@@ -42,7 +42,7 @@ class GenreRepoJpa(@PersistenceContext private val em: EntityManager) : GenreRep
                 existingNameToGenre[it.name] ?: save(it)
             }
         } else {
-            listOf()
+            emptyList()
         }
 
         val merged = if (notNew.isNotEmpty()) {

@@ -11,11 +11,12 @@ import ru.revseev.library.*
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.repo.impl.BookRepoJpa
+import ru.revseev.library.repo.impl.GenreRepoJpa
 import strikt.api.expectThat
 import strikt.assertions.*
 
 @DataJpaTest
-@Import(BookRepoJpa::class)
+@Import(BookRepoJpa::class, GenreRepoJpa::class)
 internal class BookRepoJpaTest {
 
     @Autowired
@@ -72,10 +73,10 @@ internal class BookRepoJpaTest {
 
         @Test
         fun `should update a book if it exists in persistence layer`() {
-            val changed = getExistingBook(existingId2).apply { title = "Changed title" }
+            val changed = getFromDb(existingId2).apply { title = "Changed title" }
             val updated = bookRepo.save(changed)
 
-            expectThat(updated).isEqualTo(getExistingBook(existingId2))
+            expectThat(updated).isEqualTo(getFromDb(existingId2))
         }
     }
 
@@ -97,7 +98,7 @@ internal class BookRepoJpaTest {
         }
     }
 
-    private fun getExistingBook(existingId: Long) = em.find(Book::class.java, existingId)
-        ?: throw IllegalStateException("Book with $existingId was expected to exist in persistence layer")
+    private fun getFromDb(id: Long) = em.find(Book::class.java, id)
+        ?: throw IllegalStateException("Book with $id was expected to exist in persistence layer")
 }
 
