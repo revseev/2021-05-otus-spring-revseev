@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.context.annotation.Import
 import ru.revseev.library.domain.Genre
+import ru.revseev.library.existingId1
 import ru.revseev.library.genre1
 import ru.revseev.library.genre2
 import ru.revseev.library.repo.impl.GenreRepoJpa
+import strikt.api.expect
 import strikt.api.expectThat
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNull
+import strikt.assertions.*
 
 
 val genre3 = Genre("Genre3").apply { id = 3L }
@@ -51,20 +51,27 @@ internal class GenreRepoJpaTest {
             expectThat(actual).isNull()
         }
     }
+
     @Nested
     inner class Save {
 
         @Test
-        fun `should return genre if it exists by name`() {
-            TODO()
+        fun `should return existing genre if it exists by name`() {
+            val existing = Genre("Genre1")
+            val persisted = genreRepo.save(existing)
+
+            expectThat(persisted.id).isEqualTo(existingId1)
         }
+
         @Test
         fun `should save genre if it is new`() {
-            TODO()
-        }
-        @Test
-        fun `should merge genre if it is not new`() {
-            TODO()
+            val new = Genre("new")
+            val persisted = genreRepo.save(new)
+
+            expect {
+                that(persisted.id).isNotNull().and { isGreaterThan(3L) }
+                that(persisted.name).isEqualTo(new.name)
+            }
         }
     }
 }

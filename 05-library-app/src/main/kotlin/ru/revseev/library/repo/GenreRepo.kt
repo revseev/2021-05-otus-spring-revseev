@@ -9,4 +9,6 @@ interface GenreRepo {
     fun findByName(name: String): Genre?
 
     fun save(genre: Genre): Genre
+
+    fun saveAll(genres: List<Genre>): List<Genre>
 }

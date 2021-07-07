@@ -3,13 +3,18 @@ package ru.revseev.library.repo.impl
 import org.springframework.stereotype.Repository
 import ru.revseev.library.domain.Book
 import ru.revseev.library.repo.BookRepo
+import ru.revseev.library.repo.GenreRepo
 import javax.persistence.EntityManager
 import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
 import javax.persistence.TypedQuery
 
 @Repository
-class BookRepoJpa(@PersistenceContext private val em: EntityManager) : BookRepo {
+class BookRepoJpa(
+    @PersistenceContext
+    private val em: EntityManager,
+    private val genreRepo: GenreRepo
+) : BookRepo {
 
     override fun findAll(): List<Book> {
         return em.createQuery("SELECT DISTINCT b FROM Book b left join fetch b.genres", Book::class.java)
@@ -20,7 +25,8 @@ class BookRepoJpa(@PersistenceContext private val em: EntityManager) : BookRepo 
     override fun findById(id: Long): Book? {
         val query = em.createQuery(
             "SELECT DISTINCT b FROM Book b left join fetch b.genres where b.id = :id",
-            Book::class.java)
+            Book::class.java
+        )
             .setParameter("id", id)
             .useFetchGraph("book-genre-graph")
 
@@ -32,6 +38,8 @@ class BookRepoJpa(@PersistenceContext private val em: EntityManager) : BookRepo 
     }
 
     override fun save(book: Book): Book {
+        book.genres = genreRepo.saveAll(book.genres).toMutableList()
+
         return if (book.isNew()) {
             em.persistAndGet(book)
         } else {
