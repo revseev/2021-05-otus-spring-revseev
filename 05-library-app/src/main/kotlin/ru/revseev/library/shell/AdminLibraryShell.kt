@@ -5,8 +5,10 @@ import org.springframework.shell.standard.ShellMethod
 import org.springframework.shell.standard.ShellOption
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
+import ru.revseev.library.domain.Comment
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.service.BookService
+import ru.revseev.library.service.CommentService
 import ru.revseev.library.service.GenreService
 import ru.revseev.library.shell.dto.GenreDto
 import ru.revseev.library.shell.dto.toGenres
@@ -18,7 +20,10 @@ class AdminLibraryShell(
     private val bookViewer: BookViewer,
     private val genreViewer: GenreViewer,
     private val genreParser: GenreParser,
+    private val commentService: CommentService,
+    private val commentViewer: CommentViewer,
 ) {
+
 
     @ShellMethod(value = "List all books.", key = ["books", "book list"])
     fun getAllBooks(): String = bookService.getAll().view()
@@ -75,9 +80,15 @@ class AdminLibraryShell(
     @ShellMethod(value = "Get all genres", key = ["genres"])
     fun listGenres(): String = genreService.getAll().view()
 
+    @ShellMethod(value = "List comment for a book.", key = ["bc", "book comments"])
+    fun getCommentsByBookId(@ShellOption bookId: Long): String = commentService.getByBookId(bookId).view()
+
     private fun Book.view(): String = bookViewer.view(this)
 
     private fun Collection<Book>.view(): String = bookViewer.viewList(this)
+
+    @JvmName("viewComments")
+    private fun Collection<Comment>.view(): String = commentViewer.viewList(this)
 
     @JvmName("viewGenres")
     private fun Collection<Genre>.view(): String = genreViewer.viewList(this)

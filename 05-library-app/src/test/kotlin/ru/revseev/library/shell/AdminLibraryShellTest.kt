@@ -6,16 +6,18 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.shell.Input
 import org.springframework.shell.Shell
-import org.springframework.transaction.annotation.Transactional
+import ru.revseev.library.comment11
+import ru.revseev.library.comment12
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.service.BookService
+import ru.revseev.library.service.CommentService
 import ru.revseev.library.service.GenreService
 import ru.revseev.library.shell.dto.GenreDto
 import ru.revseev.library.shell.dto.toGenres
@@ -30,18 +32,19 @@ internal class AdminLibraryShellTest {
 
     @SpykBean
     lateinit var bookService: BookService
-
     @SpykBean
     lateinit var genreService: GenreService
 
     @MockkBean
+    lateinit var commentService: CommentService
+    @MockkBean
     lateinit var bookViewer: BookViewer
-
     @MockkBean
     lateinit var genreViewer: GenreViewer
-
     @MockkBean
     lateinit var genreParser: GenreParser
+    @MockkBean
+    lateinit var commentViewer: CommentViewer
 
     @BeforeEach
     fun init() {
@@ -101,6 +104,27 @@ internal class AdminLibraryShellTest {
                 expected.author.name == it.author.name
                 expected.genres.forEachIndexed { i, expGenre -> expGenre.name == it.genres[i].name }
             })
+        }
+    }
+
+    @Nested
+    inner class GetComments {
+
+        @Test
+        fun `should use CommentService to get CommentsByBookId`() {
+            shell.evaluate { "bc 1" }
+
+            verify { commentService.getByBookId(1L) }
+        }
+
+        @Test
+        fun `should use CommentViewer to view comment list`() {
+            val comments = mutableListOf(comment11, comment12)
+            every { commentService.getByBookId(1L) } returns comments
+
+            shell.evaluate { "bc 1" }
+
+            verify {commentViewer.viewList(comments) }
         }
     }
 }
