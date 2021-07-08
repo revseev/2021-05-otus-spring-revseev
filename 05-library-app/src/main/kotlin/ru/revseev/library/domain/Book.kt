@@ -2,7 +2,8 @@ package ru.revseev.library.domain
 
 import org.hibernate.Hibernate
 import javax.persistence.*
-import javax.persistence.CascadeType.*
+import javax.persistence.CascadeType.MERGE
+import javax.persistence.CascadeType.PERSIST
 
 @Entity
 @Table(name = "books")

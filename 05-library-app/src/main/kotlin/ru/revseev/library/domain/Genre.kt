@@ -1,7 +1,9 @@
 package ru.revseev.library.domain
 
 import org.hibernate.Hibernate
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Table
 
 @Entity
 @Table(name = "genres")

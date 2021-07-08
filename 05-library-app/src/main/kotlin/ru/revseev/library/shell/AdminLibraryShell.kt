@@ -68,15 +68,7 @@ class AdminLibraryShell(
     }
 
     @ShellMethod(value = "Delete a book by ID.", key = ["bd", "book delete"])
-    fun deleteBook(@ShellOption id: Long): String {
-        val isDeleted = bookService.deleteById(id)
-
-        return if (isDeleted) {
-            "Deleted successfully"
-        } else {
-            "Was not successful"
-        }
-    }
+    fun deleteBook(@ShellOption id: Long): String = bookService.deleteById(id).reportSuccess()
 
     @ShellMethod(value = "Get all genres", key = ["genres"])
     fun listGenres(): String = genreService.getAll().view()
@@ -99,15 +91,7 @@ class AdminLibraryShell(
         commentService.update(UpdatedCommentDto(id, body)).view()
 
     @ShellMethod(value = "Delete a comment, providing it's ID", key = ["cd", "comment delete"])
-    fun deleteComment(@ShellOption id: Long): String {
-        val isDeleted = commentService.deleteById(id)
-
-        return if (isDeleted) {
-            "Deleted successfully"
-        } else {
-            "Was not successful"
-        }
-    }
+    fun deleteComment(@ShellOption id: Long): String = commentService.deleteById(id).reportSuccess()
 
 
     private fun Book.view(): String = bookViewer.view(this)
@@ -123,4 +107,12 @@ class AdminLibraryShell(
     private fun Collection<Genre>.view(): String = genreViewer.viewList(this)
 
     private fun String.parseGenres(): MutableList<GenreDto> = genreParser.parseGenres(this)
+
+    private fun Boolean.reportSuccess(): String {
+        return if (this) {
+            "Deleted successfully"
+        } else {
+            "Was not successful"
+        }
+    }
 }

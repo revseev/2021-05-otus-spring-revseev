@@ -121,5 +121,5 @@ internal class GenreRepoJpaTest {
     }
 
     private fun getFromDb(id: Long): Genre = em.find(Genre::class.java, id)
-         ?: throw IllegalStateException("Genre with $id was expected to exist in persistence layer")
+        ?: throw IllegalStateException("Genre with $id was expected to exist in persistence layer")
 }

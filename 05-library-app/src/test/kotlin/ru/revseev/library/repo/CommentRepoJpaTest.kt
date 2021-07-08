@@ -10,10 +10,7 @@ import ru.revseev.library.*
 import ru.revseev.library.domain.Comment
 import ru.revseev.library.repo.impl.CommentRepoJpa
 import strikt.api.expectThat
-import strikt.assertions.containsExactlyInAnyOrder
-import strikt.assertions.isEqualTo
-import strikt.assertions.isNotNull
-import strikt.assertions.isNull
+import strikt.assertions.*
 
 @DataJpaTest
 @Import(CommentRepoJpa::class)
@@ -85,14 +82,30 @@ internal class CommentRepoJpaTest {
         }
 
         @Test
-        fun merge() {
-            TODO("Impl")
+        fun `should update a comment if it exists in persistence layer`() {
+            val changed = getFromDb(existingId1).apply { body = "Changed body" }
+            val updated = commentRepo.save(changed)
+
+            expectThat(updated).isEqualTo(getFromDb(existingId1))
         }
     }
 
-    @Test
-    fun delete() {
-        TODO("Impl")
+    @Nested
+    inner class DeleteById {
+
+        @Test
+        fun `should delete existing book`() {
+            val isDeleted = commentRepo.deleteById(existingId1)
+
+            expectThat(isDeleted).isTrue()
+        }
+
+        @Test
+        fun `should not delete non-existing book`() {
+            val isDeleted = commentRepo.deleteById(nonExistingId)
+
+            expectThat(isDeleted).isFalse()
+        }
     }
 
     private fun getFromDb(id: Long) = em.find(Comment::class.java, id)

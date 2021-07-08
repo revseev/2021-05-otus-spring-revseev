@@ -10,8 +10,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import ru.revseev.library.*
+import ru.revseev.library.book1
 import ru.revseev.library.exception.LibraryItemNotFoundException
+import ru.revseev.library.existingId1
+import ru.revseev.library.nonExistingId
 import ru.revseev.library.repo.BookRepo
 import ru.revseev.library.service.impl.BookServiceImpl
 import strikt.api.expectThat

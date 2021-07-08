@@ -124,7 +124,7 @@ internal class AdminLibraryShellTest {
 
             shell.evaluate { "bc 1" }
 
-            verify {commentViewer.viewList(comments) }
+            verify { commentViewer.viewList(comments) }
         }
     }
 }
