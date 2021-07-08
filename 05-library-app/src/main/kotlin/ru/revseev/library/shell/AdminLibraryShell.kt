@@ -83,6 +83,7 @@ class AdminLibraryShell(
     @ShellMethod(value = "List comment for a book.", key = ["bc", "book comments"])
     fun getCommentsByBookId(@ShellOption bookId: Long): String = commentService.getByBookId(bookId).view()
 
+
     private fun Book.view(): String = bookViewer.view(this)
 
     private fun Collection<Book>.view(): String = bookViewer.viewList(this)
