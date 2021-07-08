@@ -33,7 +33,7 @@ class GenreRepoJpa(@PersistenceContext private val em: EntityManager) : GenreRep
         val (new, notNew) = genres.splitByNew()
 
         val persisted = if (new.isNotEmpty()) {
-            val existingNameToGenre = em.createQuery("SELECT g FROM Genre g where g.name in :genres", Genre::class.java)
+            val existingNameToGenre = em.createQuery("SELECT g FROM Genre g WHERE g.name IN :genres", Genre::class.java)
                 .setParameter("genres", new.map { it.name })
                 .resultList
                 .associateBy { it.name }

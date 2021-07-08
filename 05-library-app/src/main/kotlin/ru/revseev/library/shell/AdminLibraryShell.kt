@@ -11,6 +11,8 @@ import ru.revseev.library.service.BookService
 import ru.revseev.library.service.CommentService
 import ru.revseev.library.service.GenreService
 import ru.revseev.library.shell.dto.GenreDto
+import ru.revseev.library.shell.dto.NewCommentDto
+import ru.revseev.library.shell.dto.UpdatedCommentDto
 import ru.revseev.library.shell.dto.toGenres
 
 @ShellComponent
@@ -24,11 +26,10 @@ class AdminLibraryShell(
     private val commentViewer: CommentViewer,
 ) {
 
-
     @ShellMethod(value = "List all books.", key = ["books", "book list"])
     fun getAllBooks(): String = bookService.getAll().view()
 
-    @ShellMethod(value = "Get a book by id.", key = ["book", "book get"])
+    @ShellMethod(value = "Get a book by ID.", key = ["book", "book get"])
     fun getBookById(@ShellOption id: Long): String = bookService.getById(id).view()
 
     @ShellMethod(
@@ -50,7 +51,7 @@ class AdminLibraryShell(
 
 
     @ShellMethod(
-        value = """Update a book's genre, provide it's id and genres 
+        value = """Update a book's genre, provide it's ID and genres 
         as a single quoted string separated by commas (i.e. 'novel,science fiction,action')""",
         key = ["bu", "book update"]
     )
@@ -66,7 +67,7 @@ class AdminLibraryShell(
         """.trimMargin()
     }
 
-    @ShellMethod(value = "Delete a book by id.", key = ["bd", "book delete"])
+    @ShellMethod(value = "Delete a book by ID.", key = ["bd", "book delete"])
     fun deleteBook(@ShellOption id: Long): String {
         val isDeleted = bookService.deleteById(id)
 
@@ -80,8 +81,33 @@ class AdminLibraryShell(
     @ShellMethod(value = "Get all genres", key = ["genres"])
     fun listGenres(): String = genreService.getAll().view()
 
-    @ShellMethod(value = "List comment for a book.", key = ["bc", "book comments"])
+    @ShellMethod(value = "List comments for a book, providing it's ID..", key = ["bc", "book comments"])
     fun getCommentsByBookId(@ShellOption bookId: Long): String = commentService.getByBookId(bookId).view()
+
+    @ShellMethod(
+        value = "Leave a comment for a book, provide it's ID and comment as a single quoted string.",
+        key = ["bca", "book comment add"]
+    )
+    fun createComment(@ShellOption bookId: Long, @ShellOption body: String): String =
+        commentService.add(NewCommentDto(bookId, body)).view()
+
+    @ShellMethod(
+        value = "Update a comment, provide it's ID and a new body as a single quoted string.",
+        key = ["cu", "comment update"]
+    )
+    fun updateComment(@ShellOption id: Long, @ShellOption body: String): String =
+        commentService.update(UpdatedCommentDto(id, body)).view()
+
+    @ShellMethod(value = "Delete a comment, providing it's ID", key = ["cd", "comment delete"])
+    fun deleteComment(@ShellOption id: Long): String {
+        val isDeleted = commentService.deleteById(id)
+
+        return if (isDeleted) {
+            "Deleted successfully"
+        } else {
+            "Was not successful"
+        }
+    }
 
 
     private fun Book.view(): String = bookViewer.view(this)
@@ -90,6 +116,8 @@ class AdminLibraryShell(
 
     @JvmName("viewComments")
     private fun Collection<Comment>.view(): String = commentViewer.viewList(this)
+
+    private fun Comment.view(): String = commentViewer.view(this)
 
     @JvmName("viewGenres")
     private fun Collection<Genre>.view(): String = genreViewer.viewList(this)

@@ -4,23 +4,26 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.context.annotation.Import
-import ru.revseev.library.comment11
-import ru.revseev.library.comment12
+import ru.revseev.library.*
 import ru.revseev.library.domain.Comment
-import ru.revseev.library.existingId1
-import ru.revseev.library.nonExistingId
-import ru.revseev.library.repo.impl.CommentRepoImpl
+import ru.revseev.library.repo.impl.CommentRepoJpa
 import strikt.api.expectThat
 import strikt.assertions.containsExactlyInAnyOrder
 import strikt.assertions.isEqualTo
+import strikt.assertions.isNotNull
+import strikt.assertions.isNull
 
 @DataJpaTest
-@Import(CommentRepoImpl::class)
-internal class CommentRepoImplTest {
+@Import(CommentRepoJpa::class)
+internal class CommentRepoJpaTest {
 
     @Autowired
-    lateinit var commentRepo: CommentRepoImpl
+    lateinit var commentRepo: CommentRepoJpa
+
+    @Autowired
+    lateinit var em: TestEntityManager
 
     @Nested
     inner class FindByBookId {
@@ -55,5 +58,43 @@ internal class CommentRepoImplTest {
 
             expectThat(actual).isEqualTo(expected)
         }
+
+        @Test
+        fun `should return null if nothing found by Id`() {
+            val actual = commentRepo.findById(nonExistingId)
+
+            expectThat(actual).isNull()
+        }
     }
+
+    @Nested
+    inner class Save {
+        @Test
+        fun `should persist a comment`() {
+            val new = Comment(book2, "body")
+
+            val newId = commentRepo.save(new).id
+
+            expectThat(newId).isNotNull()
+
+            val persisted = getFromDb(newId!!)
+            expectThat(persisted) {
+                get { body }.isEqualTo("body")
+                get { book }.isEqualTo(book2)
+            }
+        }
+
+        @Test
+        fun merge() {
+            TODO("Impl")
+        }
+    }
+
+    @Test
+    fun delete() {
+        TODO("Impl")
+    }
+
+    private fun getFromDb(id: Long) = em.find(Comment::class.java, id)
+        ?: throw IllegalStateException("Comment with $id was expected to exist in persistence layer")
 }

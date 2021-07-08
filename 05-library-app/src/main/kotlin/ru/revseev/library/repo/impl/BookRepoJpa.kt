@@ -5,7 +5,6 @@ import ru.revseev.library.domain.Book
 import ru.revseev.library.repo.BookRepo
 import ru.revseev.library.repo.GenreRepo
 import javax.persistence.EntityManager
-import javax.persistence.NoResultException
 import javax.persistence.PersistenceContext
 import javax.persistence.TypedQuery
 
@@ -13,29 +12,21 @@ import javax.persistence.TypedQuery
 class BookRepoJpa(
     @PersistenceContext
     private val em: EntityManager,
-    private val genreRepo: GenreRepo
+    private val genreRepo: GenreRepo,
 ) : BookRepo {
 
-    override fun findAll(): List<Book> {
-        return em.createQuery("SELECT DISTINCT b FROM Book b left join fetch b.genres", Book::class.java)
-            .useFetchGraph("book-genre-graph")
-            .resultList
-    }
+    override fun findAll(): List<Book> = em.createQuery(
+        "SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.genres", Book::class.java)
+        .useFetchGraph("book-genre-graph")
+        .resultList
 
-    override fun findById(id: Long): Book? {
-        val query = em.createQuery(
-            "SELECT DISTINCT b FROM Book b left join fetch b.genres where b.id = :id",
-            Book::class.java
-        )
-            .setParameter("id", id)
-            .useFetchGraph("book-genre-graph")
-
-        return try {
-            query.singleResult
-        } catch (e: NoResultException) {
-            return null
-        }
-    }
+    override fun findById(id: Long): Book? = em.createQuery(
+        "SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.genres WHERE b.id = :id", Book::class.java
+    )
+        .setParameter("id", id)
+        .useFetchGraph("book-genre-graph")
+        .resultList
+        .firstOrNull()
 
     override fun save(book: Book): Book {
         book.genres = genreRepo.saveAll(book.genres).toMutableList()
@@ -48,7 +39,7 @@ class BookRepoJpa(
     }
 
     override fun deleteById(id: Long): Boolean {
-        val changedRows: Int = em.createQuery("delete from Book b where b.id = :id")
+        val changedRows: Int = em.createQuery("DELETE FROM Book WHERE id = :id")
             .setParameter("id", id)
             .executeUpdate()
 

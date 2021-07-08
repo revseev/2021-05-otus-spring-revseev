@@ -6,5 +6,9 @@ interface CommentRepo {
 
     fun findByBookId(bookId: Long): MutableList<Comment>
 
-    fun findById(id: Long): Comment
+    fun findById(id: Long): Comment?
+
+    fun save(comment: Comment): Comment
+
+    fun deleteById(id: Long): Boolean
 }
