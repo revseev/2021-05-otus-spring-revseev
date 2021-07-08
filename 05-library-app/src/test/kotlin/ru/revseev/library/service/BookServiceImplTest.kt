@@ -16,6 +16,9 @@ import ru.revseev.library.existingId1
 import ru.revseev.library.nonExistingId
 import ru.revseev.library.repo.BookRepo
 import ru.revseev.library.service.impl.BookServiceImpl
+import ru.revseev.library.shell.dto.GenreDto
+import ru.revseev.library.shell.dto.NewBookDto
+import ru.revseev.library.shell.dto.UpdatedBookDto
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
@@ -66,18 +69,32 @@ internal class BookServiceImplTest {
     }
 
     @Test
-    fun `add() should pass the book to dao`() {
-        val newBook = book1
-        bookService.add(newBook)
+    fun `add() should create Book from Dto and pass it to Repo`() {
+        val bookDto = NewBookDto("Book1", "Author1", listOf(GenreDto("Genre1"), GenreDto("Genre2")))
+        bookService.add(bookDto)
 
-        verify { bookRepo.save(newBook) }
+        verify {
+            bookRepo.save(withArg {
+                bookDto.title == it.title
+                bookDto.authorName == it.author.name
+                bookDto.genres.forEachIndexed { i, expGenre -> expGenre.name == it.genres[i].name }
+            })
+        }
     }
 
     @Test
     fun `update() should pass the book to dao`() {
-        bookService.update(book1)
+        every { bookService.getById(existingId1) } returns book1
 
-        verify { bookRepo.save(book1) }
+        val bookDto = UpdatedBookDto(existingId1, listOf(GenreDto("newGenre1"), GenreDto("newGenre2")))
+        bookService.update(bookDto)
+
+        verify {
+            bookRepo.save(withArg {
+                bookDto.id == it.id
+                bookDto.genres.forEachIndexed { i, expGenre -> expGenre.name == it.genres[i].name }
+            })
+        }
     }
 
     @Test

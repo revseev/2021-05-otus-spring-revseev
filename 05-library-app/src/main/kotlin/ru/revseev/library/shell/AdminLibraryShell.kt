@@ -3,17 +3,13 @@ package ru.revseev.library.shell
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
 import org.springframework.shell.standard.ShellOption
-import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Comment
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.service.BookService
 import ru.revseev.library.service.CommentService
 import ru.revseev.library.service.GenreService
-import ru.revseev.library.shell.dto.GenreDto
-import ru.revseev.library.shell.dto.NewCommentDto
-import ru.revseev.library.shell.dto.UpdatedCommentDto
-import ru.revseev.library.shell.dto.toGenres
+import ru.revseev.library.shell.dto.*
 
 @ShellComponent
 class AdminLibraryShell(
@@ -39,12 +35,10 @@ class AdminLibraryShell(
     )
     fun addBook(
         @ShellOption title: String,
-        @ShellOption author: String,
+        @ShellOption authorName: String,
         @ShellOption(defaultValue = "") genres: String,
     ): String {
-        val genreList = genres.parseGenres().toGenres()
-        val newBook = Book(title, Author(author), genreList)
-        val added = bookService.add(newBook)
+        val added = bookService.add(NewBookDto(title, authorName, genres.parseGenres()))
         return """|A book has been added:
                   |${added.view()}""".trimMargin()
     }
@@ -56,12 +50,7 @@ class AdminLibraryShell(
         key = ["bu", "book update"]
     )
     fun updateBook(@ShellOption id: Long, @ShellOption genresString: String): String {
-        val book = bookService.getById(id)
-            .apply {
-                genres = genresString.parseGenres().toGenres()
-            }
-
-        val updated = bookService.update(book)
+        val updated = bookService.update(UpdatedBookDto(id, genresString.parseGenres()))
         return """|Updated successfully:
                   |${updated.view()}
         """.trimMargin()

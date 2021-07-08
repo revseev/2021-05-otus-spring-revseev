@@ -14,13 +14,11 @@ import org.springframework.shell.Input
 import org.springframework.shell.Shell
 import ru.revseev.library.comment11
 import ru.revseev.library.comment12
-import ru.revseev.library.domain.Author
-import ru.revseev.library.domain.Book
 import ru.revseev.library.service.BookService
 import ru.revseev.library.service.CommentService
 import ru.revseev.library.service.GenreService
 import ru.revseev.library.shell.dto.GenreDto
-import ru.revseev.library.shell.dto.toGenres
+import ru.revseev.library.shell.dto.NewBookDto
 
 
 @Suppress("UnusedEquals") // cannot use equals on entities without ids
@@ -78,12 +76,9 @@ internal class AdminLibraryShellTest {
     fun `when add a book without genres, a book with empty genre list is created`() {
         shell.evaluate { "ba title author" }
 
-        val expected = Book("title", Author("author"))
+        val expected = NewBookDto("title", "author", emptyList())
         verify {
-            bookService.add(withArg {
-                expected.title == it.title
-                expected.author.name == it.author.name
-            })
+            bookService.add(expected)
         }
     }
 
@@ -95,15 +90,11 @@ internal class AdminLibraryShellTest {
 
         shell.evaluate(TestInputWithSpaces(mutableListOf("ba", "new book title", "some author", genresString)))
 
-        val expected = Book("new book title", Author(name = "some author"), expectedGenres.toGenres())
+        val expected = NewBookDto("new book title", "some author", expectedGenres)
 
         verify {
             genreParser.parseGenres(genresString)
-            bookService.add(withArg {
-                expected.title == it.title
-                expected.author.name == it.author.name
-                expected.genres.forEachIndexed { i, expGenre -> expGenre.name == it.genres[i].name }
-            })
+            bookService.add(expected)
         }
     }
 

@@ -1,6 +1,8 @@
 package ru.revseev.library.service
 
 import ru.revseev.library.domain.Book
+import ru.revseev.library.shell.dto.NewBookDto
+import ru.revseev.library.shell.dto.UpdatedBookDto
 
 interface BookService {
 
@@ -8,9 +10,9 @@ interface BookService {
 
     fun getById(id: Long): Book
 
-    fun add(book: Book): Book
+    fun add(bookDto: NewBookDto): Book
 
-    fun update(book: Book): Book
+    fun update(dto: UpdatedBookDto): Book
 
     fun deleteById(id: Long): Boolean
 }
