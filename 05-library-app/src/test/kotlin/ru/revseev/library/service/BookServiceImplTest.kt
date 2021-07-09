@@ -23,6 +23,7 @@ import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
 
+@Suppress("UnusedEquals") // cannot use equals on entities without ids
 @ExtendWith(MockKExtension::class)
 internal class BookServiceImplTest {
 

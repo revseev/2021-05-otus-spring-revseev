@@ -11,5 +11,4 @@ class GenreServiceImpl(private val genreRepo: GenreRepo) : GenreService {
 
     @Transactional(readOnly = true)
     override fun getAll(): List<Genre> = wrapExceptions { genreRepo.findAll() }
-
 }

@@ -10,7 +10,7 @@ interface BookService {
 
     fun getById(id: Long): Book
 
-    fun add(bookDto: NewBookDto): Book
+    fun add(dto: NewBookDto): Book
 
     fun update(dto: UpdatedBookDto): Book
 

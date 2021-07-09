@@ -21,7 +21,6 @@ import ru.revseev.library.shell.dto.GenreDto
 import ru.revseev.library.shell.dto.NewBookDto
 
 
-@Suppress("UnusedEquals") // cannot use equals on entities without ids
 @SpringBootTest
 internal class AdminLibraryShellTest {
 
