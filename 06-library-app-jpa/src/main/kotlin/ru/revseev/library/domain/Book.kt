@@ -1,5 +1,6 @@
 package ru.revseev.library.domain
 
+import org.hibernate.Hibernate
 import javax.persistence.*
 import javax.persistence.CascadeType.MERGE
 import javax.persistence.CascadeType.PERSIST
@@ -29,7 +30,8 @@ class Book(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || other !is Book) return false
+        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
+        other as Book
 
         return id != null && id == other.id
     }
