@@ -11,4 +11,6 @@ interface GenreRepo {
     fun save(genre: Genre): Genre
 
     fun saveAll(genres: List<Genre>): List<Genre>
+
+    fun findById(id: Long): Genre?
 }

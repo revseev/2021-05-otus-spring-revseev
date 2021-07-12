@@ -1,13 +1,12 @@
 package ru.revseev.library.domain
 
-import org.hibernate.Hibernate
 import javax.persistence.*
 import javax.persistence.CascadeType.MERGE
 import javax.persistence.CascadeType.PERSIST
 
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-genre-graph", attributeNodes = [NamedAttributeNode("author")])
+@NamedEntityGraph(name = "book-author-graph", attributeNodes = [NamedAttributeNode("author")])
 class Book(
     @Column(name = "title", nullable = false)
     var title: String,
@@ -27,8 +26,7 @@ class Book(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as Book
+        if (other == null || other !is Book) return false
 
         return id != null && id == other.id
     }

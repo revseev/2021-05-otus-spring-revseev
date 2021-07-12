@@ -17,14 +17,14 @@ class BookRepoJpa(
 
     override fun findAll(): List<Book> = em.createQuery(
         "SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.genres", Book::class.java)
-        .useFetchGraph("book-genre-graph")
+        .useFetchGraph("book-author-graph")
         .resultList
 
     override fun findById(id: Long): Book? = em.createQuery(
         "SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.genres WHERE b.id = :id", Book::class.java
     )
         .setParameter("id", id)
-        .useFetchGraph("book-genre-graph")
+        .useFetchGraph("book-author-graph")
         .resultList
         .firstOrNull()
 

@@ -88,6 +88,13 @@ internal class BookRepoJpaTest {
             val isDeleted = bookRepo.deleteById(existingId1)
 
             expectThat(isDeleted).isTrue()
+        }
+
+        @Test
+        fun `when delete a book, then comments also deleted via on cascade delete in DB`() {
+            val isDeleted = bookRepo.deleteById(existingId1)
+
+            expectThat(isDeleted).isTrue()
             val deletedBookComments = em.entityManager
                 .createQuery("SELECT c FROM Comment c where c.book.id = $existingId1")
                 .resultList

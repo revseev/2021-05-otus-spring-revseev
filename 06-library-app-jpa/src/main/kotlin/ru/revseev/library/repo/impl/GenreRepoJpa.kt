@@ -2,7 +2,6 @@ package ru.revseev.library.repo.impl
 
 import org.springframework.stereotype.Repository
 import ru.revseev.library.domain.Genre
-import ru.revseev.library.domain.LongIdentifiable
 import ru.revseev.library.repo.GenreRepo
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
@@ -13,6 +12,8 @@ class GenreRepoJpa(@PersistenceContext private val em: EntityManager) : GenreRep
     override fun findAll(): List<Genre> {
         return em.createQuery("select g from Genre g", Genre::class.java).resultList
     }
+
+    override fun findById(id: Long): Genre? = em.find(Genre::class.java, id)
 
     override fun findByName(name: String): Genre? {
         return em.createQuery("SELECT g FROM Genre g WHERE g.name = :name", Genre::class.java)
@@ -30,7 +31,7 @@ class GenreRepoJpa(@PersistenceContext private val em: EntityManager) : GenreRep
     }
 
     override fun saveAll(genres: List<Genre>): List<Genre> {
-        val (new, notNew) = genres.splitByNew()
+        val (new, notNew) = genres.partition { it.isNew() }
 
         val persisted = if (new.isNotEmpty()) {
             val existingNameToGenre = em.createQuery("SELECT g FROM Genre g WHERE g.name IN :genres", Genre::class.java)
@@ -54,11 +55,6 @@ class GenreRepoJpa(@PersistenceContext private val em: EntityManager) : GenreRep
         return persisted + merged
     }
 
-}
-
-fun <T : LongIdentifiable> List<T>.splitByNew(): Pair<List<T>, List<T>> {
-    val byNew = this.groupBy { it.isNew() }
-    return byNew.getOrDefault(true, listOf()) to byNew.getOrDefault(false, listOf())
 }
 
 fun <T> EntityManager.persistAndGet(entity: T): T {

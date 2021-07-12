@@ -1,6 +1,5 @@
 package ru.revseev.library.domain
 
-import org.hibernate.Hibernate
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -14,8 +13,7 @@ class Author(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
-        other as Author
+        if (other == null || other !is Author) return false
 
         return id != null && id == other.id
     }
