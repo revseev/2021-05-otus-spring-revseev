@@ -13,10 +13,8 @@ import ru.revseev.library.shell.dto.UpdatedCommentDto
 @Service
 class CommentServiceImpl(private val commentRepo: CommentRepo, private val bookService: BookService) : CommentService {
 
-    @Transactional
-    override fun getByBookId(bookId: Long): MutableList<Comment> = wrapExceptions { commentRepo.findByBookId(bookId) }
+    override fun getByBookId(bookId: Long): MutableList<Comment> = bookService.getBookWithCommentsById(bookId).comments
 
-    @Transactional
     override fun getById(id: Long): Comment = wrapExceptions {
         commentRepo.findById(id) ?: throw LibraryItemNotFoundException("Comment with id = $id was not found")
     }

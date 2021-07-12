@@ -14,10 +14,8 @@ import ru.revseev.library.shell.dto.toGenres
 @Service
 class BookServiceImpl(private val bookRepo: BookRepo) : BookService {
 
-    @Transactional(readOnly = true)
     override fun getAll(): List<Book> = wrapExceptions { bookRepo.findAll() }
 
-    @Transactional(readOnly = true)
     override fun getById(id: Long): Book = wrapExceptions {
         bookRepo.findById(id)
     } ?: throw LibraryItemNotFoundException("Book with id = $id was not found")
@@ -37,4 +35,11 @@ class BookServiceImpl(private val bookRepo: BookRepo) : BookService {
 
     @Transactional
     override fun deleteById(id: Long): Boolean = wrapExceptions { bookRepo.deleteById(id) }
+
+    override fun getBookWithCommentsById(id: Long): Book {
+        val book = getById(id)
+        return wrapExceptions {
+            bookRepo.getBookWithComments(book)
+        }
+    }
 }

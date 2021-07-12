@@ -9,14 +9,6 @@ import javax.persistence.PersistenceContext
 @Repository
 class CommentRepoJpa(@PersistenceContext private val em: EntityManager) : CommentRepo {
 
-    override fun findByBookId(bookId: Long): MutableList<Comment> = em.createQuery(
-        "SELECT c FROM Comment c JOIN FETCH Author a ON a.id = c.book.author.id WHERE c.book.id = :bookId",
-        Comment::class.java
-    )
-        .setParameter("bookId", bookId)
-        .resultList
-        .toMutableList()
-
     override fun findById(id: Long): Comment? = em.createQuery(
         "SELECT c FROM Comment c WHERE c.id = :id",
         Comment::class.java

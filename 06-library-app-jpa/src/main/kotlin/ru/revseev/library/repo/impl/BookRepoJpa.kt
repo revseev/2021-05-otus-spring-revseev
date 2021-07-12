@@ -1,7 +1,9 @@
 package ru.revseev.library.repo.impl
 
 import org.springframework.stereotype.Repository
+import org.springframework.util.Assert
 import ru.revseev.library.domain.Book
+import ru.revseev.library.domain.Comment
 import ru.revseev.library.repo.BookRepo
 import ru.revseev.library.repo.GenreRepo
 import javax.persistence.EntityManager
@@ -16,7 +18,8 @@ class BookRepoJpa(
 ) : BookRepo {
 
     override fun findAll(): List<Book> = em.createQuery(
-        "SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.genres", Book::class.java)
+        "SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.genres", Book::class.java
+    )
         .useFetchGraph("book-author-graph")
         .resultList
 
@@ -49,6 +52,20 @@ class BookRepoJpa(
         } else {
             false
         }
+    }
+
+
+    override fun getBookWithComments(book: Book): Book {
+        Assert.notNull(book.id, "Book must have an id")
+        // поскольку, в 99% случаев комменты в книге не нужны, лучше их вынуть подзапросом
+        val comments = em.createQuery(
+            "SELECT c FROM Comment c WHERE c.book.id = :bookId",
+            Comment::class.java
+        )
+            .setParameter("bookId", book.id)
+            .resultList
+        book.comments = comments
+        return book
     }
 
     private fun <T> TypedQuery<T>.useFetchGraph(graphName: String): TypedQuery<T> {

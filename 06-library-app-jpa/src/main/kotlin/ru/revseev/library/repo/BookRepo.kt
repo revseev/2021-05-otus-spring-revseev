@@ -11,4 +11,6 @@ interface BookRepo {
     fun save(book: Book): Book
 
     fun deleteById(id: Long): Boolean
+
+    fun getBookWithComments(book: Book): Book
 }

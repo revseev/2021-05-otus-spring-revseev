@@ -22,27 +22,6 @@ internal class CommentRepoJpaTest {
     @Autowired
     lateinit var em: TestEntityManager
 
-    @Nested
-    inner class FindByBookId {
-
-        @Test
-        fun `should return correctly comment by book id`() {
-            val expected = mutableListOf(comment11, comment12)
-
-            val actual = commentRepo.findByBookId(1L)
-
-            expectThat(actual).containsExactlyInAnyOrder(expected)
-        }
-
-        @Test
-        fun `should return empty list if non-existing book id`() {
-            val expected = mutableListOf<Comment>()
-
-            val actual = commentRepo.findByBookId(nonExistingId)
-
-            expectThat(actual).isEqualTo(expected)
-        }
-    }
 
     @Nested
     inner class FindById {

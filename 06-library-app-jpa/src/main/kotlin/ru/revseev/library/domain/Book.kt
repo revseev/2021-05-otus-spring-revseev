@@ -24,6 +24,9 @@ class Book(
     var genres: MutableList<Genre> = mutableListOf(),
 ) : LongIdentifiable() {
 
+    @OneToMany(mappedBy = "book", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var comments: MutableList<Comment> = mutableListOf()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || other !is Book) return false

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import
 import ru.revseev.library.*
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
+import ru.revseev.library.domain.Genre
 import ru.revseev.library.repo.impl.BookRepoJpa
 import ru.revseev.library.repo.impl.GenreRepoJpa
 import strikt.api.expectThat
@@ -106,6 +107,26 @@ internal class BookRepoJpaTest {
             val isDeleted = bookRepo.deleteById(nonExistingId)
 
             expectThat(isDeleted).isFalse()
+        }
+    }
+
+    @Nested
+    inner class GetBookWithComments {
+
+        @Test
+        fun `should return a list with book comments if they exist`() {
+            val actual = bookRepo.getBookWithComments(book1)
+
+            expectThat(actual.comments).containsExactlyInAnyOrder(mutableListOf(comment11, comment12))
+        }
+
+        @Test
+        fun `should return empty list if provided book has no comments`() {
+            val bookWithNoComments = Book("Book3", Author("Author3"), mutableListOf(Genre("Genre4")))
+            em.persist(bookWithNoComments)
+            val actual = bookRepo.getBookWithComments(bookWithNoComments)
+
+            expectThat(actual.comments).containsExactlyInAnyOrder(mutableListOf())
         }
     }
 

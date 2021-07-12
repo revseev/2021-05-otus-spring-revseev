@@ -15,4 +15,6 @@ interface BookService {
     fun update(dto: UpdatedBookDto): Book
 
     fun deleteById(id: Long): Boolean
+
+    fun getBookWithCommentsById(id: Long): Book
 }
