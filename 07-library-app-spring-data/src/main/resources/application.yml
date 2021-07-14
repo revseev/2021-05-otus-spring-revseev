@@ -1,0 +1,51 @@
+spring:
+  profiles:
+    default: default
+
+  datasource:
+    url: jdbc:h2:file:~/.h2/library
+#    url: jdbc:h2:mem:library #todo
+    username: admin
+    password: pass
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+      data-locations: data.sql
+  h2:
+    console:
+      path: /h2-console
+      enabled: false
+  output:
+    ansi:
+      enabled: always
+
+logging:
+  level:
+    root: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:h2:file:~/.h2/library;AUTO_SERVER=TRUE
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    ru: DEBUG
+
+h2:
+  console:
+    enabled: true
