@@ -1,4 +1,3 @@
-/*
 package ru.revseev.library.repo
 
 import org.junit.jupiter.api.Nested
@@ -6,24 +5,21 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
-import org.springframework.context.annotation.Import
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.existingId1
 import ru.revseev.library.genre1
 import ru.revseev.library.genre2
 import ru.revseev.library.genre3
-import ru.revseev.library.repo.impl.GenreRepoJpa
 import strikt.api.expect
 import strikt.api.expectThat
 import strikt.assertions.*
 
 
 @DataJpaTest
-@Import(GenreRepoJpa::class)
 internal class GenreRepoDataTest {
 
     @Autowired
-    lateinit var genreRepo: GenreRepoJpa
+    lateinit var genreRepo: GenreRepo
     @Autowired
     lateinit var em: TestEntityManager
 
@@ -58,13 +54,6 @@ internal class GenreRepoDataTest {
     @Nested
     inner class Save {
 
-        @Test
-        fun `should return existing genre if it exists by name`() {
-            val existing = Genre("Genre1")
-            val persisted = genreRepo.save(existing)
-
-            expectThat(persisted.id).isEqualTo(existingId1)
-        }
 
         @Test
         fun `should save genre if it is new`() {
@@ -75,6 +64,22 @@ internal class GenreRepoDataTest {
                 that(persisted.id).isNotNull().and { isGreaterThan(3L) }
                 that(persisted.name).isEqualTo(new.name)
             }
+        }
+        @Test
+        fun `should return existing genre if it exists by name`() {
+            val existing = Genre("Genre1")
+            val persisted = genreRepo.save(existing)
+
+            expectThat(persisted.id).isEqualTo(existingId1)
+        }
+
+        @Test
+        fun `should update name for existing genre`() {
+            val forUpdate = Genre("Changed name").apply { id = existingId1 }
+            val persisted = genreRepo.save(forUpdate)
+
+            val actual = getFromDb(existingId1)
+            expectThat(actual).isEqualTo(forUpdate).and { isEqualTo(persisted) }
         }
     }
 
@@ -123,4 +128,4 @@ internal class GenreRepoDataTest {
 
     private fun getFromDb(id: Long): Genre = em.find(Genre::class.java, id)
         ?: throw IllegalStateException("Genre with $id was expected to exist in persistence layer")
-}*/
+}

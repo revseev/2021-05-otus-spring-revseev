@@ -38,4 +38,12 @@ class GenreRepositoryCustomImpl(@PersistenceContext private val em: EntityManage
 
         return persisted + merged
     }
+
+    override fun save(genre: Genre): Genre {
+        var existingByName: Genre? = null
+        if (genre.isNew()) {
+            existingByName = genreRepo.findByName(genre.name)
+        }
+        return existingByName ?: genreRepo.saveAndFlush(genre)
+    }
 }
