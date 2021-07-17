@@ -7,13 +7,17 @@ import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.exception.LibraryItemNotFoundException
 import ru.revseev.library.repo.BookRepo
+import ru.revseev.library.repo.GenreRepo
 import ru.revseev.library.service.BookService
 import ru.revseev.library.shell.dto.NewBookDto
 import ru.revseev.library.shell.dto.UpdatedBookDto
 import ru.revseev.library.shell.dto.toGenres
 
 @Service
-class BookServiceImpl(private val bookRepo: BookRepo) : BookService {
+class BookServiceImpl(
+    private val bookRepo: BookRepo,
+    private val genreRepo: GenreRepo,
+) : BookService {
 
     @Transactional(readOnly = true)
     override fun getAll(): List<Book> = wrapExceptions { bookRepo.findAll() }
@@ -25,7 +29,8 @@ class BookServiceImpl(private val bookRepo: BookRepo) : BookService {
 
     @Transactional
     override fun update(dto: UpdatedBookDto): Book {
-        val book = getById(dto.id).apply { genres = dto.genres.toGenres() }
+        val savedGenres = genreRepo.saveAll(dto.genres.toGenres())
+        val book = getById(dto.id).apply { this.genres = savedGenres.toMutableList() }
         return wrapExceptions {
             bookRepo.save(book)
         }
@@ -33,9 +38,17 @@ class BookServiceImpl(private val bookRepo: BookRepo) : BookService {
 
     @Transactional
     override fun add(dto: NewBookDto): Book = wrapExceptions {
-        bookRepo.save(Book(dto.title, Author(dto.authorName), dto.genres.toGenres()))
+        val savesGenres = genreRepo.saveAll(dto.genres.toGenres())
+        bookRepo.save(Book(dto.title, Author(dto.authorName), savesGenres.toMutableList()))
     }
 
     @Transactional
-    override fun deleteById(id: Long): Boolean = wrapExceptions { bookRepo.deleteBookById(id) }
+    override fun deleteById(id: Long): Boolean = wrapExceptions {
+        try {
+            bookRepo.deleteById(id)
+            true
+        } catch (ex: Exception) {
+            false
+        }
+    }
 }

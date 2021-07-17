@@ -1,6 +1,7 @@
 package ru.revseev.library.repo.impl
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Repository
 import ru.revseev.library.domain.Genre
 import ru.revseev.library.repo.GenreRepo
@@ -11,6 +12,7 @@ import javax.persistence.PersistenceContext
 @Repository
 class GenreRepositoryCustomImpl(@PersistenceContext private val em: EntityManager) : GenreRepositoryCustom {
 
+    @Lazy
     @Autowired
     lateinit var genreRepo: GenreRepo
 
@@ -35,7 +37,7 @@ class GenreRepositoryCustomImpl(@PersistenceContext private val em: EntityManage
         } else {
             emptyList()
         }
-
+        em.flush()
         return persisted + merged
     }
 

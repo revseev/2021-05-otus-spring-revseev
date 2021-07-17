@@ -1,4 +1,3 @@
-/*
 package ru.revseev.library.repo
 
 import org.junit.jupiter.api.Nested
@@ -6,19 +5,20 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
-import org.springframework.context.annotation.Import
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.data.repository.findByIdOrNull
 import ru.revseev.library.*
 import ru.revseev.library.domain.Comment
-import ru.revseev.library.repo.impl.CommentRepoJpa
+import strikt.api.expectCatching
 import strikt.api.expectThat
+import strikt.api.expectThrows
 import strikt.assertions.*
 
 @DataJpaTest
-@Import(CommentRepoJpa::class)
 internal class CommentRepoJpaTest {
 
     @Autowired
-    lateinit var commentRepo: CommentRepoJpa
+    lateinit var commentRepo: CommentRepo
 
     @Autowired
     lateinit var em: TestEntityManager
@@ -52,14 +52,14 @@ internal class CommentRepoJpaTest {
         fun `should return correct comment by Id`() {
             val expected = comment11
 
-            val actual = commentRepo.findById(existingId1)
+            val actual = commentRepo.findByIdOrNull(existingId1)
 
             expectThat(actual).isEqualTo(expected)
         }
 
         @Test
         fun `should return null if nothing found by Id`() {
-            val actual = commentRepo.findById(nonExistingId)
+            val actual = commentRepo.findByIdOrNull(nonExistingId)
 
             expectThat(actual).isNull()
         }
@@ -96,19 +96,15 @@ internal class CommentRepoJpaTest {
 
         @Test
         fun `should delete existing book`() {
-            val isDeleted = commentRepo.deleteById(existingId1)
-
-            expectThat(isDeleted).isTrue()
+            expectCatching { commentRepo.deleteById(existingId1) }.isSuccess()
         }
 
         @Test
         fun `should not delete non-existing book`() {
-            val isDeleted = commentRepo.deleteById(nonExistingId)
-
-            expectThat(isDeleted).isFalse()
+            expectThrows<EmptyResultDataAccessException> { commentRepo.deleteById(nonExistingId) }
         }
     }
 
     private fun getFromDb(id: Long) = em.find(Comment::class.java, id)
         ?: throw IllegalStateException("Comment with $id was expected to exist in persistence layer")
-}*/
+}

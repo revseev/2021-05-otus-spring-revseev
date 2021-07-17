@@ -1,13 +1,14 @@
 package ru.revseev.library.domain
 
 import org.hibernate.Hibernate
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 import javax.persistence.*
 import javax.persistence.CascadeType.MERGE
 import javax.persistence.CascadeType.PERSIST
 
 @Entity
 @Table(name = "books")
-@NamedEntityGraph(name = "book-author-graph", attributeNodes = [NamedAttributeNode("author")])
 class Book(
     @Column(name = "title", nullable = false)
     var title: String,
@@ -25,6 +26,7 @@ class Book(
     var genres: MutableList<Genre> = mutableListOf(),
 ) : LongIdentifiable() {
 
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "book", cascade = [CascadeType.ALL], orphanRemoval = true)
     var comments: MutableList<Comment> = mutableListOf()
 

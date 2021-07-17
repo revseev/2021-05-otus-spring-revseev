@@ -39,5 +39,12 @@ class CommentServiceImpl(private val commentRepo: CommentRepo, private val bookS
     }
 
     @Transactional
-    override fun deleteById(id: Long): Boolean = wrapExceptions { commentRepo.deleteCommentById(id) }
+    override fun deleteById(id: Long): Boolean = wrapExceptions {
+        try {
+            commentRepo.deleteById(id)
+            true
+        } catch (ex: Exception) {
+            false
+        }
+    }
 }

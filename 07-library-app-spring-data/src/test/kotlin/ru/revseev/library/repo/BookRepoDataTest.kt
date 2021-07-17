@@ -1,4 +1,3 @@
-/*
 package ru.revseev.library.repo
 
 import org.hibernate.collection.internal.AbstractPersistentCollection
@@ -7,21 +6,21 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
-import org.springframework.context.annotation.Import
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.data.repository.findByIdOrNull
 import ru.revseev.library.*
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
-import ru.revseev.library.repo.impl.BookRepoJpa
-import ru.revseev.library.repo.impl.GenreRepoJpa
+import strikt.api.expectCatching
 import strikt.api.expectThat
+import strikt.api.expectThrows
 import strikt.assertions.*
 
 @DataJpaTest
-@Import(BookRepoJpa::class, GenreRepoJpa::class)
 internal class BookRepoJpaTest {
 
     @Autowired
-    lateinit var bookRepo: BookRepoJpa
+    lateinit var bookRepo: BookRepo
 
     @Autowired
     lateinit var em: TestEntityManager
@@ -41,21 +40,21 @@ internal class BookRepoJpaTest {
         @Test
         fun `should find existing book by id`() {
             val expected = book1
-            val actual: Book? = bookRepo.findById(existingId1)
+            val actual: Book? = bookRepo.findByIdOrNull(existingId1)
 
             expectThat(actual).isEqualTo(expected)
         }
 
         @Test
         fun `should return null if book does not exist`() {
-            val actual: Book? = bookRepo.findById(nonExistingId)
+            val actual: Book? = bookRepo.findByIdOrNull(nonExistingId)
 
             expectThat(actual).isNull()
         }
 
         @Test
         fun `should enable lazy-load on genres`() {
-            val book = bookRepo.findById(existingId1)!!
+            val book = bookRepo.findByIdOrNull(existingId1)!!
 
             expectThat(book.genres).isA<AbstractPersistentCollection>()
         }
@@ -66,7 +65,7 @@ internal class BookRepoJpaTest {
 
         @Test
         fun `should persist a book if it is new`() {
-            val newBook = Book("new", Author("new"), mutableListOf(genre2))
+            val newBook = Book("new", Author("new"), mutableListOf())
             val saved = bookRepo.save(newBook)
 
             expectThat(saved.isNew()).isFalse()
@@ -74,7 +73,10 @@ internal class BookRepoJpaTest {
 
         @Test
         fun `should update a book if it exists in persistence layer`() {
-            val changed = getFromDb(existingId2).apply { title = "Changed title" }
+            val changed = getFromDb(existingId2).apply {
+                title = "Changed title"
+                genres = mutableListOf(genre1)
+            }
             val updated = bookRepo.save(changed)
 
             expectThat(updated).isEqualTo(getFromDb(existingId2))
@@ -86,16 +88,13 @@ internal class BookRepoJpaTest {
 
         @Test
         fun `should delete existing book`() {
-            val isDeleted = bookRepo.deleteById(existingId1)
-
-            expectThat(isDeleted).isTrue()
+            expectCatching { bookRepo.deleteById(existingId1) }.isSuccess()
         }
 
         @Test
         fun `when delete a book, then comments also deleted via on cascade delete in DB`() {
-            val isDeleted = bookRepo.deleteById(existingId1)
+            bookRepo.deleteById(existingId1)
 
-            expectThat(isDeleted).isTrue()
             val deletedBookComments = em.entityManager
                 .createQuery("SELECT c FROM Comment c where c.book.id = $existingId1")
                 .resultList
@@ -104,9 +103,7 @@ internal class BookRepoJpaTest {
 
         @Test
         fun `should not delete non-existing book`() {
-            val isDeleted = bookRepo.deleteById(nonExistingId)
-
-            expectThat(isDeleted).isFalse()
+            expectThrows<EmptyResultDataAccessException> { bookRepo.deleteById(nonExistingId) }
         }
     }
 
@@ -114,4 +111,3 @@ internal class BookRepoJpaTest {
         ?: throw IllegalStateException("Book with $id was expected to exist in persistence layer")
 }
 
-*/
