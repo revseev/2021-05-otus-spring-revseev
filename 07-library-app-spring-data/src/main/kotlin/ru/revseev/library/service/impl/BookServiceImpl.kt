@@ -1,6 +1,5 @@
 package ru.revseev.library.service.impl
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.revseev.library.domain.Author
@@ -24,7 +23,7 @@ class BookServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getById(id: Long): Book = wrapExceptions {
-        bookRepo.findByIdOrNull(id)
+        bookRepo.findById(id).orElse(null)
     } ?: throw LibraryItemNotFoundException("Book with id = $id was not found")
 
     @Transactional

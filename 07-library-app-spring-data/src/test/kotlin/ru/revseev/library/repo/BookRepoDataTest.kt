@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.dao.EmptyResultDataAccessException
-import org.springframework.data.repository.findByIdOrNull
 import ru.revseev.library.*
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
@@ -40,21 +39,21 @@ internal class BookRepoJpaTest {
         @Test
         fun `should find existing book by id`() {
             val expected = book1
-            val actual: Book? = bookRepo.findByIdOrNull(existingId1)
+            val actual: Book? = bookRepo.findById(existingId1).orElse(null)
 
             expectThat(actual).isEqualTo(expected)
         }
 
         @Test
         fun `should return null if book does not exist`() {
-            val actual: Book? = bookRepo.findByIdOrNull(nonExistingId)
+            val actual: Book? = bookRepo.findById(nonExistingId).orElse(null)
 
             expectThat(actual).isNull()
         }
 
         @Test
         fun `should enable lazy-load on genres`() {
-            val book = bookRepo.findByIdOrNull(existingId1)!!
+            val book = bookRepo.findById(existingId1).orElse(null)
 
             expectThat(book.genres).isA<AbstractPersistentCollection>()
         }

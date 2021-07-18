@@ -7,12 +7,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.repository.findByIdOrNull
-import ru.revseev.library.*
+import ru.revseev.library.book2
+import ru.revseev.library.comment11
 import ru.revseev.library.domain.Comment
+import ru.revseev.library.existingId1
+import ru.revseev.library.nonExistingId
 import strikt.api.expectCatching
 import strikt.api.expectThat
 import strikt.api.expectThrows
-import strikt.assertions.*
+import strikt.assertions.isEqualTo
+import strikt.assertions.isNotNull
+import strikt.assertions.isNull
+import strikt.assertions.isSuccess
 
 @DataJpaTest
 internal class CommentRepoJpaTest {
@@ -22,28 +28,6 @@ internal class CommentRepoJpaTest {
 
     @Autowired
     lateinit var em: TestEntityManager
-
-    @Nested
-    inner class FindByBookId {
-
-        @Test
-        fun `should return correctly comment by book id`() {
-            val expected = mutableListOf(comment11, comment12)
-
-            val actual = commentRepo.findByBookId(1L)
-
-            expectThat(actual).containsExactlyInAnyOrder(expected)
-        }
-
-        @Test
-        fun `should return empty list if non-existing book id`() {
-            val expected = mutableListOf<Comment>()
-
-            val actual = commentRepo.findByBookId(nonExistingId)
-
-            expectThat(actual).isEqualTo(expected)
-        }
-    }
 
     @Nested
     inner class FindById {

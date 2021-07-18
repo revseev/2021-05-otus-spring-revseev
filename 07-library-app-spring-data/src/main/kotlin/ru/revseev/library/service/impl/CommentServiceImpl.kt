@@ -1,5 +1,6 @@
 package ru.revseev.library.service.impl
 
+import org.hibernate.Hibernate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,10 +15,14 @@ import ru.revseev.library.shell.dto.UpdatedCommentDto
 @Service
 class CommentServiceImpl(private val commentRepo: CommentRepo, private val bookService: BookService) : CommentService {
 
-    @Transactional
-    override fun getByBookId(bookId: Long): MutableList<Comment> = wrapExceptions { commentRepo.findByBookId(bookId) }
+    @Transactional(readOnly = true)
+    override fun getByBookId(bookId: Long): MutableList<Comment> {
+        val comments = bookService.getById(bookId).comments
+        Hibernate.initialize(comments)
+        return comments
+    }
 
-    @Transactional
+    @Transactional(readOnly = true)
     override fun getById(id: Long): Comment = wrapExceptions {
         commentRepo.findByIdOrNull(id) ?: throw LibraryItemNotFoundException("Comment with id = $id was not found")
     }
