@@ -1,0 +1,34 @@
+spring:
+  profiles:
+    default: default
+  data:
+    mongodb:
+
+
+  output:
+    ansi:
+      enabled: always
+mongock:
+  change-logs-scan-package:
+    - ru.revseev.library.repo.changelog
+  runner-type: applicationrunner
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
+logging:
+  level:
+    root: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+
+logging:
+  level:
+    ru: DEBUG
+

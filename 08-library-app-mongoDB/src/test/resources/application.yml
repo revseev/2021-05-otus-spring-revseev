@@ -1,0 +1,17 @@
+spring:
+  data:
+    mongodb:
+      port: 0
+      database: lib_test
+
+
+  output:
+    ansi:
+      enabled: always
+  shell:
+    interactive:
+      enabled: false
+
+logging:
+  level:
+    ru: DEBUG
