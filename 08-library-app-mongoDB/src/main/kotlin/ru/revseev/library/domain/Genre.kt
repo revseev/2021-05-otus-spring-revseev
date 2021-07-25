@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document("genres")
 data class Genre(
     val name: String,
-) : LongIdentifiable()
+) : StringIdentifiable()
 

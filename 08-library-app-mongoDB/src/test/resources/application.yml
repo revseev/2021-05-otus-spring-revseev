@@ -4,13 +4,21 @@ spring:
       port: 0
       database: lib_test
 
-
   output:
     ansi:
       enabled: always
   shell:
     interactive:
       enabled: false
+
+mongock:
+  change-logs-scan-package:
+    - ru.revseev.library.repo.changelog.test
+  runner-type: "ApplicationRunner"
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
 
 logging:
   level:

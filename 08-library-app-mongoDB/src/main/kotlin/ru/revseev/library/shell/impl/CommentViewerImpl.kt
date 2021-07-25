@@ -8,7 +8,7 @@ import ru.revseev.library.shell.CommentViewer
 class CommentViewerImpl : CommentViewer {
 
     override fun view(comment: Comment): String =
-        """[${comment.id}] Comment for book "${comment.book.title}" by "${comment.book.author.name}:
+        """[${comment.id}] Comment for book "${comment.book?.title}" by "${comment.book?.author?.name}:
            |  "${comment.body}"
         """.trimMargin()
 

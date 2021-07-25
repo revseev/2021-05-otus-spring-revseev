@@ -1,11 +1,12 @@
 package ru.revseev.library.domain
 
+import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document( "comments")
-class Comment(
-    val book: Book,
+@Document("comments")
+data class Comment(
     var body: String = "",
-) : LongIdentifiable() {
-
+) : StringIdentifiable() {
+    @Transient
+    var book: Book? = null
 }

@@ -29,7 +29,7 @@ class CommentServiceImpl(private val commentRepo: CommentRepo, private val bookS
     override fun add(newCommentDto: NewCommentDto): Comment {
         val book = bookService.getById(newCommentDto.bookId)
         return wrapExceptions {
-            commentRepo.save(Comment(book, newCommentDto.body))
+            commentRepo.save(Comment(newCommentDto.body).apply { this.book = book })
         }
     }
 
