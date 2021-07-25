@@ -1,5 +1,6 @@
 package ru.revseev.library.domain
 
+import org.springframework.data.annotation.PersistenceConstructor
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document("books")
@@ -9,5 +10,15 @@ data class Book(
     var genres: MutableList<Genre> = mutableListOf(),
 ) : StringIdentifiable() {
 
-    var comments: MutableList<Comment> = mutableListOf()
+    val commentIds: MutableList<String> = mutableListOf()
+
+    @PersistenceConstructor
+    constructor(
+        title: String,
+        author: Author,
+        genres: MutableList<Genre>,
+        commentIds: List<String>,
+    ) : this(title, author, genres) {
+        this.commentIds += commentIds
+    }
 }

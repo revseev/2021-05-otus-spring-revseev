@@ -16,8 +16,9 @@ class CommentServiceImpl(private val commentRepo: CommentRepo, private val bookS
 
     @Transactional(readOnly = true)
     override fun getByBookId(bookId: Long): MutableList<Comment> {
-        val comments = bookService.getById(bookId).comments
-        return comments
+//        val comments = bookService.getById(bookId).comments
+//        return comments
+        TODO()
     }
 
     @Transactional(readOnly = true)
@@ -29,7 +30,8 @@ class CommentServiceImpl(private val commentRepo: CommentRepo, private val bookS
     override fun add(newCommentDto: NewCommentDto): Comment {
         val book = bookService.getById(newCommentDto.bookId)
         return wrapExceptions {
-            commentRepo.save(Comment(newCommentDto.body).apply { this.book = book })
+//            commentRepo.save(Comment(newCommentDto.body).apply { this.book = book })
+            TODO()
         }
     }
 
