@@ -6,13 +6,13 @@ import ru.revseev.library.shell.dto.UpdatedCommentDto
 
 interface CommentService {
 
-    fun getByBookId(bookId: Long): MutableList<Comment>
+    fun getByBookId(bookId: String): MutableList<Comment>
 
-    fun getById(id: Long): Comment
+    fun getById(id: String): Comment
 
     fun add(newCommentDto: NewCommentDto): Comment
 
     fun update(updatedCommentDto: UpdatedCommentDto): Comment
 
-    fun deleteById(id: Long): Boolean
+    fun deleteById(id: String): Boolean
 }

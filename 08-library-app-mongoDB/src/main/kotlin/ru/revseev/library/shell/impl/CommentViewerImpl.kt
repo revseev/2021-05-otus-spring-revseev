@@ -8,10 +8,9 @@ import ru.revseev.library.shell.CommentViewer
 class CommentViewerImpl : CommentViewer {
 
     override fun view(comment: Comment): String =
-//        """[${comment.id}] Comment for book "${comment.book?.title}" by "${comment.book?.author?.name}:
-//           |  "${comment.body}"
-//        """.trimMargin()
-        TODO()
+        """[${comment.id}] Comment for book "${comment.bookId}":
+           |  "${comment.body}"
+        """.trimMargin()
 
     override fun viewList(comments: Collection<Comment>): String {
         return if (comments.isEmpty()) {

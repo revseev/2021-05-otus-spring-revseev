@@ -2,13 +2,12 @@ package ru.revseev.library.repo
 
 import org.springframework.data.mongodb.repository.MongoRepository
 import ru.revseev.library.domain.Book
+import ru.revseev.library.domain.Genre
 import java.util.*
 
-interface BookRepo : MongoRepository<Book, Long> {
+interface BookRepo : MongoRepository<Book, String>, BookRepoCustom {
 
-//    @EntityGraph(attributePaths = ["author", "genres"])
     override fun findAll(): List<Book>
 
-//    @EntityGraph(attributePaths = ["author", "genres"])
-    override fun findById(id: Long): Optional<Book>
+     override fun findById(id: String): Optional<Book>
 }

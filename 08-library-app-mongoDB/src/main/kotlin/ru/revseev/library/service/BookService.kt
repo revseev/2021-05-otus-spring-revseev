@@ -8,11 +8,11 @@ interface BookService {
 
     fun getAll(): List<Book>
 
-    fun getById(id: Long): Book
+    fun getById(id: String): Book
 
     fun add(dto: NewBookDto): Book
 
     fun update(dto: UpdatedBookDto): Book
 
-    fun deleteById(id: Long): Boolean
+    fun deleteById(id: String): Boolean
 }

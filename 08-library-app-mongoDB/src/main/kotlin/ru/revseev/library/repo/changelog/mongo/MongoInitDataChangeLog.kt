@@ -7,7 +7,6 @@ import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Comment
 import ru.revseev.library.domain.Genre
-import ru.revseev.library.repo.AuthorRepo
 import ru.revseev.library.repo.BookRepo
 import ru.revseev.library.repo.CommentRepo
 
@@ -44,13 +43,13 @@ class MongoInitDataChangeLog {
         bookRepo.saveAll(listOf(book1, book2, book3))
     }
 
-    @ChangeSet(order = "002", id = "insert author", author = "revseev", runAlways = true)
-    fun populateAuthor(authorRepo: AuthorRepo) {
-        Author("Philip K. Dick")
-        Author("J. R. R. Tolkien")
-        Author("New")
-
-
-        authorRepo.saveAll(listOf(Author("Philip K. Dick"), Author("J. R. R. Tolkien"), Author("New")))
-    }
+//    @ChangeSet(order = "002", id = "insert author", author = "revseev", runAlways = true)
+//    fun populateAuthor(authorRepo: AuthorRepo) {
+//        Author("Philip K. Dick")
+//        Author("J. R. R. Tolkien")
+//        Author("New")
+//
+//
+//        authorRepo.saveAll(listOf(Author("Philip K. Dick"), Author("J. R. R. Tolkien"), Author("New")))
+//    }
 }

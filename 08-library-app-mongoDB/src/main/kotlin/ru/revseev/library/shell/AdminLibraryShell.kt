@@ -26,7 +26,7 @@ class AdminLibraryShell(
     fun getAllBooks(): String = bookService.getAll().view()
 
     @ShellMethod(value = "Get a book by ID.", key = ["book", "book get"])
-    fun getBookById(@ShellOption id: Long): String = bookService.getById(id).view()
+    fun getBookById(@ShellOption id: String): String = bookService.getById(id).view()
 
     @ShellMethod(
         value = """Add a book. Type a 'title' 'author'. Optionally follow
@@ -45,11 +45,11 @@ class AdminLibraryShell(
 
 
     @ShellMethod(
-        value = """Update a book's genre, provide it's ID and genres 
+        value = """Update a book's genre, provide it's ID and genres
         as a single quoted string separated by commas (i.e. 'novel,science fiction,action')""",
         key = ["bu", "book update"]
     )
-    fun updateBook(@ShellOption id: Long, @ShellOption genresString: String): String {
+    fun updateBook(@ShellOption id: String, @ShellOption genresString: String): String {
         val updated = bookService.update(UpdatedBookDto(id, genresString.parseGenres()))
         return """|Updated successfully:
                   |${updated.view()}
@@ -57,30 +57,30 @@ class AdminLibraryShell(
     }
 
     @ShellMethod(value = "Delete a book by ID.", key = ["bd", "book delete"])
-    fun deleteBook(@ShellOption id: Long): String = bookService.deleteById(id).reportSuccess()
+    fun deleteBook(@ShellOption id: String): String = bookService.deleteById(id).reportSuccess()
 
     @ShellMethod(value = "Get all genres", key = ["genres"])
     fun listGenres(): String = genreService.getAll().view()
 
     @ShellMethod(value = "List comments for a book, providing it's ID..", key = ["bc", "book comments"])
-    fun getCommentsByBookId(@ShellOption bookId: Long): String = commentService.getByBookId(bookId).view()
+    fun getCommentsByBookId(@ShellOption bookId: String): String = commentService.getByBookId(bookId).view()
 
     @ShellMethod(
         value = "Leave a comment for a book, provide it's ID and comment as a single quoted string.",
         key = ["bca", "book comment add"]
     )
-    fun createComment(@ShellOption bookId: Long, @ShellOption body: String): String =
+    fun createComment(@ShellOption bookId: String, @ShellOption body: String): String =
         commentService.add(NewCommentDto(bookId, body)).view()
 
     @ShellMethod(
         value = "Update a comment, provide it's ID and a new body as a single quoted string.",
         key = ["cu", "comment update"]
     )
-    fun updateComment(@ShellOption id: Long, @ShellOption body: String): String =
+    fun updateComment(@ShellOption id: String, @ShellOption body: String): String =
         commentService.update(UpdatedCommentDto(id, body)).view()
 
     @ShellMethod(value = "Delete a comment, providing it's ID", key = ["cd", "comment delete"])
-    fun deleteComment(@ShellOption id: Long): String = commentService.deleteById(id).reportSuccess()
+    fun deleteComment(@ShellOption id: String): String = commentService.deleteById(id).reportSuccess()
 
 
     private fun Book.view(): String = bookViewer.view(this)

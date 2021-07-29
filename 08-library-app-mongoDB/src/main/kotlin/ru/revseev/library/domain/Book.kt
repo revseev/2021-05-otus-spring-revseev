@@ -10,15 +10,15 @@ data class Book(
     var genres: MutableList<Genre> = mutableListOf(),
 ) : StringIdentifiable() {
 
-    val commentIds: MutableList<String> = mutableListOf()
-
-    @PersistenceConstructor
-    constructor(
-        title: String,
-        author: Author,
-        genres: MutableList<Genre>,
-        commentIds: List<String>,
-    ) : this(title, author, genres) {
-        this.commentIds += commentIds
-    }
+    var commentIds: MutableList<String> = mutableListOf()
+//
+//    @PersistenceConstructor
+//    constructor(
+//        title: String,
+//        author: Author,
+//        genres: MutableList<Genre>,
+//        commentIds: List<String>,
+//    ) : this(title, author, genres) {
+//        this.commentIds += commentIds
+//    }
 }
