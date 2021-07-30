@@ -2,8 +2,7 @@ package ru.revseev.library.repo
 
 import ru.revseev.library.domain.Genre
 
-interface BookRepoCustom  {
+interface BookRepoCustom {
 
-     fun findAllGenres(): List<Genre>
-
+    fun findAllGenres(): List<Genre>
 }

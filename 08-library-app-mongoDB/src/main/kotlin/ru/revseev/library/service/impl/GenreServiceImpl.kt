@@ -10,7 +10,5 @@ import ru.revseev.library.service.GenreService
 class GenreServiceImpl(private val bookRepo: BookRepo) : GenreService {
 
     @Transactional(readOnly = true)
-    override fun getAll(): List<Genre> = wrapExceptions {
-        bookRepo.findAllGenres()
-    }
+    override fun getAll(): List<Genre> = bookRepo.findAllGenres()
 }

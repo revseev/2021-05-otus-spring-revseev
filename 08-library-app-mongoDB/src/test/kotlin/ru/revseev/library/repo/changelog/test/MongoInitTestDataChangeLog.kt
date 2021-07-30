@@ -10,13 +10,13 @@ import ru.revseev.library.repo.CommentRepo
 @ChangeLog(order = "001")
 class MongoInitTestDataChangeLog {
 
-    @ChangeSet(order = "000", id = "dropDB", author = "revseev", runAlways = true)
+    @ChangeSet(order = "001", id = "dropDB", author = "revseev", runAlways = true)
     fun dropDB(database: MongoDatabase) {
         database.drop()
     }
 
-    @ChangeSet(order = "001", id = "insert books", author = "revseev", runAlways = true)
-    fun populateBooks(bookRepo: BookRepo, commentRepo: CommentRepo) {
+    @ChangeSet(order = "002", id = "insert books", author = "revseev", runAlways = true)
+    fun populateData(bookRepo: BookRepo, commentRepo: CommentRepo) {
         commentRepo.saveAll(listOf(comment11, comment21, comment22))
         book1.commentIds += comment11.id
         book2.commentIds += comment21.id

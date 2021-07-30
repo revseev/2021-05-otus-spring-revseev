@@ -9,14 +9,11 @@ spring:
   output:
     ansi:
       enabled: always
-#  shell:
-#    interactive:
-#      enabled: false
 
 mongock:
   change-logs-scan-package:
-      - ru.revseev.library.repo.changelog.mongo
-  runner-type: "ApplicationRunner"
+    - ru.revseev.library.repo.changelog.mongo
+  runner-type: "InitializingBean"
   mongo-db:
     write-concern:
       journal: false
@@ -33,8 +30,6 @@ spring:
     activate:
       on-profile: dev
 
-
 logging:
   level:
     ru: DEBUG
-

@@ -21,43 +21,34 @@ class CommentServiceImpl(
     @Transactional(readOnly = true)
     override fun getByBookId(bookId: String): MutableList<Comment> {
         val commentIds = bookService.getById(bookId).commentIds
-        return wrapExceptions {
-            commentRepo.findAllById(commentIds)
-        }
+        return commentRepo.findAllById(commentIds)
     }
 
     @Transactional(readOnly = true)
-    override fun getById(id: String): Comment = wrapExceptions {
-        commentRepo.findById(id)
-            .orElseThrow { LibraryItemNotFoundException("Comment with id = $id was not found") }
+    override fun getById(id: String): Comment = commentRepo.findById(id).orElseThrow {
+        LibraryItemNotFoundException("Comment with id = $id was not found")
     }
 
     @Transactional
     override fun add(newCommentDto: NewCommentDto): Comment {
         val book = bookService.getById(newCommentDto.bookId)
-        return wrapExceptions {
-            val comment = commentRepo.save(Comment(book.id, newCommentDto.body))
-            book.commentIds += comment.id
-            bookRepo.save(book)
-            comment
-        }
+        val comment = commentRepo.save(Comment(book.id, newCommentDto.body))
+        book.commentIds += comment.id
+        bookRepo.save(book)
+        return comment
     }
 
     @Transactional
     override fun update(updatedCommentDto: UpdatedCommentDto): Comment {
         val comment = getById(updatedCommentDto.id).apply { body = updatedCommentDto.body }
-        return wrapExceptions {
-            commentRepo.save(comment)
-        }
+        return commentRepo.save(comment)
     }
 
     @Transactional
-    override fun deleteById(id: String): Boolean = wrapExceptions {
-        try {
-            commentRepo.deleteById(id)
-            true
-        } catch (ex: Exception) {
-            false
-        }
+    override fun deleteById(id: String): Boolean = try {
+        commentRepo.deleteById(id)
+        true
+    } catch (ex: Exception) {
+        false
     }
 }

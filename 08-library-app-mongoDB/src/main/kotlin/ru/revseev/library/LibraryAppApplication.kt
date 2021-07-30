@@ -10,5 +10,4 @@ class LibraryAppApplication
 
 fun main(args: Array<String>) {
     runApplication<LibraryAppApplication>(*args)
-    readLine()
 }

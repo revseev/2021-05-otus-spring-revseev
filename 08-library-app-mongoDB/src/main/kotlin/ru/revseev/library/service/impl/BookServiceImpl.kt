@@ -17,16 +17,17 @@ class BookServiceImpl(
 ) : BookService {
 
     @Transactional(readOnly = true)
-    override fun getAll(): List<Book> = wrapExceptions { bookRepo.findAll() }
+    override fun getAll(): List<Book> = bookRepo.findAll()
 
     @Transactional(readOnly = true)
-    override fun getById(id: String): Book = wrapExceptions {
-        bookRepo.findById(id).orElse(null)
-    } ?: throw LibraryItemNotFoundException("Book with id = $id was not found")
+    override fun getById(id: String): Book = bookRepo.findById(id).orElseThrow {
+        LibraryItemNotFoundException("Book with id = $id was not found")
+    }
 
     @Transactional
-    override fun add(dto: NewBookDto): Book = wrapExceptions {
-        bookRepo.save(Book(dto.title, Author(dto.authorName), dto.genres.toGenres().toMutableList()))
+    override fun add(dto: NewBookDto): Book {
+        val newBook = Book(dto.title, Author(dto.authorName), dto.genres.toGenres().toMutableList())
+        return bookRepo.save(newBook)
     }
 
     @Transactional
@@ -34,18 +35,15 @@ class BookServiceImpl(
         val book = getById(dto.id).apply {
             this.genres = dto.genres.toGenres().toMutableList()
         }
-        return wrapExceptions {
-            bookRepo.save(book)
-        }
+        return bookRepo.save(book)
     }
 
     @Transactional
-    override fun deleteById(id: String): Boolean = wrapExceptions {
+    override fun deleteById(id: String): Boolean =
         try {
             bookRepo.deleteById(id)
             true
         } catch (ex: Exception) {
             false
         }
-    }
 }

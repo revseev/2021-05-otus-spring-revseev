@@ -13,13 +13,13 @@ import ru.revseev.library.repo.CommentRepo
 @ChangeLog(order = "001")
 class MongoInitDataChangeLog {
 
-    @ChangeSet(order = "000", id = "dropDB", author = "revseev", runAlways = true)
+    @ChangeSet(order = "001", id = "dropDB", author = "revseev", runAlways = true)
     fun dropDB(database: MongoDatabase) {
         database.drop()
     }
 
-    @ChangeSet(order = "001", id = "insert books", author = "revseev", runAlways = true)
-    fun populateBooks(bookRepo: BookRepo, commentRepo: CommentRepo) {
+    @ChangeSet(order = "002", id = "insert books", author = "revseev", runAlways = true)
+    fun populateData(bookRepo: BookRepo, commentRepo: CommentRepo) {
         val book1 = Book("Do Androids Dream of Electric Sheep?",
             Author("Philip K. Dick"),
             mutableListOf(Genre("Science Fiction"), Genre("Novel"))
@@ -42,14 +42,4 @@ class MongoInitDataChangeLog {
         book2.commentIds += comment22.id
         bookRepo.saveAll(listOf(book1, book2, book3))
     }
-
-//    @ChangeSet(order = "002", id = "insert author", author = "revseev", runAlways = true)
-//    fun populateAuthor(authorRepo: AuthorRepo) {
-//        Author("Philip K. Dick")
-//        Author("J. R. R. Tolkien")
-//        Author("New")
-//
-//
-//        authorRepo.saveAll(listOf(Author("Philip K. Dick"), Author("J. R. R. Tolkien"), Author("New")))
-//    }
 }

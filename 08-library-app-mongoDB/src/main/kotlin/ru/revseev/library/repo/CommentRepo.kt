@@ -6,5 +6,4 @@ import ru.revseev.library.domain.Comment
 interface CommentRepo : MongoRepository<Comment, String> {
 
     override fun findAllById(ids: MutableIterable<String>): MutableList<Comment>
-
 }
