@@ -59,9 +59,10 @@ internal class BookRestControllerTest {
         val offset = 0
         val limit = 2
         val pagedBooks = listOf(book3, book2)
+        val byIdDesc = PageRequest.of(offset, limit, Sort.Direction.DESC, "id")
 
         every {
-            bookService.getAll(PageRequest.of(offset, limit, Sort.Direction.DESC, "id"))
+            bookService.getAll(byIdDesc)
         } returns pagedBooks
 
         mockMvc.get("/api/v1/books?offset=$offset&limit=$limit")
@@ -291,6 +292,3 @@ internal class BookRestControllerTest {
         }
     }
 }
-
-@SpringBootApplication
-class MockMvcApplication

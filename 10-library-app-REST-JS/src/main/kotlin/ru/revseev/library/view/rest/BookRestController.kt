@@ -26,8 +26,8 @@ class BookRestController(
         @RequestParam(defaultValue = "10") limit: Int,
     ): List<BookDto> {
         log.info { "GET: /api/v1/books : offset=$offset, limit=$limit" }
-        val pageable = PageRequest.of(offset, limit, Sort.Direction.DESC, "id")
-        return bookService.getAll(pageable).map { it.toDto() }
+        val byIdDesc = PageRequest.of(offset, limit, Sort.Direction.DESC, "id")
+        return bookService.getAll(byIdDesc).map { it.toDto() }
     }
 
     @GetMapping("/api/v1/books/{id}")
