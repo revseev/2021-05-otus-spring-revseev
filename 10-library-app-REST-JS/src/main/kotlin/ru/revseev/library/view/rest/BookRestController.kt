@@ -14,6 +14,7 @@ import ru.revseev.library.view.dto.BookDto
 
 private val log = KotlinLogging.logger { }
 
+@CrossOrigin
 @RestController
 class BookRestController(
     private val bookService: BookService,
