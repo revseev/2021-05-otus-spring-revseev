@@ -9,6 +9,6 @@ import org.springframework.web.servlet.view.RedirectView
 class IndexController {
 
     @GetMapping("/")
-    fun index(): View = RedirectView("/book/all")
+    suspend fun index(): View = RedirectView("/book/all")
 
 }

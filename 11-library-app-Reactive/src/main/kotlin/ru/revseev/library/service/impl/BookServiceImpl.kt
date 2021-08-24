@@ -1,6 +1,10 @@
 package ru.revseev.library.service.impl
 
-import org.springframework.data.domain.Pageable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.awaitFirstOrElse
+import kotlinx.coroutines.reactor.awaitSingle
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.revseev.library.domain.Author
@@ -18,34 +22,34 @@ class BookServiceImpl(
 ) : BookService {
 
     @Transactional(readOnly = true)
-    override fun getAll(): List<Book> = bookRepo.findAll()
+    override suspend fun getAll(): Flow<Book> = bookRepo.findAll().asFlow()
 
     @Transactional(readOnly = true)
-    override fun getAll(pageable: Pageable): List<Book> = bookRepo.findAll(pageable).content
+    override suspend fun getAll(sort: Sort): Flow<Book> = bookRepo.findAll(sort).asFlow()
 
     @Transactional(readOnly = true)
-    override fun getById(id: String): Book = bookRepo.findById(id).orElseThrow {
-        LibraryItemNotFoundException("Book with id = $id was not found")
+    override suspend fun getById(id: String): Book = bookRepo.findById(id).awaitFirstOrElse {
+        throw LibraryItemNotFoundException("Book with id = $id was not found")
     }
 
     @Transactional
-    override fun add(dto: NewBookDto): Book {
+    override suspend fun add(dto: NewBookDto): Book {
         val newBook = Book(dto.title, Author(dto.authorName), dto.genres.toGenres().toMutableList())
-        return bookRepo.save(newBook)
+        return bookRepo.save(newBook).awaitSingle()
     }
 
     @Transactional
-    override fun update(dto: UpdatedBookDto): Book {
+    override suspend fun update(dto: UpdatedBookDto): Book {
         val book = getById(dto.id).apply {
             this.genres = dto.genres.toGenres().toMutableList()
         }
-        return bookRepo.save(book)
+        return bookRepo.save(book).awaitSingle()
     }
 
     @Transactional
-    override fun deleteById(id: String): Boolean =
+    override suspend fun deleteById(id: String): Boolean =
         try {
-            bookRepo.deleteById(id)
+            bookRepo.deleteById(id).awaitSingle()
             true
         } catch (ex: Exception) {
             false

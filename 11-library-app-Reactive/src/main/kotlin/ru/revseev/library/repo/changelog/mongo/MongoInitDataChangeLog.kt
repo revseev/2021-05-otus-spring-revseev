@@ -2,13 +2,13 @@ package ru.revseev.library.repo.changelog.mongo
 
 import com.github.cloudyrock.mongock.ChangeLog
 import com.github.cloudyrock.mongock.ChangeSet
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate
 import com.mongodb.client.MongoDatabase
+import org.springframework.data.mongodb.core.MongoTemplate
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Comment
 import ru.revseev.library.domain.Genre
-import ru.revseev.library.repo.BookRepo
-import ru.revseev.library.repo.CommentRepo
 
 @ChangeLog(order = "001")
 class MongoInitDataChangeLog {
@@ -19,7 +19,7 @@ class MongoInitDataChangeLog {
     }
 
     @ChangeSet(order = "002", id = "insert books", author = "revseev", runAlways = true)
-    fun populateData(bookRepo: BookRepo, commentRepo: CommentRepo) {
+    fun populateData(mongoTemplate: MongockTemplate) {
         val book1 = Book("Do Androids Dream of Electric Sheep?",
             Author("Philip K. Dick"),
             mutableListOf(Genre("Science Fiction"), Genre("Novel"))
@@ -35,11 +35,11 @@ class MongoInitDataChangeLog {
         val comment11 = Comment(book1.id, "I decided to read it after Blade Runner movie.")
         val comment21 = Comment(book2.id, "Greatest Adventure ever!")
         val comment22 = Comment(book2.id, "Loved it!")
-        commentRepo.saveAll(listOf(comment11, comment21, comment22))
+        mongoTemplate.insertAll(listOf(comment11, comment21, comment22))
 
         book1.commentIds += comment11.id
         book2.commentIds += comment21.id
         book2.commentIds += comment22.id
-        bookRepo.saveAll(listOf(book1, book2, book3))
+        mongoTemplate.insertAll(listOf(book1, book2, book3))
     }
 }

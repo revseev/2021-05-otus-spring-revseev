@@ -1,5 +1,6 @@
 package ru.revseev.library.service.impl
 
+import kotlinx.coroutines.flow.Flow
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.revseev.library.domain.Genre
@@ -10,5 +11,5 @@ import ru.revseev.library.service.GenreService
 class GenreServiceImpl(private val bookRepo: BookRepo) : GenreService {
 
     @Transactional(readOnly = true)
-    override fun getAll(): List<Genre> = bookRepo.findAllGenres()
+    override suspend fun getAll(): Flow<Genre> = bookRepo.findAllGenres()
 }

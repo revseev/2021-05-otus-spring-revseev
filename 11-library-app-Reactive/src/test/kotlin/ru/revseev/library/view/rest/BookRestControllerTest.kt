@@ -5,19 +5,18 @@ import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
 import io.mockk.Called
 import io.mockk.clearAllMocks
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
+import kotlinx.coroutines.flow.asFlow
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.*
@@ -59,11 +58,11 @@ internal class BookRestControllerTest {
         val offset = 0
         val limit = 2
         val pagedBooks = listOf(book3, book2)
-        val byIdDesc = PageRequest.of(offset, limit, Sort.Direction.DESC, "id")
+        val sort = Sort.by(Sort.Direction.DESC, "id")
 
-        every {
-            bookService.getAll(byIdDesc)
-        } returns pagedBooks
+        coEvery {
+            bookService.getAll(sort)
+        } returns pagedBooks.asFlow()
 
         mockMvc.get("/api/v1/books?offset=$offset&limit=$limit")
             .andDo { print() }
@@ -86,7 +85,7 @@ internal class BookRestControllerTest {
             val id = book1.id
             val expected = bookDtoConverter.toDto(book1)
 
-            every { bookService.getById(id) } returns book1
+            coEvery { bookService.getById(id) } returns book1
 
             mockMvc.get("/api/v1/books/$id")
                 .andDo { print() }
@@ -106,7 +105,7 @@ internal class BookRestControllerTest {
         fun `should return a 404 error if nothing is found`() {
             val id = "bad id"
 
-            every { bookService.getById(id) } throws LibraryItemNotFoundException("No book found with id = $id")
+            coEvery { bookService.getById(id) } throws LibraryItemNotFoundException("No book found with id = $id")
 
             mockMvc.get("/api/v1/books/$id")
                 .andDo { print() }
@@ -128,7 +127,7 @@ internal class BookRestControllerTest {
         )
         val expected = bookDtoConverter.toDto(newBook)
 
-        every { bookService.add(newBookDto) } returns newBook
+        coEvery { bookService.add(newBookDto) } returns newBook
 
         mockMvc
             .post("/api/v1/books") {
@@ -173,7 +172,7 @@ internal class BookRestControllerTest {
             )
             val expected = bookDtoConverter.toDto(updatedBook)
 
-            every { bookService.update(updatedBookDto) } returns updatedBook
+            coEvery { bookService.update(updatedBookDto) } returns updatedBook
 
             mockMvc
                 .put("/api/v1/books/${bookDto.id}") {
@@ -226,7 +225,7 @@ internal class BookRestControllerTest {
                     status { isBadRequest() }
                 }
 
-            verify { bookService.update(any()) wasNot Called }
+            coVerify { bookService.update(any()) wasNot Called }
         }
 
         @Test
@@ -240,7 +239,7 @@ internal class BookRestControllerTest {
             )
             val updatedBookDto = bookDtoConverter.toUpdatedBookDto(bookDto)
 
-            every {
+            coEvery {
                 bookService.update(updatedBookDto)
             } throws LibraryItemNotFoundException("Provided book was not found")
 
@@ -269,7 +268,7 @@ internal class BookRestControllerTest {
         fun `should return 200 on successful delete`() {
             val id = book1.id
 
-            every { bookService.deleteById(id) } returns true
+            coEvery { bookService.deleteById(id) } returns true
 
             mockMvc.delete("/api/v1/books/$id")
                 .andDo { print() }
@@ -282,7 +281,7 @@ internal class BookRestControllerTest {
         fun `should return 404 on unsuccessful delete`() {
             val id = book1.id
 
-            every { bookService.deleteById(id) } returns false
+            coEvery { bookService.deleteById(id) } returns false
 
             mockMvc.delete("/api/v1/books/$id")
                 .andDo { print() }

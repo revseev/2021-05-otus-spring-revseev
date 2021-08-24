@@ -1,5 +1,6 @@
 package ru.revseev.library.view.controller
 
+import kotlinx.coroutines.flow.map
 import mu.KotlinLogging
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,21 +27,21 @@ class BookViewController(
 ) {
 
     @GetMapping("/book/all")
-    fun allBooks(): ModelAndView {
+    suspend fun allBooks(): ModelAndView {
         log.info { "GET: /book/all" }
         val allBooks = bookService.getAll().map { bookDtoConverter.toDto(it) }
         return ModelAndView("books").addObject("allBooks", allBooks)
     }
 
     @GetMapping("/book/delete")
-    fun delete(@RequestParam id: String): View {
+    suspend fun delete(@RequestParam id: String): View {
         log.info { "GET: /book/delete?id=$id" }
         bookService.deleteById(id)
         return RedirectView("/book/all")
     }
 
     @GetMapping("/book/edit")
-    fun toEditForm(@RequestParam id: String): ModelAndView {
+    suspend fun toEditForm(@RequestParam id: String): ModelAndView {
         log.info { "GET: /book/edit?id=$id" }
         return ModelAndView("form")
             .addObject("bookDto", bookService.getById(id).let { bookDtoConverter.toDto(it) })
@@ -48,21 +49,21 @@ class BookViewController(
     }
 
     @PostMapping("/book/update")
-    fun update(@ModelAttribute("bookDto") bookDto: BookDto): View {
+    suspend fun update(@ModelAttribute("bookDto") bookDto: BookDto): View {
         log.info { "POST: /book/update : $bookDto" }
         bookDtoConverter.toUpdatedBookDto(bookDto).let { bookService.update(it) }
         return RedirectView("/book/all")
     }
 
     @PostMapping("/book/add")
-    fun add(@ModelAttribute("bookDto") bookDto: BookDto): View {
+    suspend fun add(@ModelAttribute("bookDto") bookDto: BookDto): View {
         log.info { "POST: /book/add : $bookDto" }
         bookDtoConverter.toNewBookDto(bookDto).let { bookService.add(it) }
         return RedirectView("/book/all")
     }
 
     @GetMapping("/book/new")
-    fun toAddForm(): ModelAndView {
+    suspend fun toAddForm(): ModelAndView {
         log.info { "GET: /book/new" }
         return ModelAndView("form")
             .addObject("bookDto", BookDto())
@@ -70,7 +71,7 @@ class BookViewController(
     }
 
     @GetMapping("/book/comments")
-    fun commentsByBookId(@RequestParam id: String): ModelAndView {
+    suspend fun commentsByBookId(@RequestParam id: String): ModelAndView {
         log.info { "GET: /book/comments?id=$id" }
         val commentDtos = commentService.getByBookId(id).map { commentDtoConverter.toDto(it) }
         return ModelAndView("comments")

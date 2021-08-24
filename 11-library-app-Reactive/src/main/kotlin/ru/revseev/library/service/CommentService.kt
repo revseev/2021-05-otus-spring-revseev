@@ -1,18 +1,19 @@
 package ru.revseev.library.service
 
+import kotlinx.coroutines.flow.Flow
 import ru.revseev.library.domain.Comment
 import ru.revseev.library.view.dto.NewCommentDto
 import ru.revseev.library.view.dto.UpdatedCommentDto
 
 interface CommentService {
 
-    fun getByBookId(bookId: String): MutableList<Comment>
+    suspend fun getByBookId(bookId: String): Flow<Comment>
 
-    fun getById(id: String): Comment
+    suspend fun getById(id: String): Comment
 
-    fun add(newCommentDto: NewCommentDto): Comment
+    suspend fun add(newCommentDto: NewCommentDto): Comment
 
-    fun update(updatedCommentDto: UpdatedCommentDto): Comment
+    suspend fun update(updatedCommentDto: UpdatedCommentDto): Comment
 
-    fun deleteById(id: String): Boolean
+    suspend fun deleteById(id: String): Boolean
 }

@@ -1,5 +1,8 @@
 package ru.revseev.library.repo
 
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
@@ -19,10 +22,10 @@ internal class BookRepoTest {
     lateinit var bookRepo: BookRepo
 
     @Test
-    fun `getAll() should return a List of all available books`() {
+    fun `getAll() should return a List of all available books`() = runBlocking {
         val expected = listOf(book1, book2, book3)
 
-        val actual = bookRepo.findAll()
+        val actual = bookRepo.findAll().asFlow().toList()
 
         expectThat(actual) {
             isA<List<Book>>()
@@ -31,10 +34,10 @@ internal class BookRepoTest {
     }
 
     @Test
-    fun `findAllGenres() should return a List of all available genres`() {
+    fun `findAllGenres() should return a List of all available genres`() = runBlocking {
         val expected = listOf(genre1, genre2, genre3)
 
-        val actual = bookRepo.findAllGenres()
+        val actual = bookRepo.findAllGenres().toList()
 
         expectThat(actual) {
             isA<List<Genre>>()

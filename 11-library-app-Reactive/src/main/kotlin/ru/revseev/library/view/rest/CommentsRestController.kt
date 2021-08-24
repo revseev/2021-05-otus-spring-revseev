@@ -1,5 +1,7 @@
 package ru.revseev.library.view.rest
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import mu.KotlinLogging
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -17,7 +19,7 @@ class CommentsRestController(
 ) {
 
     @GetMapping("/api/v1/books/{bookId}/comments")
-    fun getAllByBookId(@PathVariable bookId: String): List<CommentDto> {
+    suspend fun getAllByBookId(@PathVariable bookId: String): Flow<CommentDto> {
         log.info { "GET: /api/v1/books/$bookId/comments" }
         return commentService.getByBookId(bookId).map { commentDtoConverter.toDto(it) }
     }

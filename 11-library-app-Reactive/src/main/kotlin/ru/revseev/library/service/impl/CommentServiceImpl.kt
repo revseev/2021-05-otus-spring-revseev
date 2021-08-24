@@ -1,5 +1,9 @@
 package ru.revseev.library.service.impl
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.awaitFirstOrElse
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.revseev.library.domain.Comment
@@ -19,34 +23,34 @@ class CommentServiceImpl(
 ) : CommentService {
 
     @Transactional(readOnly = true)
-    override fun getByBookId(bookId: String): MutableList<Comment> {
+    override suspend fun getByBookId(bookId: String): Flow<Comment> {
         val commentIds = bookService.getById(bookId).commentIds
-        return commentRepo.findAllById(commentIds)
+        return commentRepo.findAllById(commentIds).asFlow()
     }
 
     @Transactional(readOnly = true)
-    override fun getById(id: String): Comment = commentRepo.findById(id).orElseThrow {
-        LibraryItemNotFoundException("Comment with id = $id was not found")
+    override suspend fun getById(id: String): Comment = commentRepo.findById(id).awaitFirstOrElse {
+        throw LibraryItemNotFoundException("Comment with id = $id was not found")
     }
 
     @Transactional
-    override fun add(newCommentDto: NewCommentDto): Comment {
+    override suspend fun add(newCommentDto: NewCommentDto): Comment {
         val book = bookService.getById(newCommentDto.bookId)
-        val comment = commentRepo.save(Comment(book.id, newCommentDto.body))
+        val comment = commentRepo.save(Comment(book.id, newCommentDto.body)).awaitSingle()
         book.commentIds += comment.id
         bookRepo.save(book)
         return comment
     }
 
     @Transactional
-    override fun update(updatedCommentDto: UpdatedCommentDto): Comment {
+    override suspend fun update(updatedCommentDto: UpdatedCommentDto): Comment {
         val comment = getById(updatedCommentDto.id).apply { body = updatedCommentDto.body }
-        return commentRepo.save(comment)
+        return commentRepo.save(comment).awaitSingle()
     }
 
     @Transactional
-    override fun deleteById(id: String): Boolean = try {
-        commentRepo.deleteById(id)
+    override suspend fun deleteById(id: String): Boolean = try {
+        commentRepo.deleteById(id).awaitSingle()
         true
     } catch (ex: Exception) {
         false

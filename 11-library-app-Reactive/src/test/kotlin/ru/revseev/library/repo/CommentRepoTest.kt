@@ -1,5 +1,8 @@
 package ru.revseev.library.repo
 
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
@@ -19,10 +22,10 @@ internal class CommentRepoTest {
     lateinit var commentRepo: CommentRepo
 
     @Test
-    fun `findAllById() should return a MutableList with comments by provided ids`() {
+    fun `findAllById() should return a MutableList with comments by provided ids`() = runBlocking {
         val expected = mutableListOf(comment21, comment22)
 
-        val actual = commentRepo.findAllById(mutableListOf(comment21.id, comment22.id))
+        val actual = commentRepo.findAllById(mutableListOf(comment21.id, comment22.id)).asFlow().toList()
 
         expectThat(actual) {
             isA<MutableList<Comment>>()

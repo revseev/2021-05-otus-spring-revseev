@@ -1,7 +1,8 @@
 package ru.revseev.library.view.rest
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import mu.KotlinLogging
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,37 +23,39 @@ class BookRestController(
 ) {
 
     @GetMapping("/api/v1/books")
-    fun getAll(
+    suspend fun getAll(
         @RequestParam(defaultValue = "0") offset: Int,
         @RequestParam(defaultValue = "10") limit: Int,
-    ): List<BookDto> {
+    ): Flow<BookDto> {
         log.info { "GET: /api/v1/books : offset=$offset, limit=$limit" }
-        val byIdDesc = PageRequest.of(offset, limit, Sort.Direction.DESC, "id")
-        return bookService.getAll(byIdDesc).map { it.toDto() }
+        val sort = Sort.by(Sort.Direction.DESC, "id")
+//        return bookService.getAll(sort).map { it.toDto() }
+        TODO ("Разобраться с Sort")
+        return bookService.getAll().map { it.toDto() }
     }
 
     @GetMapping("/api/v1/books/{id}")
-    fun getById(@PathVariable id: String): BookDto {
+    suspend fun getById(@PathVariable id: String): BookDto {
         log.info { "GET: /api/v1/books/$id" }
         return bookService.getById(id).toDto()
     }
 
     @PostMapping("/api/v1/books")
     @ResponseStatus(HttpStatus.CREATED)
-    fun add(@RequestBody bookDto: BookDto): BookDto {
+    suspend fun add(@RequestBody bookDto: BookDto): BookDto {
         log.info { "POST: /api/v1/books : $bookDto" }
         return bookService.add(bookDtoConverter.toNewBookDto(bookDto)).toDto()
     }
 
     @PutMapping("/api/v1/books/{id}")
-    fun update(@PathVariable id: String, @RequestBody bookDto: BookDto): BookDto {
+    suspend fun update(@PathVariable id: String, @RequestBody bookDto: BookDto): BookDto {
         log.info { "PUT: /api/v1/books/$id : $bookDto" }
         assertSameId(bookDto, id)
         return bookService.update(bookDtoConverter.toUpdatedBookDto(bookDto)).toDto()
     }
 
     @DeleteMapping("/api/v1/books/{id}")
-    fun delete(@PathVariable id: String): ResponseEntity<*> {
+    suspend fun delete(@PathVariable id: String): ResponseEntity<*> {
         log.info { "DELETE: /api/v1/books/$id" }
         return if (bookService.deleteById(id)) {
             ResponseEntity.ok()

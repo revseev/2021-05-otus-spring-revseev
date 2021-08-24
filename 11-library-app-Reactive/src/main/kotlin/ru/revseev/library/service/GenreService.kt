@@ -1,9 +1,10 @@
 package ru.revseev.library.service
 
+import kotlinx.coroutines.flow.Flow
 import ru.revseev.library.domain.Genre
 
 
 interface GenreService {
 
-    fun getAll(): List<Genre>
+    suspend fun getAll(): Flow<Genre>
 }

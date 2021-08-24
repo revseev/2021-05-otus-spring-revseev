@@ -3,8 +3,9 @@ package ru.revseev.library.view.rest
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
 import io.mockk.clearAllMocks
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.flow.asFlow
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -48,9 +49,9 @@ internal class CommentsRestControllerTest {
         val bookId = book2.id
         val pagedComments = mutableListOf(comment21, comment22)
 
-        every {
+        coEvery {
             commentService.getByBookId(bookId)
-        } returns pagedComments
+        } returns pagedComments.asFlow()
         val expected = pagedComments.map { commentDtoConverter.toDto(it) }
 
         mockMvc.get("/api/v1/books/$bookId/comments")

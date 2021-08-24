@@ -2,10 +2,9 @@ package ru.revseev.library.view.controller
 
 import com.ninjasquad.springmockk.MockkBean
 import com.ninjasquad.springmockk.SpykBean
-import io.mockk.clearAllMocks
-import io.mockk.every
+import io.mockk.*
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
+import kotlinx.coroutines.flow.asFlow
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -50,7 +49,7 @@ internal class BookViewControllerTest {
     @Test
     fun `allBooks() should return a view containing all books`() {
         val allBooks = listOf(book1, book2, book3)
-        every { bookService.getAll() } returns allBooks
+        coEvery { bookService.getAll() } returns allBooks.asFlow()
         val expected: List<BookDto> = allBooks.map { bookDtoConverter.toDto(it) }
 
         mockMvc.get("/book/all")
@@ -70,13 +69,13 @@ internal class BookViewControllerTest {
                 status { is3xxRedirection() }
                 redirectedUrl("/book/all")
             }
-        verify(exactly = 1) { bookService.deleteById(id) }
+        coVerify(exactly = 1) { bookService.deleteById(id) }
     }
 
     @Test
     fun `toEditForm() should return edit view with provided books' properties`() {
         val id = book1.id
-        every { bookService.getById(id) } returns book1
+        coEvery { bookService.getById(id) } returns book1
         val expected = bookDtoConverter.toDto(book1)
 
         mockMvc.get("/book/edit?id=$id")
@@ -124,7 +123,7 @@ internal class BookViewControllerTest {
                 redirectedUrl("/book/all")
             }
 
-        verify(exactly = 1) { bookService.update(expected) }
+        coVerify(exactly = 1) { bookService.update(expected) }
     }
 
     @Test
@@ -141,7 +140,7 @@ internal class BookViewControllerTest {
                 redirectedUrl("/book/all")
             }
 
-        verify(exactly = 1) { bookService.add(expected) }
+        coVerify(exactly = 1) { bookService.add(expected) }
     }
 
     @Test
@@ -149,7 +148,7 @@ internal class BookViewControllerTest {
         val id = book2.id
         val comments = mutableListOf(comment21, comment22)
         val expected = comments.map { commentDtoConverter.toDto(it) }
-        every { commentService.getByBookId(id) } returns comments
+        coEvery { commentService.getByBookId(id) } returns comments.asFlow()
 
         mockMvc.get("/book/comments?id=$id")
             .andExpect {

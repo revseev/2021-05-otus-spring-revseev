@@ -1,13 +1,13 @@
 package ru.revseev.library.repo
 
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.domain.Sort
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository
+import reactor.core.publisher.Flux
 import ru.revseev.library.domain.Book
 
-interface BookRepo : MongoRepository<Book, String>, BookRepoCustom {
+interface BookRepo : ReactiveMongoRepository<Book, String>, BookRepoCustom {
 
-    override fun findAll(): List<Book>
+    override fun findAll(): Flux<Book>
 
-    override fun findAll(pageable: Pageable): Page<Book>
+    override fun findAll(sort: Sort): Flux<Book>
 }
