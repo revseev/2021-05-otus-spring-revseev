@@ -15,11 +15,13 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.*
+import org.springframework.test.web.client.match.MockRestRequestMatchers.content
+import org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath
+import org.springframework.test.web.reactive.server.WebTestClient
 import ru.revseev.library.book1
 import ru.revseev.library.book2
 import ru.revseev.library.book3
@@ -34,13 +36,13 @@ import ru.revseev.library.view.impl.BookDtoConverterImpl
 import ru.revseev.library.view.impl.GenreParserImpl
 
 
-@WebMvcTest(BookRestController::class)
+@WebFluxTest(BookRestController::class)
 @ExtendWith(MockKExtension::class)
 @Import(BookDtoConverterImpl::class, GenreParserImpl::class)
 internal class BookRestControllerTest {
 
     @Autowired
-    lateinit var mockMvc: MockMvc
+    lateinit var webClient: WebTestClient
 
     @MockkBean
     lateinit var bookService: BookService
@@ -64,16 +66,17 @@ internal class BookRestControllerTest {
             bookService.getAll(sort)
         } returns pagedBooks.asFlow()
 
-        mockMvc.get("/api/v1/books?offset=$offset&limit=$limit")
-            .andDo { print() }
-            .andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$", hasSize<BookDto>(2))
-                    jsonPath("$[0].title", `is`(book3.title))
-                    jsonPath("$[1].title", `is`(book2.title))
-                }
+        webClient.get().uri("/api/v1/books?offset=$offset&limit=$limit")
+            .exchange()
+
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .consumeWith {
+                println(it)
+                jsonPath("$", hasSize<BookDto>(2))
+                jsonPath("$[0].title", `is`(book3.title))
+                jsonPath("$[1].title", `is`(book2.title))
             }
     }
 
@@ -87,17 +90,18 @@ internal class BookRestControllerTest {
 
             coEvery { bookService.getById(id) } returns book1
 
-            mockMvc.get("/api/v1/books/$id")
-                .andDo { print() }
-                .andExpect {
-                    status { isOk() }
-                    content {
-                        contentType(MediaType.APPLICATION_JSON)
-                        jsonPath("$.id", `is`(expected.id))
-                        jsonPath("$.title", `is`(expected.title))
-                        jsonPath("$.authorName", `is`(expected.authorName))
-                        jsonPath("$.genres", `is`(expected.genres))
-                    }
+            webClient.get().uri("/api/v1/books/$id")
+                .exchange()
+
+                .expectStatus().isOk
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .consumeWith {
+                    println(it)
+                    jsonPath("$.id", `is`(expected.id))
+                    jsonPath("$.title", `is`(expected.title))
+                    jsonPath("$.authorName", `is`(expected.authorName))
+                    jsonPath("$.genres", `is`(expected.genres))
                 }
         }
 
@@ -107,11 +111,14 @@ internal class BookRestControllerTest {
 
             coEvery { bookService.getById(id) } throws LibraryItemNotFoundException("No book found with id = $id")
 
-            mockMvc.get("/api/v1/books/$id")
-                .andDo { print() }
-                .andExpect {
-                    status { isNotFound() }
-                    content { emptyString() }
+            webClient.get().uri("/api/v1/books/$id")
+                .exchange()
+
+                .expectStatus().isNotFound
+                .expectBody()
+                .consumeWith {
+                    println(it)
+                    content().string(emptyString())
                 }
         }
     }
@@ -129,27 +136,25 @@ internal class BookRestControllerTest {
 
         coEvery { bookService.add(newBookDto) } returns newBook
 
-        mockMvc
-            .post("/api/v1/books") {
-                contentType = MediaType.APPLICATION_JSON
-                content = """{
+        webClient.post().uri("/api/v1/books")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue("""{
                         "id": null,
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
                         "genres": "${bookDto.genres}"
-                    }""".trimIndent()
-                accept = MediaType.APPLICATION_JSON
-            }
-            .andDo { print() }
-            .andExpect {
-                status { isCreated() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$.id", `is`(expected.id))
-                    jsonPath("$.title", `is`(expected.title))
-                    jsonPath("$.authorName", `is`(expected.authorName))
-                    jsonPath("$.genres", `is`(expected.genres))
-                }
+                    }""".trimIndent())
+            .exchange()
+
+            .expectStatus().isCreated
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .consumeWith {
+                println(it)
+                jsonPath("$.id", `is`(expected.id))
+                jsonPath("$.title", `is`(expected.title))
+                jsonPath("$.authorName", `is`(expected.authorName))
+                jsonPath("$.genres", `is`(expected.genres))
             }
     }
 
@@ -174,29 +179,26 @@ internal class BookRestControllerTest {
 
             coEvery { bookService.update(updatedBookDto) } returns updatedBook
 
-            mockMvc
-                .put("/api/v1/books/${bookDto.id}") {
-                    contentType = MediaType.APPLICATION_JSON
-                    content = """{
+            webClient.put().uri("/api/v1/books/${bookDto.id}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("""{
                         "id": "${bookDto.id}",
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
                         "genres": "${bookDto.genres}"
-                    }""".trimIndent()
-                    accept = MediaType.APPLICATION_JSON
-                }
-                .andDo { print() }
-                .andExpect {
-                    status { isOk() }
-                    content {
-                        contentType(MediaType.APPLICATION_JSON)
-                        jsonPath("$.id", `is`(expected.id))
-                        jsonPath("$.title", `is`(expected.title))
-                        jsonPath("$.authorName", `is`(expected.authorName))
-                        jsonPath("$.genres", `is`(expected.genres))
-                    }
-                }
+                    }""".trimIndent())
+                .exchange()
 
+                .expectStatus().isOk
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .consumeWith {
+                    println(it)
+                    jsonPath("$.id", `is`(expected.id))
+                    jsonPath("$.title", `is`(expected.title))
+                    jsonPath("$.authorName", `is`(expected.authorName))
+                    jsonPath("$.genres", `is`(expected.genres))
+                }
         }
 
         @Test
@@ -209,21 +211,18 @@ internal class BookRestControllerTest {
                 genres = "NEW GENRE1, NEW GENRE2"
             )
 
-            mockMvc
-                .put("/api/v1/books/${someId}") {
-                    contentType = MediaType.APPLICATION_JSON
-                    content = """{
+            webClient.put().uri("/api/v1/books/${someId}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("""{
                         "id": "${bookDto.id}",
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
                         "genres": "${bookDto.genres}"
-                    }""".trimIndent()
-                    accept = MediaType.APPLICATION_JSON
-                }
-                .andDo { print() }
-                .andExpect {
-                    status { isBadRequest() }
-                }
+                    }""".trimIndent())
+                .exchange()
+
+                .expectStatus().isBadRequest
+                .expectBody().consumeWith { println(it) }
 
             coVerify { bookService.update(any()) wasNot Called }
         }
@@ -243,21 +242,18 @@ internal class BookRestControllerTest {
                 bookService.update(updatedBookDto)
             } throws LibraryItemNotFoundException("Provided book was not found")
 
-            mockMvc
-                .put("/api/v1/books/${someId}") {
-                    contentType = MediaType.APPLICATION_JSON
-                    content = """{
+            webClient.put().uri("/api/v1/books/${someId}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue("""{
                         "id": "$someId",
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
                         "genres": "${bookDto.genres}"
-                    }""".trimIndent()
-                    accept = MediaType.APPLICATION_JSON
-                }
-                .andDo { print() }
-                .andExpect {
-                    status { isNotFound() }
-                }
+                    }""".trimIndent())
+                .exchange()
+
+                .expectStatus().isNotFound
+                .expectBody().consumeWith { println(it) }
         }
     }
 
@@ -270,11 +266,11 @@ internal class BookRestControllerTest {
 
             coEvery { bookService.deleteById(id) } returns true
 
-            mockMvc.delete("/api/v1/books/$id")
-                .andDo { print() }
-                .andExpect {
-                    status { isOk() }
-                }
+            webClient.delete().uri("/api/v1/books/$id")
+                .exchange()
+
+                .expectStatus().isOk
+                .expectBody().consumeWith { println(it) }
         }
 
         @Test
@@ -283,11 +279,11 @@ internal class BookRestControllerTest {
 
             coEvery { bookService.deleteById(id) } returns false
 
-            mockMvc.delete("/api/v1/books/$id")
-                .andDo { print() }
-                .andExpect {
-                    status { isNotFound() }
-                }
+            webClient.delete().uri("/api/v1/books/$id")
+                .exchange()
+
+                .expectStatus().isNotFound
+                .expectBody().consumeWith { println(it) }
         }
     }
 }

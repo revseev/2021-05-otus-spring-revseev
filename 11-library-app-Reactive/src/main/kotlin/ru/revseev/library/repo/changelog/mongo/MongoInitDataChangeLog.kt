@@ -4,7 +4,6 @@ import com.github.cloudyrock.mongock.ChangeLog
 import com.github.cloudyrock.mongock.ChangeSet
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate
 import com.mongodb.client.MongoDatabase
-import org.springframework.data.mongodb.core.MongoTemplate
 import ru.revseev.library.domain.Author
 import ru.revseev.library.domain.Book
 import ru.revseev.library.domain.Comment

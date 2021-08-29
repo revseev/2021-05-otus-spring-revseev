@@ -1,7 +1,6 @@
 package ru.revseev.library.service
 
 import kotlinx.coroutines.flow.Flow
-import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import ru.revseev.library.domain.Book
 import ru.revseev.library.view.dto.NewBookDto

@@ -2,10 +2,9 @@ package ru.revseev.library.repo.changelog.test
 
 import com.github.cloudyrock.mongock.ChangeLog
 import com.github.cloudyrock.mongock.ChangeSet
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate
 import com.mongodb.client.MongoDatabase
 import ru.revseev.library.*
-import ru.revseev.library.repo.BookRepo
-import ru.revseev.library.repo.CommentRepo
 
 @ChangeLog(order = "001")
 class MongoInitTestDataChangeLog {
@@ -16,11 +15,11 @@ class MongoInitTestDataChangeLog {
     }
 
     @ChangeSet(order = "002", id = "insert books", author = "revseev", runAlways = true)
-    fun populateData(bookRepo: BookRepo, commentRepo: CommentRepo) {
-        commentRepo.saveAll(listOf(comment11, comment21, comment22))
+    fun populateData(mongoTemplate: MongockTemplate) {
+        mongoTemplate.insertAll(listOf(comment11, comment21, comment22))
         book1.commentIds += comment11.id
         book2.commentIds += comment21.id
         book2.commentIds += comment22.id
-        bookRepo.saveAll(listOf(book1, book2, book3))
+        mongoTemplate.insertAll(listOf(book1, book2, book3))
     }
 }

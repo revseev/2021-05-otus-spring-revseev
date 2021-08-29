@@ -37,7 +37,7 @@ internal class BookRepoTest {
     fun `findAllGenres() should return a List of all available genres`() = runBlocking {
         val expected = listOf(genre1, genre2, genre3)
 
-        val actual = bookRepo.findAllGenres().toList()
+        val actual: List<Genre> = bookRepo.findAllGenres().asFlow().toList()
 
         expectThat(actual) {
             isA<List<Genre>>()

@@ -29,9 +29,7 @@ class BookRestController(
     ): Flow<BookDto> {
         log.info { "GET: /api/v1/books : offset=$offset, limit=$limit" }
         val sort = Sort.by(Sort.Direction.DESC, "id")
-//        return bookService.getAll(sort).map { it.toDto() }
-        TODO ("Разобраться с Sort")
-        return bookService.getAll().map { it.toDto() }
+        return bookService.getAll(sort).map { it.toDto() }
     }
 
     @GetMapping("/api/v1/books/{id}")

@@ -11,11 +11,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
+import org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath
+import org.springframework.test.web.reactive.server.WebTestClient
 import ru.revseev.library.book2
 import ru.revseev.library.comment21
 import ru.revseev.library.comment22
@@ -25,13 +25,13 @@ import ru.revseev.library.view.CommentDtoConverter
 import ru.revseev.library.view.dto.CommentDto
 import ru.revseev.library.view.impl.CommentDtoConverterImpl
 
-@WebMvcTest(CommentsRestController::class)
+@WebFluxTest(CommentsRestController::class)
 @ExtendWith(MockKExtension::class)
 @Import(CommentDtoConverterImpl::class, CommentServiceImpl::class)
 internal class CommentsRestControllerTest {
 
     @Autowired
-    lateinit var mockMvc: MockMvc
+    lateinit var webClient: WebTestClient
 
     @MockkBean
     lateinit var commentService: CommentService
@@ -54,18 +54,19 @@ internal class CommentsRestControllerTest {
         } returns pagedComments.asFlow()
         val expected = pagedComments.map { commentDtoConverter.toDto(it) }
 
-        mockMvc.get("/api/v1/books/$bookId/comments")
-            .andDo { print() }
-            .andExpect {
-                status { isOk() }
-                content {
-                    contentType(MediaType.APPLICATION_JSON)
-                    jsonPath("$", Matchers.hasSize<CommentDto>(2))
-                    jsonPath("$[0].id", Matchers.`is`(expected[0].id))
-                    jsonPath("$[0].body", Matchers.`is`(expected[0].body))
-                    jsonPath("$[1].id", Matchers.`is`(expected[1].id))
-                    jsonPath("$[1].body", Matchers.`is`(expected[1].body))
-                }
+        webClient.get().uri("/api/v1/books/$bookId/comments")
+            .exchange()
+
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .consumeWith {
+                println(it)
+                jsonPath("$", Matchers.hasSize<CommentDto>(2))
+                jsonPath("$[0].id", Matchers.`is`(expected[0].id))
+                jsonPath("$[0].body", Matchers.`is`(expected[0].body))
+                jsonPath("$[1].id", Matchers.`is`(expected[1].id))
+                jsonPath("$[1].body", Matchers.`is`(expected[1].body))
             }
     }
 }

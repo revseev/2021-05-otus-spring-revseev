@@ -5,13 +5,13 @@
   <title>Library App</title>
 
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 
   <!-- Reference Bootstrap files -->
-  <link rel="stylesheet"
+  <link crossorigin="anonymous"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-        crossorigin="anonymous">
+        rel="stylesheet">
   <!--Custom JS -->
   <script src="/js/books.js"></script>
 </head>
@@ -29,17 +29,19 @@
 
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list"
-             aria-selected="true">Available books</a>
+          <a aria-controls="list" aria-selected="true" class="nav-link active" data-toggle="tab" href="#list"
+             id="list-tab"
+             role="tab">Available books</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="newBook-tab" data-toggle="tab" href="#newBook" role="tab" aria-controls="newBook"
-             aria-selected="false">Add a book</a>
+          <a aria-controls="newBook" aria-selected="false" class="nav-link" data-toggle="tab" href="#newBook"
+             id="newBook-tab"
+             role="tab">Add a book</a>
         </li>
       </ul>
 
       <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="list" role="tabpanel" aria-labelledby="home-tab">
+        <div aria-labelledby="home-tab" class="tab-pane fade show active" id="list" role="tabpanel">
           <div id="insideTab">
             <div class="navbar"
                  style="background: linear-gradient(0deg, rgba(233,233,233,1) 0%, rgba(242,242,242,1) 100%);">
@@ -63,7 +65,7 @@
         </div>
 
         <!-- NEW BOOK TAB -->
-        <div class="tab-pane fade" id="newBook" role="tabpanel" aria-labelledby="newBook-tab">
+        <div aria-labelledby="newBook-tab" class="tab-pane fade" id="newBook" role="tabpanel">
           <div class="navbar"
                style="background: linear-gradient(0deg, rgba(233,233,233,1) 0%, rgba(242,242,242,1) 100%);">
             <h4>New Book</h4>
@@ -85,13 +87,13 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="modalWindow" role="dialog"
+     tabindex="-1">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Edit book</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -106,12 +108,12 @@
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+<script crossorigin="anonymous"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 <!--Custom JS -->
 <script src="/js/books.js"></script>
 <!-- Скрипт для передачи параметров Book в модальное окно -->
