@@ -57,8 +57,11 @@
               <tr th:each="bookDto : ${allBooks}">
                 <td th:text="${bookDto.title}"></td>
                 <td th:text="${bookDto.authorName}"></td>
-                <td th:text="${bookDto.genres}">
-
+                <td>
+                  <span th:each="genre, iter: ${bookDto.genres}">
+                    <th:block th:text="${genre.name}"/>
+                    <th:block th:if="${!iter.last}">,</th:block>
+                  </span>
                 </td>
 
                 <td>

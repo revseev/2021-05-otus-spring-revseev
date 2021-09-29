@@ -11,9 +11,12 @@ import org.springframework.web.servlet.View
 import org.springframework.web.servlet.view.RedirectView
 import ru.revseev.library.service.BookService
 import ru.revseev.library.service.CommentService
+import ru.revseev.library.service.GenreService
 import ru.revseev.library.view.BookDtoConverter
 import ru.revseev.library.view.CommentDtoConverter
 import ru.revseev.library.view.dto.BookDto
+import ru.revseev.library.view.dto.GenreDto
+import ru.revseev.library.view.dto.toDto
 
 private val log = KotlinLogging.logger { }
 
@@ -21,6 +24,7 @@ private val log = KotlinLogging.logger { }
 class BookViewController(
     private val bookService: BookService,
     private val commentService: CommentService,
+    private val genreService: GenreService,
     private val bookDtoConverter: BookDtoConverter,
     private val commentDtoConverter: CommentDtoConverter,
 ) {
@@ -76,4 +80,7 @@ class BookViewController(
         return ModelAndView("comments")
             .addObject("comments", commentDtos)
     }
+
+    @ModelAttribute("allGenres")
+    fun allGenres(): List<GenreDto> = genreService.getAll().map { it.toDto() }
 }
