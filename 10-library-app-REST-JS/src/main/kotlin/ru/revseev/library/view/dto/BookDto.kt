@@ -4,5 +4,5 @@ data class BookDto(
     val id: String? = null,
     val title: String = "",
     val authorName: String = "",
-    var genres: String = "",
+    var genres: MutableList<GenreDto> = mutableListOf(),
 )

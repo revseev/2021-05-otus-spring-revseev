@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
@@ -31,6 +30,7 @@ import ru.revseev.library.exception.LibraryItemNotFoundException
 import ru.revseev.library.service.BookService
 import ru.revseev.library.view.BookDtoConverter
 import ru.revseev.library.view.dto.BookDto
+import ru.revseev.library.view.dto.GenreDto
 import ru.revseev.library.view.impl.BookDtoConverterImpl
 import ru.revseev.library.view.impl.GenreParserImpl
 
@@ -97,7 +97,8 @@ internal class BookRestControllerTest {
                         jsonPath("$.id", `is`(expected.id))
                         jsonPath("$.title", `is`(expected.title))
                         jsonPath("$.authorName", `is`(expected.authorName))
-                        jsonPath("$.genres", `is`(expected.genres))
+                        jsonPath("$.genres[0].name", `is`(expected.genres[0].name))
+                        jsonPath("$.genres[1].name", `is`(expected.genres[1].name))
                     }
                 }
         }
@@ -119,11 +120,15 @@ internal class BookRestControllerTest {
 
     @Test
     fun `add() should add and return a new Book`() {
-        val bookDto = BookDto(title = "TITLE", authorName = "AUTHOR", genres = "NEW GENRE1, NEW GENRE2")
+        val bookDto = BookDto(
+            title = "TITLE",
+            authorName = "AUTHOR",
+            genres = mutableListOf(GenreDto("NEW_GENRE1"), GenreDto("NEW_GENRE2"))
+        )
         val newBookDto = bookDtoConverter.toNewBookDto(bookDto)
         val newBook = Book(
             bookDto.title,
-            Author(bookDto.title),
+            Author(bookDto.authorName),
             newBookDto.genres.mapTo(mutableListOf()) { Genre(it.name) }
         )
         val expected = bookDtoConverter.toDto(newBook)
@@ -137,7 +142,10 @@ internal class BookRestControllerTest {
                         "id": null,
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
-                        "genres": "${bookDto.genres}"
+                        "genres": [
+                            {"name": "${bookDto.genres[0].name}"},
+                            {"name": "${bookDto.genres[1].name}"}
+                            ]
                     }""".trimIndent()
                 accept = MediaType.APPLICATION_JSON
             }
@@ -149,7 +157,8 @@ internal class BookRestControllerTest {
                     jsonPath("$.id", `is`(expected.id))
                     jsonPath("$.title", `is`(expected.title))
                     jsonPath("$.authorName", `is`(expected.authorName))
-                    jsonPath("$.genres", `is`(expected.genres))
+                    jsonPath("$.genres[0].name", `is`(expected.genres[0].name))
+                    jsonPath("$.genres[1].name", `is`(expected.genres[1].name))
                 }
             }
     }
@@ -163,7 +172,7 @@ internal class BookRestControllerTest {
                 id = book1.id,
                 title = book1.title,
                 authorName = book1.author.name,
-                genres = "NEW GENRE1, NEW GENRE2"
+                genres = mutableListOf(GenreDto("NEW_GENRE_1"), GenreDto("NEW_GENRE_2"))
             )
             val updatedBookDto = bookDtoConverter.toUpdatedBookDto(bookDto)
             val updatedBook = Book(
@@ -182,7 +191,10 @@ internal class BookRestControllerTest {
                         "id": "${bookDto.id}",
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
-                        "genres": "${bookDto.genres}"
+                        "genres": [
+                            {"name": "${bookDto.genres[0].name}"},
+                            {"name": "${bookDto.genres[1].name}"}
+                            ]
                     }""".trimIndent()
                     accept = MediaType.APPLICATION_JSON
                 }
@@ -194,7 +206,8 @@ internal class BookRestControllerTest {
                         jsonPath("$.id", `is`(expected.id))
                         jsonPath("$.title", `is`(expected.title))
                         jsonPath("$.authorName", `is`(expected.authorName))
-                        jsonPath("$.genres", `is`(expected.genres))
+                        jsonPath("$.genres[0].name", `is`(expected.genres[0].name))
+                        jsonPath("$.genres[1].name", `is`(expected.genres[1].name))
                     }
                 }
 
@@ -207,7 +220,7 @@ internal class BookRestControllerTest {
                 id = book1.id,
                 title = book1.title,
                 authorName = book1.author.name,
-                genres = "NEW GENRE1, NEW GENRE2"
+                genres = mutableListOf(GenreDto("NEW_GENRE_1"), GenreDto("NEW_GENRE_2"))
             )
 
             mockMvc
@@ -217,7 +230,10 @@ internal class BookRestControllerTest {
                         "id": "${bookDto.id}",
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
-                        "genres": "${bookDto.genres}"
+                        "genres": [
+                            {"name": "${bookDto.genres[0].name}"},
+                            {"name": "${bookDto.genres[1].name}"}
+                            ]
                     }""".trimIndent()
                     accept = MediaType.APPLICATION_JSON
                 }
@@ -236,7 +252,7 @@ internal class BookRestControllerTest {
                 id = someId,
                 title = book1.title,
                 authorName = book1.author.name,
-                genres = "NEW GENRE1, NEW GENRE2"
+                genres = mutableListOf(GenreDto("NEW_GENRE_1"), GenreDto("NEW_GENRE_2"))
             )
             val updatedBookDto = bookDtoConverter.toUpdatedBookDto(bookDto)
 
@@ -251,7 +267,10 @@ internal class BookRestControllerTest {
                         "id": "$someId",
                         "title": "${bookDto.title}",
                         "authorName": "${bookDto.authorName}",
-                        "genres": "${bookDto.genres}"
+                        "genres": [
+                            {"name": "${bookDto.genres[0].name}"},
+                            {"name": "${bookDto.genres[1].name}"}
+                            ]
                     }""".trimIndent()
                     accept = MediaType.APPLICATION_JSON
                 }

@@ -12,11 +12,15 @@ function getTable() {
             $("#bookTable").empty();
 
             for (let i in books) {
+                let genresString = books[i].genres.map(function (val, index) {
+                    return val.name
+                }).join(", ");
+
                 $("#bookTable").append(
                     "<tr> \
                         <td>" + books[i].title + "</td> \
                         <td>" + books[i].authorName + "</td> \
-                        <td>" + books[i].genres + "</td> \
+                        <td>" + genresString + "</td> \
                         <td>\
                             <a class='comments' href='/book/comments?id=" + books[i].id + "'>Comments</a>&nbsp \
                             <a class='edit' href='/book/edit?id=" + books[i].id + "'>Edit</a>&nbsp \
