@@ -19,9 +19,11 @@ import org.springframework.test.web.servlet.post
 import ru.revseev.library.*
 import ru.revseev.library.service.BookService
 import ru.revseev.library.service.CommentService
+import ru.revseev.library.service.GenreService
 import ru.revseev.library.view.BookDtoConverter
 import ru.revseev.library.view.CommentDtoConverter
 import ru.revseev.library.view.dto.BookDto
+import ru.revseev.library.view.dto.GenreDto
 import ru.revseev.library.view.impl.BookDtoConverterImpl
 import ru.revseev.library.view.impl.CommentDtoConverterImpl
 import ru.revseev.library.view.impl.GenreParserImpl
@@ -38,6 +40,8 @@ internal class BookViewControllerTest {
     lateinit var bookService: BookService
     @MockkBean
     lateinit var commentService: CommentService
+    @MockkBean
+    lateinit var genreService: GenreService
     @SpykBean
     lateinit var bookDtoConverter: BookDtoConverter
     @SpykBean
@@ -112,7 +116,7 @@ internal class BookViewControllerTest {
     fun `update() should update given book and redirect to allBooks view`() {
         val bookDto = bookDtoConverter.toDto(book1)
             .apply {
-                genres = "CHANGED GENRE"
+                genres = mutableListOf(GenreDto("CHANGED GENRE"))
             }
         val expected = bookDtoConverter.toUpdatedBookDto(bookDto)
 
@@ -130,7 +134,11 @@ internal class BookViewControllerTest {
 
     @Test
     fun `add() should add a new book and redirect to allBooks view`() {
-        val bookDto = BookDto("NEW TITLE", "NEW AUTHOR", "NEW_GENRE_1, NEW_GENRE_2")
+        val bookDto = BookDto(
+            title = "NEW TITLE",
+            authorName = "NEW AUTHOR",
+            genres = mutableListOf(GenreDto("NEW_GENRE_1"), GenreDto("NEW_GENRE_2"))
+        )
         val expected = bookDtoConverter.toNewBookDto(bookDto)
 
         mockMvc
