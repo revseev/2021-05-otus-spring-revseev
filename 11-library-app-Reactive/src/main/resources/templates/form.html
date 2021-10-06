@@ -1,0 +1,23 @@
+<div class="container-fluid" style="margin-top: 1em;">
+  <div class="row">
+    <div class="col-8 mx-auto align-items-center" style="max-width: 800px;">
+
+      <form action="#" class="form-group" method="POST" th:action="@{${edit ? '/book/update' : '/book/add'}}"
+            th:object="${bookDto}">
+        <input class="form-control" id="id" name="id" placeholder="Book ID" th:field="*{id}" type="hidden">
+        <label class="form-text text-center" for="inputTitle"><b>Title</b></label>
+        <input class="form-control" id="inputTitle" name="title" placeholder="Title" th:disabled="${edit}" th:field="*{title}"
+               type="text">
+        <label class="form-text text-center" for="inputAuthorName"><b>Author</b></label>
+        <input class="form-control" id="inputAuthorName" name="author" placeholder="Author" th:disabled="${edit}"
+               th:field="*{authorName}" type="text">
+        <label class="form-text text-center" for="inputGenres"><b>Genres</b></label>
+        <input class="form-control" id="inputGenres" name="genres" placeholder="Genres" th:field="*{genres}"
+               type="text">
+        <button class="btn btn-lg btn-success btn-block" style="margin-top: 10px" type="submit">Submit</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
