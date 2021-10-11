@@ -1,9 +1,6 @@
 package ru.revseev.library
 
-import ru.revseev.library.domain.Author
-import ru.revseev.library.domain.Book
-import ru.revseev.library.domain.Comment
-import ru.revseev.library.domain.Genre
+import ru.revseev.library.domain.*
 
 val genre1 = Genre("Genre1")
 val genre2 = Genre("Genre2")
@@ -16,6 +13,7 @@ val book3 = Book("Book3", author1, mutableListOf(genre1, genre3))
 val comment11 = Comment(book1.id, "Comment11")
 val comment21 = Comment(book2.id, "Comment21")
 val comment22 = Comment(book2.id, "Comment22")
+val user1 = User("user1", "pass1", mutableListOf(Role.ADMIN))
 
 val init = {
     book1.commentIds += comment11.id

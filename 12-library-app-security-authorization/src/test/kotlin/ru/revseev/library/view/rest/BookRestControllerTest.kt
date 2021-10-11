@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.domain.PageRequest
@@ -38,6 +39,7 @@ import ru.revseev.library.view.impl.GenreParserImpl
 @WebMvcTest(BookRestController::class)
 @ExtendWith(MockKExtension::class)
 @Import(BookDtoConverterImpl::class, GenreParserImpl::class)
+@AutoConfigureMockMvc(addFilters = false)
 internal class BookRestControllerTest {
 
     @Autowired

@@ -3,12 +3,10 @@ package ru.revseev.library.repo.changelog.mongo
 import com.github.cloudyrock.mongock.ChangeLog
 import com.github.cloudyrock.mongock.ChangeSet
 import com.mongodb.client.MongoDatabase
-import ru.revseev.library.domain.Author
-import ru.revseev.library.domain.Book
-import ru.revseev.library.domain.Comment
-import ru.revseev.library.domain.Genre
+import ru.revseev.library.domain.*
 import ru.revseev.library.repo.BookRepo
 import ru.revseev.library.repo.CommentRepo
+import ru.revseev.library.repo.UserRepo
 
 @ChangeLog(order = "001")
 class MongoInitDataChangeLog {
@@ -41,5 +39,12 @@ class MongoInitDataChangeLog {
         book2.commentIds += comment21.id
         book2.commentIds += comment22.id
         bookRepo.saveAll(listOf(book1, book2, book3))
+    }
+
+
+    @ChangeSet(order = "003", id = "insert users", author = "revseev", runAlways = true)
+    fun populateUsers(userRepo: UserRepo) {
+        val admin = User("admin", "pass", mutableListOf(Role.ADMIN, Role.USER))
+        userRepo.save(admin)
     }
 }

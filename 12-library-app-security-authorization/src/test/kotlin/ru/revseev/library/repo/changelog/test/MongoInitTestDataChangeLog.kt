@@ -6,6 +6,7 @@ import com.mongodb.client.MongoDatabase
 import ru.revseev.library.*
 import ru.revseev.library.repo.BookRepo
 import ru.revseev.library.repo.CommentRepo
+import ru.revseev.library.repo.UserRepo
 
 @ChangeLog(order = "001")
 class MongoInitTestDataChangeLog {
@@ -22,5 +23,10 @@ class MongoInitTestDataChangeLog {
         book2.commentIds += comment21.id
         book2.commentIds += comment22.id
         bookRepo.saveAll(listOf(book1, book2, book3))
+    }
+
+    @ChangeSet(order = "003", id = "insert users", author = "revseev", runAlways = true)
+    fun populateUsers(userRepo: UserRepo) {
+        userRepo.save(user1)
     }
 }
