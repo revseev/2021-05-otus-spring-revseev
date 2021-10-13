@@ -44,7 +44,7 @@ class MongoInitDataChangeLog {
 
     @ChangeSet(order = "003", id = "insert users", author = "revseev", runAlways = true)
     fun populateUsers(userRepo: UserRepo) {
-        val admin = User("admin", "pass", mutableListOf(Role.ADMIN, Role.USER))
+        val admin = User("admin", "\$2a\$12\$X5nIrc2tqPnGk1Jqr7hwY.WPLdIQiXUIQtT5WRbptyW2N4jgdTMPy", mutableListOf(Role.ADMIN, Role.USER))
         userRepo.save(admin)
     }
 }

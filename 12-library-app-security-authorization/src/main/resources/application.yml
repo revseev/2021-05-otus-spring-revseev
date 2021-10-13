@@ -35,3 +35,4 @@ spring:
 logging:
   level:
     ru: DEBUG
+    org.springframework.security: DEBUG
