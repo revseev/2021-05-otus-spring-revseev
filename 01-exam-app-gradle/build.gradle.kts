@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.5.1"
+    id("org.springframework.boot") version "2.5.5"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.5.10"
-    kotlin("plugin.spring") version "1.5.10"
-    kotlin("kapt") version "1.5.10"
+    kotlin("jvm") version "1.5.31"
+    kotlin("plugin.spring") version "1.5.31"
+    kotlin("kapt") version "1.5.31"
 }
 
 group = "ru.revseev"
@@ -17,10 +17,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.shell:spring-shell-starter:2.0.1.RELEASE")
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
     implementation("net.jcip:jcip-annotations:1.0")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -31,8 +31,8 @@ dependencies {
         exclude(module = "assertj-core")
         exclude(module = "hamcrest")
     }
-    testImplementation("io.strikt:strikt-core:0.31.0")
-    testImplementation("io.mockk:mockk:1.11.0")
+    testImplementation("io.strikt:strikt-core:0.32.0")
+    testImplementation("io.mockk:mockk:1.12.0")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
 }
 
