@@ -7,17 +7,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @EnableWebSecurity
 class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
-    override fun configure(http: HttpSecurity) = http {
-        authorizeRequests {
-            authorize("/login", permitAll)
-            authorize(anyRequest, authenticated)
-        }
-        formLogin {
-            loginPage = "/login"
+    override fun configure(http: HttpSecurity) {
+        http {
+            authorizeRequests {
+                authorize("/login", permitAll)
+                authorize("/book/all", hasAnyAuthority("USER", "ADMIN"))
+                authorize("/book/**", hasAuthority("ADMIN"))
+                authorize("/api/v1/books", hasAuthority("USER"))
+                authorize("/api/**", hasAuthority("ADMIN"))
+                authorize(anyRequest, authenticated)
+            }
+            formLogin { loginPage = "/login" }
+            logout { logoutSuccessUrl = "/login" }
         }
     }
 

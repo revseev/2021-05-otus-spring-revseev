@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <title>Library App</title>
@@ -17,15 +17,12 @@
 </head>
 
 <body style="background-color: whitesmoke;">
+<div th:insert="~{fragments/navbar :: navbar}">
+</div>
 
 <div class="d-flex" id="wrapper">
   <div id="page-content-wrapper">
     <div class="container-fluid mt-3 ml-2 mb-2">
-
-
-      <!--Заголовок -->
-      <h2>Admin panel</h2>
-
 
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">

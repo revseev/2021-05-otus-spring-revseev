@@ -10,7 +10,7 @@ import ru.revseev.library.domain.User
 import ru.revseev.library.exception.UserAlreadyExistsException
 import ru.revseev.library.service.UserService
 import ru.revseev.library.service.impl.UserServiceImpl
-import ru.revseev.library.user1
+import ru.revseev.library.admin
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isEqualTo
@@ -30,9 +30,9 @@ internal class UserServiceTest {
 
         @Test
         fun `should return a User if it exists`() {
-            val expected = user1
+            val expected = admin
 
-            val actual = userService.findByUsername(user1.username)
+            val actual = userService.findByUsername(admin.username)
 
             expectThat(actual) {
                 isNotNull()
@@ -66,7 +66,7 @@ internal class UserServiceTest {
 
         @Test
         fun `should throw a specific exception if saving user with non-unique username`() {
-            val withSameUsername = User("user1", "new")
+            val withSameUsername = User("user", "new")
 
             expectThrows<UserAlreadyExistsException> {
                 userService.save(withSameUsername)

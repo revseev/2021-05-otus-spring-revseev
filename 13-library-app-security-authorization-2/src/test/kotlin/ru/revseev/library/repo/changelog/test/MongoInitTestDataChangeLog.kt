@@ -27,6 +27,7 @@ class MongoInitTestDataChangeLog {
 
     @ChangeSet(order = "003", id = "insert users", author = "revseev", runAlways = true)
     fun populateUsers(userRepo: UserRepo) {
-        userRepo.save(user1)
+        userRepo.save(admin)
+        userRepo.save(user)
     }
 }
