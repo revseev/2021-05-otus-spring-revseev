@@ -1,5 +1,6 @@
 server:
   port: 8081
+
 spring:
   profiles:
     default: default
@@ -7,7 +8,16 @@ spring:
     mongodb:
       database: library_app
       port: 5050
-
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=library
+    username: postgres
+    password: password
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: always
   output:
     ansi:
       enabled: always
@@ -31,6 +41,9 @@ spring:
   config:
     activate:
       on-profile: dev
+  batch:
+    job:
+      enabled: true
 
 logging:
   level:

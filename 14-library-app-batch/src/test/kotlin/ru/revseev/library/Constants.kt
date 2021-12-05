@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package ru.revseev.library
 
 import ru.revseev.library.domain.*

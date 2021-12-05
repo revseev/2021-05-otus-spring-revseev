@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.post
 import ru.revseev.library.*
 import ru.revseev.library.service.BookService
 import ru.revseev.library.service.CommentService
-import ru.revseev.library.service.GenreService
 import ru.revseev.library.view.BookDtoConverter
 import ru.revseev.library.view.CommentDtoConverter
 import ru.revseev.library.view.dto.BookDto
@@ -41,8 +40,6 @@ internal class BookViewControllerTest {
     lateinit var bookService: BookService
     @MockkBean
     lateinit var commentService: CommentService
-    @MockkBean
-    lateinit var genreService: GenreService
     @SpykBean
     lateinit var bookDtoConverter: BookDtoConverter
     @SpykBean
