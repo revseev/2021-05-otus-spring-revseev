@@ -1,0 +1,13 @@
+<table class="table table-striped table-hover">
+  <tbody>
+  <tr th:each="comment : ${comments}">
+    <td th:text="${comment.id}" hidden></td>
+    <td th:text="${comment.bookId}" hidden></td>
+    <td th:text="${comment.body}"></td>
+    <td>
+      <a class="edit" th:href="@{/comment/edit?id={id}(id=${comment.id})}">Edit</a>&nbsp
+      <a class="delete" th:href="@{/comment/delete?id={id}(id=${comment.id})}">Delete</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
