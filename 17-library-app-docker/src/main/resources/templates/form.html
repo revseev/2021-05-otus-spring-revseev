@@ -1,0 +1,30 @@
+<div class="container-fluid" style="margin-top: 1em;">
+  <div class="row">
+    <div class="col-8 mx-auto align-items-center" style="max-width: 800px;">
+
+      <form action="#" th:action="@{${edit ? '/book/update' : '/book/add'}}" th:object="${bookDto}" method="POST"
+            class="form-group">
+        <input th:field="*{id}" id="id" type="hidden" class="form-control" placeholder="Book ID" name="id">
+        <label for="inputTitle" class="form-text text-center"><b>Title</b></label>
+        <input th:field="*{title}" type="text" id="inputTitle" class="form-control" placeholder="Title" name="title"
+               th:disabled="${edit}">
+        <label for="inputAuthorName" class="form-text text-center"><b>Author</b></label>
+        <input th:field="*{authorName}" type="text" id="inputAuthorName" class="form-control" placeholder="Author"
+               name="author" th:disabled="${edit}">
+        <label for="inputGenres" class="form-text text-center"><b>Genres</b></label>
+        <select th:field="*{genres}" type="text" id="inputGenres" class="form-control" placeholder="Genres"
+                name="genres" multiple="multiple" size="5">
+          <option th:each="genre : ${allGenres}"
+                  th:field="*{genres}"
+                  th:value="${genre.name}"
+                  th:text="${genre.name}"
+          ></option>
+        </select>
+
+        <button class="btn btn-lg btn-success btn-block" type="submit" style="margin-top: 10px">Submit</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+

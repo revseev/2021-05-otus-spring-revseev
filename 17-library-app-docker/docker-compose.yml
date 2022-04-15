@@ -1,0 +1,24 @@
+version: '1'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    privileged: true
+    ports:
+      - "8081:8081"
+    # Эти свойства перегружают соответствующие в application.yml
+    environment:
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_HOST=mongo
+    networks:
+      - library
+  mongo:
+    # В идеале должна быть ещё и версия image
+    image: "mongo"
+    ports:
+      - "27017:5050"
+    networks:
+      - library
+networks:
+  library:

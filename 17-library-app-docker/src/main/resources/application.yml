@@ -1,0 +1,51 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    default: dev #default
+  data:
+    mongodb:
+      database: library_app
+      port: 5050
+#      host: 0.0.0.0
+
+  output:
+    ansi:
+      enabled: always
+
+mongock:
+  change-logs-scan-package:
+    - ru.revseev.library.repo.changelog.mongo
+  runner-type: "InitializingBean"
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics,health,logfile
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
+logging:
+  level:
+    root: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    ru: DEBUG
+    org.springframework.security: DEBUG
