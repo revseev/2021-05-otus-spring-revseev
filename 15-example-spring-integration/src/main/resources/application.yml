@@ -1,0 +1,11 @@
+---
+paths:
+  directory:
+    source: WatchedDir
+    destination: OutputDir
+
+
+spring:
+  output:
+    ansi:
+      enabled: always

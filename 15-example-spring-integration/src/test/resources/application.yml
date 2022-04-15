@@ -1,0 +1,12 @@
+---
+spring:
+  profiles:
+    active: test
+  output:
+    ansi:
+      enabled: always
+
+paths:
+  directory:
+    source: test-WatchedDir
+    destination: test-OutputDir
