@@ -2,8 +2,10 @@ version: '1'
 services:
   app:
     build:
-      context: .
+      context: library-app
       dockerfile: Dockerfile
+    depends_on:
+      - mongo
     privileged: true
     ports:
       - "8081:8081"
