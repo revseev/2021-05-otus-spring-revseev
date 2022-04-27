@@ -1,0 +1,28 @@
+server:
+  port: 5000
+
+spring:
+  application:
+    name: library-configuration-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/revseev/otus-spring-library-config-repo
+          default-label: main # Github's default branch name is 'main', not 'master' as before
+        encrypt:
+          enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' # not securely, obviously
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
