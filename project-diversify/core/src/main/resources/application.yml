@@ -1,0 +1,15 @@
+tinkoff.access-token: ${TINKOFF_INVEST_API_TOKEN}
+
+spring:
+  application:
+    name: diversify-core
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://0.0.0.0:5432/diversify
+    username: postgres
+    password: postgres
+  hikari:
+    data-source-properties:
+      useConfigs: maxPerformance
+      rewriteBatchedStatements: true
