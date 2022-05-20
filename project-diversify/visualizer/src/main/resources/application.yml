@@ -1,21 +1,9 @@
-tinkoff.access-token: ${TINKOFF_INVEST_API_TOKEN}
-
 server:
-  port: 8010
+  port: 8020
 
 spring:
   application:
-    name: diversify-core
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://0.0.0.0:5432/diversify
-    username: postgres
-    password: postgres
-  hikari:
-    data-source-properties:
-      useConfigs: maxPerformance
-      rewriteBatchedStatements: true
+    name: diversify-visualizer
 
 eureka:
   client:
