@@ -40,7 +40,7 @@ class AccountDao(
                 providerId = getString("tkc_id"),
                 name = getString("name"),
                 type = getStringAsEnum("type"),
-                userId = getInt("userId"),
+                userId = getInt("user_id"),
             )
         }
     )

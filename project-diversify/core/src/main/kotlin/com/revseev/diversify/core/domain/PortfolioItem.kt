@@ -1,8 +1,5 @@
 package com.revseev.diversify.core.domain
 
-import org.javamoney.moneta.FastMoney
-import java.math.BigDecimal
-
 
 data class Portfolio(
     val accounts: List<Account>,
@@ -16,7 +13,7 @@ data class PortfolioItem(
     val name: String,
     val countryOfRiskCode: String,
     val sector: String,
-    val quantity: BigDecimal,
-    val unitPrice: FastMoney,
-    val totalPrice: FastMoney
+    val quantity: String,
+    val currency: String,
+    val unitPrice: String,
 )

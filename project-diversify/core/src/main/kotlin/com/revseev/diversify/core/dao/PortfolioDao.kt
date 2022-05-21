@@ -3,13 +3,11 @@ package com.revseev.diversify.core.dao
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.revseev.diversify.core.domain.PortfolioItem
 import mu.KotlinLogging
-import org.javamoney.moneta.FastMoney
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import ru.tinkoff.piapi.core.models.Portfolio
 import ru.tinkoff.piapi.core.models.Positions
-import java.math.BigDecimal
 
 private val log = KotlinLogging.logger { }
 
@@ -56,8 +54,6 @@ class PortfolioDao(
         order by account_id""",
         MapSqlParameterSource("userId", userId),
         mapTo {
-            val quantity = BigDecimal(getString("quantity"))
-            val unitPrice = FastMoney.of(getBigDecimal("unitPrice"), getString("currency"))
             PortfolioItem(
                 accountId = getString("account_id"),
                 assetType = getStringAsEnum("asset_type"),
@@ -65,9 +61,9 @@ class PortfolioDao(
                 name = getString("name"),
                 countryOfRiskCode = getString("country_of_risk_code"),
                 sector = getString("sector"),
-                quantity = quantity,
-                unitPrice = unitPrice,
-                totalPrice = unitPrice.multiply(quantity)
+                quantity = getString("quantity"),
+                currency = getString("currency"),
+                unitPrice = getString("unitPrice"),
             )
         }
     )
