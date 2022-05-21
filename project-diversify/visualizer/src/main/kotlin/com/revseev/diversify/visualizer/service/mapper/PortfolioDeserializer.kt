@@ -22,7 +22,7 @@ class PortfolioDeserializer : JsonDeserializer<Portfolio>() {
                 for (accountNode in node.get("accounts").elements()) {
                     add(
                         Account(
-                            providerId = accountNode.get("providerId").asText(),
+                            id = accountNode.get("id").asText(),
                             name = accountNode.get("name").asText(),
                             type = enumValueOf(accountNode.get("type").asText()),
                             userId = accountNode.get("userId").asInt()

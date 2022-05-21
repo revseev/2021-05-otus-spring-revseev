@@ -3,7 +3,7 @@ package com.revseev.diversify.visualizer.domain
 
 
 data class Account(
-    val providerId: String,
+    val id: String,
     val name: String,
     val type: Type,
     val userId: Int,

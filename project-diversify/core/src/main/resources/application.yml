@@ -20,8 +20,8 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_URI:http://localhost:8005/eureka}
-    fetch-registry: false
+      defaultZone: http://localhost:8005/eureka
+    fetch-registry: true
     register-with-eureka: true
   instance:
     instance-id: ${spring.application.name}:${server.port}

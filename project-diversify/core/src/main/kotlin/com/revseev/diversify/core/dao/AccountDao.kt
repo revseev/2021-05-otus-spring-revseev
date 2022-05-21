@@ -37,7 +37,7 @@ class AccountDao(
         MapSqlParameterSource("userId", userId),
         mapTo {
             Account(
-                providerId = getString("tkc_id"),
+                id = getString("tkc_id"),
                 name = getString("name"),
                 type = getStringAsEnum("type"),
                 userId = getInt("user_id"),

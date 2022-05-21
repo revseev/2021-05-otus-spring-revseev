@@ -4,7 +4,7 @@ import ru.tinkoff.piapi.contract.v1.AccountType as TinkoffAccountType
 
 
 data class Account(
-    val providerId: String,
+    val id: String,
     val name: String,
     val type: Type,
     val userId: Int,
