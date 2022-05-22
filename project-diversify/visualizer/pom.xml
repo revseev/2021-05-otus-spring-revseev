@@ -35,10 +35,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.javamoney.moneta</groupId>
-            <artifactId>moneta-core</artifactId>
+            <groupId>org.javamoney</groupId>
+            <artifactId>moneta</artifactId>
             <version>1.4.2</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
