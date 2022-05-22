@@ -1,6 +1,6 @@
 package com.revseev.diversify.visualizer.service
 
-import com.revseev.diversify.visualizer.controller.FilterConfig
+import com.revseev.diversify.visualizer.domain.FilterConfig
 import com.revseev.diversify.visualizer.domain.PortfolioByDiscriminator
 import com.revseev.diversify.visualizer.domain.PortfolioItem
 import com.revseev.diversify.visualizer.domain.PortfolioItemDto

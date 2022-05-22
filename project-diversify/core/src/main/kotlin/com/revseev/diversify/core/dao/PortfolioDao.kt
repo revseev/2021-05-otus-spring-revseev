@@ -32,16 +32,18 @@ class PortfolioDao(
 
     fun getPortfolioByUserId(userId: Int): List<PortfolioItem> = jdbc.query(
         """
-        select portf.account_id
-             , portf.asset_type
-             , portf.figi
-             , portf.quantity
-             , portf.unitPrice
-             , portf.currency
-             , ast.data ->> 'name'                             as name
-             , coalesce(ast.data ->> 'countryOfRisk', '-')     as country_of_risk_code
-             , coalesce(ast.data ->> 'sector', '-')            as sector
+        select prt.account_id
+             , prt.asset_type
+             , prt.figi
+             , prt.quantity
+             , prt.unitPrice
+             , prt.currency
+             , ast.data ->> 'name'                                                                 as name
+             , coalesce(acust.data ->> 'countryOfRisk', ast.data ->> 'countryOfRisk', '-')         as country_of_risk_code
+             , coalesce(acust.data ->> 'countryOfRiskName', ast.data ->> 'countryOfRiskName', '-') as country_of_risk
+             , coalesce(acust.data ->> 'sector', ast.data ->> 'sector', '-')                       as sector
         from (select account_id                                                                             as account_id
+                   , user_id
                    , jsonb_path_query(portfolio.portfolio, '$.positions.figi[*]') #>> '{}'                  as figi
                    , upper(jsonb_path_query(portfolio.portfolio, '$.positions.instrumentType[*]') #>> '{}') as asset_type
                    , (jsonb_path_query(portfolio.portfolio, '$.positions.quantity[*]'))::text               as quantity
@@ -49,8 +51,11 @@ class PortfolioDao(
                    , jsonb_path_query(portfolio.portfolio, '$.positions.currentPrice.currency[*]') #>> '{}' as currency
               from portfolio
               where user_id = :userId
-             ) as portf
-                 join asset ast on ast.figi = portf.figi
+             ) as prt
+                 join asset ast 
+                    on ast.figi = prt.figi
+                 left join asset_custom_data acust 
+                    on acust.asset_id = ast.id and acust.user_id = prt.user_id
         order by account_id""",
         MapSqlParameterSource("userId", userId),
         mapTo {
