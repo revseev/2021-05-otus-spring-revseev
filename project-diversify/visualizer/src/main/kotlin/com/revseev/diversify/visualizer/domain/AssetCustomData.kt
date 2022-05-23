@@ -1,4 +1,4 @@
-package com.revseev.diversify.core.domain
+package com.revseev.diversify.visualizer.domain
 
 data class AssetCustomData(
     val countryOfRisk: String? = null,

@@ -65,6 +65,7 @@ class PortfolioDao(
                 figi = getString("figi"),
                 name = getString("name"),
                 countryOfRiskCode = getString("country_of_risk_code"),
+                countryOfRisk = getString("country_of_risk"),
                 sector = getString("sector"),
                 quantity = getString("quantity"),
                 currency = getString("currency"),

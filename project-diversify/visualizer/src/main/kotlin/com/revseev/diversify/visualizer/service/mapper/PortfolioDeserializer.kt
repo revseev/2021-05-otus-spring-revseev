@@ -44,6 +44,7 @@ class PortfolioDeserializer : JsonDeserializer<Portfolio>() {
                             figi = itemNode.get("figi").asText(),
                             name = itemNode.get("name").asText(),
                             countryOfRiskCode = itemNode.get("countryOfRiskCode").asText(),
+                            countryOfRisk = itemNode.get("countryOfRisk").asText(),
                             sector = itemNode.get("sector").asText(),
                             quantity = quantity,
                             unitPrice = unitPrice,

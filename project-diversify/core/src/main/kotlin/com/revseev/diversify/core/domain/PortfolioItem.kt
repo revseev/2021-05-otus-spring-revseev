@@ -12,6 +12,7 @@ data class PortfolioItem(
     val figi: String,
     val name: String,
     val countryOfRiskCode: String,
+    val countryOfRisk: String,
     val sector: String,
     val quantity: String,
     val currency: String,
