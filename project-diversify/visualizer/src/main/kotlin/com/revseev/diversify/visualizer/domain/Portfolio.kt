@@ -1,7 +1,7 @@
 package com.revseev.diversify.visualizer.domain
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.revseev.diversify.visualizer.service.mapper.PortfolioDeserializer
+import com.revseev.diversify.visualizer.mapper.PortfolioDeserializer
 import org.javamoney.moneta.FastMoney
 import java.math.BigDecimal
 

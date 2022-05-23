@@ -7,9 +7,6 @@ import com.revseev.diversify.core.domain.Portfolio
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.tinkoff.piapi.core.models.Positions
-import ru.tinkoff.piapi.contract.v1.Account as TinkoffAccount
-import ru.tinkoff.piapi.core.models.Portfolio as TinkoffPortfolio
 
 private val log = KotlinLogging.logger { }
 
@@ -21,7 +18,11 @@ class PortfolioService(
 ) {
 
     @Transactional
-    fun savePortfolio(account: TinkoffAccount, portfolio: TinkoffPortfolio, positions: Positions, userId: Int = 1) {
+    fun savePortfolio(
+        userId: Int,
+        account: ru.tinkoff.piapi.contract.v1.Account,
+        portfolio: ru.tinkoff.piapi.core.models.Portfolio,
+    ) {
         log.info { "Saving portfolio information for user = $userId" }
         accountDao.saveAccount(
             userId = userId,
@@ -29,7 +30,7 @@ class PortfolioService(
             type = Account.Type.from(account.type),
             name = account.name
         )
-        portfolioDao.savePortfolio(userId, account.id, portfolio, positions)
+        portfolioDao.savePortfolio(userId, account.id, portfolio)
     }
 
     @Transactional(readOnly = true)

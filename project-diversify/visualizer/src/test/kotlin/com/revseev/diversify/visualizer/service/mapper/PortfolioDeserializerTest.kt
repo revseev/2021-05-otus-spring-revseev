@@ -4,16 +4,19 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.revseev.diversify.visualizer.config.SerializationConfig
 import com.revseev.diversify.visualizer.domain.Portfolio
 import org.junit.jupiter.api.Test
+import strikt.api.expectCatching
+import strikt.assertions.isSuccess
 
 internal class PortfolioDeserializerTest {
 
     private val mapper = SerializationConfig().objectMapper()
 
     @Test
-    fun `should correctly deserialize Portfolio`() {
-        val portfolio = mapper.readValue<Portfolio>(portfolioJson)
-
-        println(portfolio)
+    fun `should deserialize Portfolio without errors`() {
+        expectCatching {
+            val portfolio = mapper.readValue<Portfolio>(portfolioJson)
+            println(portfolio)
+        }.isSuccess()
     }
 }
 

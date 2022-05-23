@@ -22,7 +22,9 @@ class AssetCustomDataDao(
             insert into asset_custom_data(user_id, asset_id, data)
             values (:userId, 
                     (select id from asset where figi = :figi), 
-                    :data::jsonb)""",
+                    :data::jsonb)
+            on conflict (user_id, asset_id)
+                do update set data = :data::jsonb""",
             MapSqlParameterSource("userId", userId)
                 .addValue("figi", figi)
                 .addValue("data", mapper.writeValueAsString(data))

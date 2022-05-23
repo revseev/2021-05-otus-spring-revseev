@@ -17,6 +17,9 @@ interface CoreClient {
     @GetMapping("users/{userId}/portfolio")
     fun getPortfolioByUserId(@PathVariable userId: Int): Portfolio
 
+    @PostMapping("users/{userId}/portfolio")
+    fun addLatestPortfolio(@PathVariable userId: Int)
+
     @PostMapping("users/{userId}/asset/{figi}/custom")
     fun saveAssetCustomData(
         @PathVariable userId: Int,

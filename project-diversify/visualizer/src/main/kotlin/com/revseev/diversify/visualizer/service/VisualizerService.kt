@@ -4,22 +4,17 @@ import com.revseev.diversify.visualizer.domain.FilterConfig
 import com.revseev.diversify.visualizer.domain.PortfolioByDiscriminator
 import com.revseev.diversify.visualizer.domain.PortfolioItem
 import com.revseev.diversify.visualizer.domain.PortfolioItemDto
-import mu.KotlinLogging
 import org.javamoney.moneta.FastMoney
 import org.springframework.stereotype.Service
-import javax.money.convert.ExchangeRateProvider
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-private val log = KotlinLogging.logger { }
 
 @Service
 class VisualizerService(
     private val portfolioService: PortfolioService,
-    exchangeRateProvider: ExchangeRateProvider
+    private val convertor: CurrencyConvertor
 ) {
-
-    private val rubConversion = exchangeRateProvider.getCurrencyConversion(RUB)
 
     fun getPortfolioWithFilters(
         userId: Int,
@@ -35,7 +30,7 @@ class VisualizerService(
         }
     }
 
-    fun getPortfolioWithFilters(
+    fun getPortfolioWithFiltersGroupedBy(
         userId: Int,
         filterConfig: FilterConfig,
         discriminator: (PortfolioItem) -> Any?
@@ -73,7 +68,7 @@ class VisualizerService(
             .filter { filterConfig.sectorFilter?.contains(it.sector) ?: true }
             .filter { filterConfig.countryOfRiskFilter?.contains(it.countryOfRiskCode) ?: true }
             .onEach {
-                val rubPrice = it.totalPrice.with(rubConversion)
+                val rubPrice = convertor.toRUB(it.totalPrice)
                 it.totalPriceRub = rubPrice
                 sum += rubPrice.number.doubleValueExact()
             }
@@ -99,7 +94,7 @@ class VisualizerService(
         quantity = this.quantity.stripTrailingZeros().toPlainString(),
         unitPrice = this.unitPrice.toString(),
         totalPrice = this.totalPrice.toString(),
-        totalPriceRub = (this.totalPriceRub ?: this.totalPrice.with(rubConversion)).toString()
+        totalPriceRub = (this.totalPriceRub ?: convertor.toRUB(this.totalPrice)).toString()
     )
 
     internal fun FastMoney.asPercentage(

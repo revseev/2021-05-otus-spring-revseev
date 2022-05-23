@@ -12,5 +12,5 @@ class TinkoffApiConfig(
 ) {
 
     @Bean
-    fun tinkoffService(): InvestApi = InvestApi.create(token)
+    fun tinkoffApi(): InvestApi = InvestApi.create(token)
 }

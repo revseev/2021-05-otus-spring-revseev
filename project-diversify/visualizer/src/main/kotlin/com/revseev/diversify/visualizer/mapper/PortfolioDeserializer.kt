@@ -1,4 +1,4 @@
-package com.revseev.diversify.visualizer.service.mapper
+package com.revseev.diversify.visualizer.mapper
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -11,6 +11,7 @@ import com.revseev.diversify.visualizer.domain.PortfolioItem
 import org.javamoney.moneta.FastMoney
 import java.io.IOException
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class PortfolioDeserializer : JsonDeserializer<Portfolio>() {
 
@@ -32,9 +33,9 @@ class PortfolioDeserializer : JsonDeserializer<Portfolio>() {
             },
             items = buildList {
                 for (itemNode in node.get("items").elements()) {
-                    val quantity = BigDecimal(itemNode.get("quantity").asText())
+                    val quantity = BigDecimal(itemNode.get("quantity").asText()).setScale(5, RoundingMode.HALF_EVEN)
                     val unitPrice = FastMoney.of(
-                        BigDecimal(itemNode.get("unitPrice").asText()),
+                        BigDecimal(itemNode.get("unitPrice").asText()).setScale(5, RoundingMode.HALF_EVEN),
                         itemNode.get("currency").asText()
                     )
                     add(

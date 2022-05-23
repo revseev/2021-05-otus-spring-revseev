@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import ru.tinkoff.piapi.core.models.Portfolio
-import ru.tinkoff.piapi.core.models.Positions
 
 private val log = KotlinLogging.logger { }
 
@@ -17,16 +16,15 @@ class PortfolioDao(
     private val mapper: ObjectMapper,
 ) {
 
-    fun savePortfolio(userId: Int, accountId: String, portfolio: Portfolio, positions: Positions) {
+    fun savePortfolio(userId: Int, accountId: String, portfolio: Portfolio) {
         log.info { "Saving portfolio and positions into DB for accountId = $accountId" }
         jdbc.update(
             """
-            insert into portfolio(user_id, account_id, portfolio, positions) 
-            values(:userId, :accountId, :portfolio::jsonb, :positions::jsonb)""",
+            insert into portfolio(user_id, account_id, portfolio) 
+            values(:userId, :accountId, :portfolio::jsonb)""",
             MapSqlParameterSource("userId", userId)
                 .addValue("accountId", accountId)
                 .addValue("portfolio", mapper.writeValueAsString(portfolio))
-                .addValue("positions", mapper.writeValueAsString(positions))
         )
     }
 
@@ -42,7 +40,7 @@ class PortfolioDao(
              , coalesce(acust.data ->> 'countryOfRisk', ast.data ->> 'countryOfRisk', '-')         as country_of_risk_code
              , coalesce(acust.data ->> 'countryOfRiskName', ast.data ->> 'countryOfRiskName', '-') as country_of_risk
              , coalesce(acust.data ->> 'sector', ast.data ->> 'sector', '-')                       as sector
-        from (select account_id                                                                             as account_id
+        from (select distinct on (account_id) account_id                                                    as account_id
                    , user_id
                    , jsonb_path_query(portfolio.portfolio, '$.positions.figi[*]') #>> '{}'                  as figi
                    , upper(jsonb_path_query(portfolio.portfolio, '$.positions.instrumentType[*]') #>> '{}') as asset_type
@@ -51,6 +49,7 @@ class PortfolioDao(
                    , jsonb_path_query(portfolio.portfolio, '$.positions.currentPrice.currency[*]') #>> '{}' as currency
               from portfolio
               where user_id = :userId
+              order by account_id, loaded_at DESC
              ) as prt
                  join asset ast 
                     on ast.figi = prt.figi
