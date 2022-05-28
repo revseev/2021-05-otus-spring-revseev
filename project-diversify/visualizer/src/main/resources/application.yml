@@ -1,0 +1,40 @@
+server:
+  port: 8020
+
+spring:
+  application:
+    name: diversify-visualizer
+  cache:
+    cache-names: portfolios
+    caffeine:
+      spec:
+      - expireAfterWrite=15m
+      - maximumSize=50
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8005/eureka
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    leaseExpirationDurationInSeconds: 90
+    leaseRenewalIntervalInSeconds: 30
+    prefer-ip-address: true
+  server:
+    eviction-interval-timer-in-ms: 15000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
