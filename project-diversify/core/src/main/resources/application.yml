@@ -1,0 +1,51 @@
+tinkoff.access-token: ${TINKOFF_INVEST_API_TOKEN}
+
+server:
+  port: 8010
+
+spring:
+  application:
+    name: diversify-core
+  sql:
+    init:
+      mode: NEVER
+      schema-locations: schema.sql
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://0.0.0.0:5432/diversify
+    username: postgres
+    password: postgres
+  hikari:
+    data-source-properties:
+      useConfigs: maxPerformance
+      rewriteBatchedStatements: true
+  output:
+    ansi:
+      enabled: always
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8005/eureka
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    instance-id: ${spring.application.name}:${server.port}
+    leaseExpirationDurationInSeconds: 90
+    leaseRenewalIntervalInSeconds: 30
+    prefer-ip-address: true
+  server:
+    eviction-interval-timer-in-ms: 15000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
